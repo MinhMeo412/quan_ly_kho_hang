@@ -1,0 +1,52 @@
+Đăng nhập
+    - phân quyền user
+    - 3 cấp user khác nhau
+        - Admin
+        - User 1
+        - User 2
+
+Menu nhà cung cấp:
+    - Quản lí nhà cung cấp
+        - Thêm nhà cung cấp
+        - Sửa nhà cung cấp
+        - Xóa nhà cung cấp
+
+
+Quản lí người dùng
+    - Thêm
+    - Sửa
+        - Phân quyền
+    - Xóa
+
+Xem báo cáo
+    - 4 - 5 dạng báo cáo
+
+Menu quản lí xuất nhập:
+    - tạo phiếu xuất kho
+    - tạo phiếu nhập kho
+    - Tìm phiếu
+
+Menu quản lí kho
+    - Xem sản phẩm
+    - Tìm sản phẩm
+    - Quản li sản phẩm
+        - Thêm sản phẩm
+        - Sửa sản phẩm
+        - Xóa sản phẩm
+    - Quản lí kho
+        - Thêm kho
+        - Sửa kho
+        - Xóa kho
+    - Kiểm kê
+        - Tạo phiên kiểm kê
+        - Tìm/Xem phiểu kiểm kê
+
+Đăng nhập
+
+
+Database
+    - Bảng
+        - Sản phẩm
+        - Nhà cung cấp
+        - Kho
+    -
