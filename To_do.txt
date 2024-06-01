@@ -5,28 +5,23 @@
         - User 1
         - User 2
 
-Menu nhà cung cấp:
-    - Quản lí nhà cung cấp
-        - Thêm nhà cung cấp
-        - Sửa nhà cung cấp
-        - Xóa nhà cung cấp
+*Menu Admin
+1. Quản lí nhà cung cấp:
+    1.1 Xem danh sách NCC
+    1.2 Thêm nhà cung cấp
+    1.3 Sửa thông tin nhà cung cấp(Bao gồm xóa)
+    1.4 Quay lại
 
 
-Quản lí người dùng
-    - Thêm
-    - Sửa
-        - Phân quyền
-    - Xóa
+2. Quản lí tài khoản
+    2.1 Xem danh sách tài khoản
+    2.2 Tạo tài khoản mới
+    2.3 Sửa thông tin tài khoản
+        - Sửa thông tin người dùng()\Phân quyền
+    2.4 Quay lại
 
-Xem báo cáo
-    - 4 - 5 dạng báo cáo
 
-Menu quản lí xuất nhập:
-    - tạo phiếu xuất kho
-    - tạo phiếu nhập kho
-    - Tìm phiếu
-
-Menu quản lí kho
+3. Quản lý kho
     - Xem sản phẩm
     - Tìm sản phẩm
     - Quản li sản phẩm
@@ -40,6 +35,14 @@ Menu quản lí kho
     - Kiểm kê
         - Tạo phiên kiểm kê
         - Tìm/Xem phiểu kiểm kê
+
+Menu quản lí xuất nhập:
+    - tạo phiếu xuất kho
+    - tạo phiếu nhập kho
+    - Tìm phiếu
+
+Xem báo cáo
+    - 4 - 5 dạng báo cáo
 
 Đăng nhập
 
