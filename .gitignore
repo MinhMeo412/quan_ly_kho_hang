@@ -1,0 +1,4 @@
+*.exe
+.mono/
+.vscode/
+quan_ly_kho_hang.sln
