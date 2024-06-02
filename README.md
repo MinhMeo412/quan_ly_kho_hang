@@ -1,4 +1,4 @@
-# Quản lí kho hàng
+# Quản lý kho hàng
 
 Trong repo này:
 * src/: source code của cả chương trình
