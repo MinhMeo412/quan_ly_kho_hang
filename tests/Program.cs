@@ -1,1 +1,1 @@
-﻿// Unit test
+﻿Console.WriteLine("Hello world");
