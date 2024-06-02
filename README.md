@@ -2,8 +2,8 @@
 
 Trong repo này:
 * src/
-    * QuanLyKhoHang/: source code của cả chương trình
-* tests/
+    * QuanLyKhoHang/: source code của chương trình
+* test/
     * QuanLyKhoHang/: source code của unit test
 * db/
     * scripts/: chứa các file sql 

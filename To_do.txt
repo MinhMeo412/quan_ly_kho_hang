@@ -46,3 +46,19 @@
         2.2 Tạo tài khoản mới
         2.3 Sửa thông tin tài khoản
             - Sửa thông tin người dùng()\Phân quyền
+
+
+
+* Database:
+    1. bảng
+        - supplier
+        - address (một supplier có thể có nhiều address)
+
+        - category
+        - product
+        - product_variant (1 product có thể có nhiều variant)
+
+        - order
+        - ordered_product (1 order có thể có nhiều product)
+
+        - user
