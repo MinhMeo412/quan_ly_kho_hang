@@ -16,6 +16,8 @@ Trong repo này:
     * WarehouseManagerTest/: source code của unit test
 * db/
     * scripts/: chứa các file sql 
+* docs/
+    * STYLE_GUIDE.md: quy ước chung
 * Project_Slide.pptx: file thuyết trình của nhóm
 * Projects_Report.docx: file báo cáo của nhóm
 
