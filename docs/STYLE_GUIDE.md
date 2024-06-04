@@ -12,7 +12,8 @@ Style guide này để giúp mọi người thống nhất 1 tiêu chuẩn để
 ## Ngôn ngữ
 
 Cố gắng dùng [tiếng Anh thay vì tiếng Việt](https://classroom.google.com/c/Njg0NTY0NDgzMDYy/p/Njk0MDMwMzY1ODE2/details/) khi code (đặt tên file, biến, hàm, comment, ...).
-[README](../README.md), [những file markdown trong docs/](../docs/), commit message, issue, pull request thì dùng tiếng gì cũng được không quan trọng.
+
+[README](../README.md), [những file markdown trong docs/](../docs), commit message, issue, pull request thì dùng tiếng gì cũng được không quan trọng.
 
 ## Docstrings
 
@@ -20,7 +21,7 @@ Cố gắng dùng [tiếng Anh thay vì tiếng Việt](https://classroom.google
 Ví dụ:
 
 [C#](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments/):
-```
+```c#
         /**
         <summary>
             Executes a stored procedure and returns the queried table as a list of lists of objects.
@@ -60,7 +61,7 @@ Ví dụ:
 ```
 
 MySQL:
-```
+```SQL
 /*
  * Calculate and returns the difference level between 2 strings. 
  * The closer they are to each other, the lower the return value.
@@ -127,11 +128,11 @@ Nhưng có vẫn hơn, nên nếu được thì cứ comment, sau mình hoặc n
 Nhìn cho nó đẹp 😎
 
 [C#](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/identifier-names/):
-    * Tên biến, tham số: camelCase (vd: string userInput, int columnCount)
-    * Tên class, method, function: PascalCase (vd: public class ProductVariant(), public static int Fibonacii())
-    * [...](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/identifier-names/)
+* Tên biến, tham số: **camelCase** (vd: string **userInput**, int **columnCount**)
+* Tên class, method, function: **PascalCase** (vd: public class **ProductVariant**(), public static int **Fibonacii**())
+* [...](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/identifier-names/)
 
 MySQL:
-    * Tên bảng: snake_case (vd: create table engine_cost, create table time_zone), số ít (vd: user thay vì users, product thay vì products, ...)
-    * Tên cột: snake_case
-    * Tên function: snake_case
+* Tên bảng: **snake_case** (vd: create table **engine_cost**, create table **time_zone**), số ít (vd: **user** thay vì **users**, **product** thay vì **products**, ...)
+* Tên cột: **snake_case**
+* Tên function: **snake_case**
