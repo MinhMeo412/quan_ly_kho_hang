@@ -117,13 +117,13 @@ create function levenshtein( s1 varchar(255), s2 varchar(255) )
 delimiter ;
 ```
 
-# Comment
+## Comment
 
 Nên ưu tiên docstring trước thay vì comment.
 Với cả chưa thấy thầy nói gì về comment, nên chắc có thì tốt, không có thì cũng chả sao.
 Nhưng có vẫn hơn, nên nếu được thì cứ comment, sau mình hoặc người khác đọc cho dễ hiểu.
 
-# Đặt tên
+## Đặt tên
 
 Nhìn cho nó đẹp 😎
 
