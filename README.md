@@ -11,9 +11,9 @@ Repo này chứa chương trình quản lí kho hàng được viết bằng C#.
 
 Trong repo này:
 * src/
-    * QuanLyKhoHang/: source code của chương trình
+    * WarehouseManager/: source code của chương trình
 * test/
-    * QuanLyKhoHang/: source code của unit test
+    * WarehouseManagerTest/: source code của unit test
 * db/
     * scripts/: chứa các file sql 
 * Project_Slide.pptx: file thuyết trình của nhóm
