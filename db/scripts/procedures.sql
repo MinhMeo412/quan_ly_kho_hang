@@ -9,8 +9,8 @@
  * s1: string
  * s2: string
  * return: int
- */
-delimiter $$
+ */;
+delimiter //
 create function levenshtein( s1 varchar(255), s2 varchar(255) )
     returns int
     deterministic
@@ -49,7 +49,7 @@ create function levenshtein( s1 varchar(255), s2 varchar(255) )
             end while;
         end if;
         return c;
-    end$$
+    end//
 delimiter ;
 
 
