@@ -4,7 +4,7 @@
  * A returned value of 0 means the strings are identical.
  * 
  * This can be used to search a value from a table without having to specify the exact value
- * Example: SELECT * FROM Product_Variant ORDER BY LEVENSHTEIN(color, 'red') asc;
+ * Example: SELECT * FROM product_variant ORDER BY levenshtein('orang', product_variant_color) asc;
  * 
  * s1: string
  * s2: string
