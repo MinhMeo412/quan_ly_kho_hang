@@ -1,0 +1,4 @@
+INSERT INTO permission(permission_level, permission_name, permission_description) VALUES
+('0', 'Admin', 'Complete unrestricted access to the database.'),
+('1', 'Moderator', 'Moderate access to the database'),
+('2', 'User', 'Minor access to the database');
