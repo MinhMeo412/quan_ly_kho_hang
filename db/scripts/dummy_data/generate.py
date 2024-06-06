@@ -1,6 +1,7 @@
 from InquirerPy import prompt
 from faker import Faker
 from random import Random
+from uuid import uuid4
 
 
 def main():
@@ -27,6 +28,13 @@ def main():
         if column_types[i] == "number":
             starting_index = int(input(f"Enter starting index for {column_names[i]}: "))
             Row.starting_index[column_names[i]] = starting_index
+        elif column_types[i] == "random_number":
+            print(f"Enter range for {column_names[i]}:")
+            start = int(input(f"Lowest: "))
+            end = int(input(f"Highest: "))
+            Row.starting_index[column_names[i]] = (start, end)
+        else:
+            Row.starting_index[column_names[i]] = 0
     row_count = int(input("Enter number of rows you want to generate: "))
     file_name = input("Enter the name of the file you want to generate: ")
 
@@ -36,11 +44,11 @@ def main():
 
     for i in range(row_count):
         rows[i].generate()
-    
+
     with open(file_name, "w") as file:
         print(f"Writing to {file_name}")
         insert_line = f"INSERT INTO {table_name}("
-        
+
         for column_name in column_names:
             insert_line += f"{column_name}, "
         insert_line = f"{insert_line[:-2]}) VALUES\n"
@@ -53,8 +61,11 @@ def main():
             values = f"{values[:-2]})"
             if i < row_count - 1:
                 values += ",\n"
+            else:
+                values += ";"
             file.write(values)
         print("File generated successfully.")
+
 
 class Row():
     data_types = [
@@ -72,12 +83,16 @@ class Row():
         "datetime",
         "website_link",
         "image_url",
+        "company_name",
         "product_name",
         "product_category",
         "product_size",
         "number",
         "random_number",
-        "color"
+        "color",
+        "permission_level",
+        "uuid",
+        "shipment_status"
     ]
     starting_index = {}
 
@@ -117,6 +132,8 @@ class Row():
                 value = Row.generate_website_link()
             if self.columns[i] == "image_url":
                 value = Row.generate_image_url()
+            if self.columns[i] == "company_name":
+                value = Row.generate_company_name()
             if self.columns[i] == "product_name":
                 value = Row.generate_product_name()
             if self.columns[i] == "product_category":
@@ -126,9 +143,15 @@ class Row():
             if self.columns[i] == "number":
                 value = Row.generate_number(self, i)
             if self.columns[i] == "random_number":
-                value = Row.generate_random_number()
+                value = Row.generate_random_number(self, i)
             if self.columns[i] == "color":
                 value = Row.generate_color()
+            if self.columns[i] == "permission_level":
+                value = Row.generate_permission_level()
+            if self.columns[i] == "uuid":
+                value = Row.generate_uuid()
+            if self.columns[i] == "shipment_status":
+                value = Row.generate_shipment_status()
 
             values.append(value)
             print(f"{self.columns[i]}: {value}", end=", ")
@@ -157,7 +180,8 @@ class Row():
         return Faker().street_address()
 
     def generate_district():
-        districts = ["Ba Đình", "Hoàn Kiếm", "Hai Bà Trưng", "Đống Đa", "Tây Hồ", "Cầu Giấy", "Thanh Xuân", "Hoàng Mai", "Long Biên", "Bắc Từ Liêm", "Nam Từ Liêm", "Thanh Trì", "Gia Lâm", "Đông Anh", "Sóc Sơn", "Mê Linh", "Hà Đông", "Sơn Tây", "Ba Vì", "Phúc Thọ", "Đan Phượng", "Hoài Đức", "Quốc Oai", "Thạch Thất", "Chương Mỹ", "Thanh Oai", "Thường Tín", "Phú Xuyên", "Mỹ Đức", "Mê Linh"]
+        districts = ["Ba Đình", "Hoàn Kiếm", "Hai Bà Trưng", "Đống Đa", "Tây Hồ", "Cầu Giấy", "Thanh Xuân", "Hoàng Mai", "Long Biên", "Bắc Từ Liêm", "Nam Từ Liêm", "Thanh Trì", "Gia Lâm", "Đông Anh",
+                     "Sóc Sơn", "Mê Linh", "Hà Đông", "Sơn Tây", "Ba Vì", "Phúc Thọ", "Đan Phượng", "Hoài Đức", "Quốc Oai", "Thạch Thất", "Chương Mỹ", "Thanh Oai", "Thường Tín", "Phú Xuyên", "Mỹ Đức", "Mê Linh"]
         district = Random().choice(districts)
         return district
 
@@ -179,11 +203,15 @@ class Row():
     def generate_image_url():
         return f"{Faker().url()}/{Faker().word()}-image.png"
 
+    def generate_company_name():
+        return Faker().company()
+
     def generate_product_name():
         return Faker().company()
 
     def generate_product_category():
-        product_categories = ["Electronics", "Clothing", "Home and Kitchen", "Books", "Toys", "Beauty and Personal Care", "Sports and Outdoors", "Health and Wellness", "Automotive", "Tools and Home Improvement"]
+        product_categories = ["Electronics", "Clothing", "Home and Kitchen", "Books", "Toys", "Beauty and Personal Care",
+                              "Sports and Outdoors", "Health and Wellness", "Automotive", "Tools and Home Improvement"]
         product_category = Random().choice(product_categories)
         return product_category
 
@@ -195,11 +223,24 @@ class Row():
     def generate_number(self, current_column):
         return Row.starting_index[list(Row.starting_index.keys())[current_column]] + self.index
 
-    def generate_random_number(a = 0, b = 1000):
+    def generate_random_number(self, current_column):
+        a = Row.starting_index[list(Row.starting_index.keys())[current_column]][0]
+        b = Row.starting_index[list(Row.starting_index.keys())[current_column]][1]
         return Random().randint(a, b)
 
     def generate_color():
         return Faker().color_name()
+
+    def generate_permission_level():
+        return Random().randint(0, 2)
+
+    def generate_uuid():
+        return uuid4()
+    
+    def generate_shipment_status():
+        statuses = ['Pending', 'Processing', 'Delivering', 'Delivered', 'On Hold', 'Cancelled', 'Returned', 'Refunded']
+        status = Random().choice(statuses)
+        return status
 
 
 if __name__ == "__main__":

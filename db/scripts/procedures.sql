@@ -9,7 +9,8 @@
  * s1: string
  * s2: string
  * return: int
- */;
+ */
+SELECT 'Loading levenshtein' as 'INFO';
 delimiter //
 create function levenshtein( s1 varchar(255), s2 varchar(255) )
     returns int
