@@ -10,7 +10,7 @@
  * s2: string
  * return: int
  */
-SELECT 'Loading levenshtein' as 'INFO';
+SELECT 'Loading levenshtein' AS 'INFO';
 delimiter //
 create function levenshtein( s1 varchar(255), s2 varchar(255) )
     returns int
@@ -52,6 +52,63 @@ create function levenshtein( s1 varchar(255), s2 varchar(255) )
         return c;
     end//
 delimiter ;
+
+DELIMITER //
+CREATE FUNCTION get_permission_level(token VARCHAR(36))
+RETURNS INT
+DETERMINISTIC
+BEGIN
+    DECLARE permission_level INT;
+    SELECT user_permission_level from user where user_id = (select token_user_id from token where token_uuid = token) into permission_level;
+    RETURN permission_level;
+END//
+DELIMITER ;
+
+DELIMITER //
+CREATE FUNCTION sufficient_permission(token VARCHAR(36), required_level INT)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+    DECLARE user_permission_level INT;
+    SELECT get_permission_level(token) into user_permission_level;
+
+    IF user_permission_level <= required_level THEN
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END IF;
+END//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE user_login(
+    IN inputted_username VARCHAR(32),
+    IN inputted_password VARCHAR(128),
+    OUT success BOOLEAN,
+    OUT token VARCHAR(36)
+)
+BEGIN
+	DECLARE token_uuid VARCHAR(36);
+	DECLARE actual_password VARCHAR(128);
+	DECLARE actual_user_id INT;
+
+	SELECT UUID() INTO token_uuid;
+	SELECT user_password FROM user WHERE user_name = inputted_username LIMIT 1 INTO actual_password;
+	SELECT user_id FROM user WHERE user_name = inputted_username LIMIT 1 INTO actual_user_id;
+	
+    if inputted_password = actual_password then
+    	INSERT INTO token(token_uuid, token_user_id) VALUES
+    	(token_uuid, actual_user_id);
+    
+    	SET success = TRUE;
+ 		SET token = token_uuid;
+    ELSE
+        SET success = FALSE;
+        SET token = NULL;
+    END IF;
+END //
+DELIMITER ;
+
 
 
 
