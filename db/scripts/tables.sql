@@ -52,7 +52,7 @@ CREATE TABLE product(
 	product_price INT DEFAULT 0,
 	product_category_id INT,
 	CONSTRAINT pk_product_id PRIMARY KEY (product_id),
-	CONSTRAINT fk_product_category_id FOREIGN KEY (product_category_id) REFERENCES category(category_id),
+	CONSTRAINT fk_product_category_id FOREIGN KEY (product_category_id) REFERENCES category(category_id) ON DELETE SET NULL,
 	CONSTRAINT uc_product_name UNIQUE (product_name),
 	CONSTRAINT ck_product_price CHECK (product_price >= 0)
 );
@@ -102,7 +102,7 @@ CREATE TABLE inventory_audit(
 	inventory_audit_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 	CONSTRAINT pk_inventory_audit_id PRIMARY KEY (inventory_audit_id),
 	CONSTRAINT fk_inventory_audit_warehouse_id FOREIGN KEY (inventory_audit_warehouse_id) REFERENCES warehouse(warehouse_id) ON DELETE CASCADE,
-	CONSTRAINT fk_inventory_audit_user_id FOREIGN KEY (inventory_audit_user_id) REFERENCES user(user_id)
+	CONSTRAINT fk_inventory_audit_user_id FOREIGN KEY (inventory_audit_user_id) REFERENCES user(user_id) ON DELETE SET NULL
 );
 
 CREATE TABLE inventory_audit_detail(
@@ -124,9 +124,9 @@ CREATE TABLE inbound_shipment(
 	inbound_shipment_description TEXT,
 	inbound_shipment_user_id INT,
 	CONSTRAINT pk_inbound_shipment_id PRIMARY KEY (inbound_shipment_id),
-	CONSTRAINT fk_inbound_shipment_supplier_id FOREIGN KEY (inbound_shipment_supplier_id) REFERENCES supplier(supplier_id),
+	CONSTRAINT fk_inbound_shipment_supplier_id FOREIGN KEY (inbound_shipment_supplier_id) REFERENCES supplier(supplier_id) ON DELETE SET NULL,
 	CONSTRAINT fk_inbound_shipment_warehouse_id FOREIGN KEY (inbound_shipment_warehouse_id) REFERENCES warehouse(warehouse_id) ON DELETE CASCADE,
-	CONSTRAINT fk_inbound_shipment_user_id FOREIGN KEY (inbound_shipment_user_id) REFERENCES user(user_id)
+	CONSTRAINT fk_inbound_shipment_user_id FOREIGN KEY (inbound_shipment_user_id) REFERENCES user(user_id) ON DELETE SET NULL
 );
 
 CREATE TABLE inbound_shipment_detail(
@@ -149,7 +149,7 @@ CREATE TABLE outbound_shipment(
 	outbound_shipment_user_id INT,
 	CONSTRAINT pk_outbound_shipment_id PRIMARY KEY (outbound_shipment_id),
 	CONSTRAINT fk_outbound_shipment_warehouse_id FOREIGN KEY (outbound_shipment_warehouse_id) REFERENCES warehouse(warehouse_id) ON DELETE CASCADE,
-	CONSTRAINT fk_outbound_shipment_user_id FOREIGN KEY (outbound_shipment_user_id) REFERENCES user(user_id)
+	CONSTRAINT fk_outbound_shipment_user_id FOREIGN KEY (outbound_shipment_user_id) REFERENCES user(user_id) ON DELETE SET NULL
 );
 
 CREATE TABLE outbound_shipment_detail(
@@ -173,7 +173,7 @@ CREATE TABLE stock_transfer(
 	CONSTRAINT pk_stock_transfer_id PRIMARY KEY (stock_transfer_id),
 	CONSTRAINT fk_stock_transfer_from_warehouse_id FOREIGN KEY (stock_transfer_from_warehouse_id) REFERENCES warehouse(warehouse_id) ON DELETE CASCADE,
 	CONSTRAINT fk_stock_transfer_to_warehouse_id FOREIGN KEY (stock_transfer_to_warehouse_id) REFERENCES warehouse(warehouse_id) ON DELETE CASCADE,
-	CONSTRAINT fk_stock_transfer_user_id FOREIGN KEY (stock_transfer_user_id) REFERENCES user(user_id)
+	CONSTRAINT fk_stock_transfer_user_id FOREIGN KEY (stock_transfer_user_id) REFERENCES user(user_id) ON DELETE SET NULL
 );
 
 CREATE TABLE stock_transfer_detail(

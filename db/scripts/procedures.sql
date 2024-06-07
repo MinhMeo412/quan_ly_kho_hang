@@ -59,6 +59,7 @@ Get the permission level of the user associated with the inputted token.
 token: token of the user in question
 return: permission level of that user
 */
+SELECT 'Loading get_permission_level' AS 'INFO';
 DELIMITER //
 CREATE FUNCTION get_permission_level(token VARCHAR(36))
 RETURNS INT
@@ -77,6 +78,7 @@ token: token of the user in question
 required_level: the required level to perform an action
 return: true if the user has sufficient permission. false if otherwise.
 */
+SELECT 'Loading sufficient_permission' AS 'INFO';
 DELIMITER //
 CREATE FUNCTION sufficient_permission(token VARCHAR(36), required_level INT)
 RETURNS BOOLEAN
@@ -102,6 +104,7 @@ inputted_password: password that the user entered.
 success: TRUE if the usernam and password is correct.
 token: uniquely identifiable token if username and password is correct. null if otherwise.
 */
+SELECT 'Loading user_login' AS 'INFO';
 DELIMITER //
 CREATE PROCEDURE user_login(
     IN inputted_username VARCHAR(32),
