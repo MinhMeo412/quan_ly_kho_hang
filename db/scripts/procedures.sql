@@ -53,6 +53,12 @@ create function levenshtein( s1 varchar(255), s2 varchar(255) )
     end//
 delimiter ;
 
+/*
+Get the permission level of the user associated with the inputted token.
+
+token: token of the user in question
+return: permission level of that user
+*/
 DELIMITER //
 CREATE FUNCTION get_permission_level(token VARCHAR(36))
 RETURNS INT
@@ -64,6 +70,13 @@ BEGIN
 END//
 DELIMITER ;
 
+/*
+Check if the user has sufficient permission to perform an action.
+
+token: token of the user in question
+required_level: the required level to perform an action
+return: true if the user has sufficient permission. false if otherwise.
+*/
 DELIMITER //
 CREATE FUNCTION sufficient_permission(token VARCHAR(36), required_level INT)
 RETURNS BOOLEAN
@@ -80,6 +93,15 @@ BEGIN
 END//
 DELIMITER ;
 
+/*
+Authenticate an user. Returns true and a token if the login information is correct.
+
+inputted_username: username that the user entered.
+inputted_password: password that the user entered.
+
+success: TRUE if the usernam and password is correct.
+token: uniquely identifiable token if username and password is correct. null if otherwise.
+*/
 DELIMITER //
 CREATE PROCEDURE user_login(
     IN inputted_username VARCHAR(32),
