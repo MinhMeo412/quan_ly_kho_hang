@@ -21,7 +21,7 @@ CREATE TABLE user(
 CREATE TABLE token(
 	token_uuid VARCHAR(36) NOT NULL,
 	token_user_id INT NOT NULL,
-	token_creation_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+	token_last_activity_timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 	CONSTRAINT pk_token_uuid PRIMARY KEY (token_uuid),
 	CONSTRAINT fk_token_user_id FOREIGN KEY (token_user_id) REFERENCES user(user_id) ON DELETE CASCADE
 );
