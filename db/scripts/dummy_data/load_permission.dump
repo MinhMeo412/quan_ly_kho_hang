@@ -1,4 +1,6 @@
 INSERT INTO permission(permission_level, permission_name, permission_description) VALUES
-('0', 'Admin', 'Complete unrestricted access to the database.'),
-('1', 'Moderator', 'Moderate access to the database'),
-('2', 'User', 'Minor access to the database');
+('0', 'Admin', 'Tất cả mọi thứ.'),
+('1', 'Moderator', 'Có quyền đọc, thêm, sửa và trao quyền (không được trao Level 0).'),
+('2', 'Warehouse Manager', 'Có quyền đọc, thêm, sửa (Tất cả mọi bảng trừ permission, user, token)');
+('3', 'Employee', 'Có quyền đọc + thêm (Tất cả mọi bảng trừ permission, user, token)');
+('4', 'Intern', 'Chỉ có quyền đọc (Tất cả mọi bảng trừ permission, user, token)');
