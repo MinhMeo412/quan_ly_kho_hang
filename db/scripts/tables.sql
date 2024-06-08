@@ -21,7 +21,7 @@ CREATE TABLE user(
 CREATE TABLE token(
 	token_uuid VARCHAR(36) NOT NULL,
 	token_user_id INT NOT NULL,
-	token_creation_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+	token_last_activity_timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 	CONSTRAINT pk_token_uuid PRIMARY KEY (token_uuid),
 	CONSTRAINT fk_token_user_id FOREIGN KEY (token_user_id) REFERENCES user(user_id) ON DELETE CASCADE
 );
@@ -52,7 +52,7 @@ CREATE TABLE product(
 	product_price INT DEFAULT 0,
 	category_id INT,
 	CONSTRAINT pk_product_id PRIMARY KEY (product_id),
-	CONSTRAINT fk_category_id FOREIGN KEY (category_id) REFERENCES category(category_id),
+	CONSTRAINT fk_category_id FOREIGN KEY (category_id) REFERENCES category(category_id) ON DELETE SET NULL,
 	CONSTRAINT uc_product_name UNIQUE (product_name),
 	CONSTRAINT ck_product_price CHECK (product_price >= 0)
 );
@@ -80,10 +80,9 @@ CREATE TABLE warehouse_address(
 CREATE TABLE warehouse(
 	warehouse_id INT AUTO_INCREMENT,
 	warehouse_name VARCHAR(32) NOT NULL,
-	warehouse_address_id INT, --Cho phép null vì thường sẽ luôn tạo kho trước khi gán địa chỉ cho nó
+	warehouse_address_id INT,
 	CONSTRAINT pk_warehouse_id PRIMARY KEY (warehouse_id),
 	CONSTRAINT fk_warehouse_address_id FOREIGN KEY (warehouse_address_id) REFERENCES warehouse_address(warehouse_address_id) ON DELETE SET NULL
-	--Set null cho địa chỉ khi 1 địa chỉ được xóa
 );
 
 CREATE TABLE warehouse_stock(
