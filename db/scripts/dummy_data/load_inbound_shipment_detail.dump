@@ -1,4 +1,4 @@
-INSERT INTO inbound_shipment_detail(inbound_shipment_detail_inbound_shipment_id, inbound_shipment_detail_product_variant_id, inbound_shipment_detail_amount) VALUES
+INSERT INTO inbound_shipment_detail(inbound_shipment_id, product_variant_id, inbound_shipment_detail_amount) VALUES
 ('1', '1714', '349'),
 ('2', '3170', '481'),
 ('3', '2509', '438'),
