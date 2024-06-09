@@ -2,7 +2,7 @@ using MySql.Data.MySqlClient;
 
 namespace WarehouseManager.Data.Utility
 {
-    class Procedure
+    static class Procedure
     {
         /**
         <summary>

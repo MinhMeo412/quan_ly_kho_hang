@@ -2,7 +2,7 @@
 
 namespace WarehouseManager.UI.Utility
 {
-    public class ConsoleUtility
+    public static class ConsoleUtility
     {
         public static string Input(string prompt = "")
         {
