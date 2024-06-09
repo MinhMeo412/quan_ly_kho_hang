@@ -2,7 +2,7 @@ using WarehouseManager.Data.Table;
 
 namespace WarehouseManager.Data
 {
-    class Database
+    class WarehouseDatabase
     {
         public PermissionTable? PermissionTable { get; }
         public UserTable? UserTable { get; }
@@ -26,18 +26,18 @@ namespace WarehouseManager.Data
         public string Server { get; set; }
         public string User { get; set; }
         public string Password { get; set; }
-        public string DatabaseName { get; set; }
+        public string Database { get; set; }
 
         private string connectionString;
 
-        public Database(string server = "localhost", string user = "root", string password = "1234", string database = "warehouse")
+        public WarehouseDatabase(string server = "localhost", string user = "root", string password = "1234", string database = "warehouse")
         {
             this.Server = server;
             this.User = user;
             this.Password = password;
-            this.DatabaseName = database;
+            this.Database = database;
 
-            this.connectionString = $"server={this.Server}; user={this.User}; password={this.Password}; database={this.DatabaseName}";
+            this.connectionString = $"server={this.Server}; user={this.User}; password={this.Password}; database={this.Database}";
         }
     }
 }
