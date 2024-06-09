@@ -22,5 +22,22 @@ namespace WarehouseManager.Data
         public OutboundShipmentDetailTable? OutboundShipmentDetailTable { get; }
         public StockTransferTable? StockTransferTable { get; }
         public StockTransferDetailTable? StockTransferDetailTable { get; }
+
+        public string Server { get; set; }
+        public string User { get; set; }
+        public string Password { get; set; }
+        public string DatabaseName { get; set; }
+
+        private string connectionString;
+
+        public Database(string server = "localhost", string user = "root", string password = "1234", string database = "warehouse")
+        {
+            this.Server = server;
+            this.User = user;
+            this.Password = password;
+            this.DatabaseName = database;
+
+            this.connectionString = $"server={this.Server}; user={this.User}; password={this.Password}; database={this.DatabaseName}";
+        }
     }
 }
