@@ -1,6 +1,6 @@
 using MySql.Data.MySqlClient;
 
-namespace MySQLUtility
+namespace WarehouseManager.Data.Utility
 {
     class Procedure
     {
@@ -20,12 +20,10 @@ namespace MySQLUtility
                 connection.Open();
                 MySqlCommand cmd = new MySqlCommand(procedure, connection);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
                 foreach (string parameter in parameters.Keys)
                 {
                     cmd.Parameters.AddWithValue(parameter, parameters[parameter]);
                 }
-
                 return cmd.ExecuteNonQuery();
             }
         }
@@ -42,18 +40,15 @@ namespace MySQLUtility
         public static List<List<object>> ExecuteReader(string connectionString, string procedure, Dictionary<string, object> parameters)
         {
             List<List<object>> rows = new List<List<object>>();
-
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
                 MySqlCommand cmd = new MySqlCommand(procedure, connection);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
                 foreach (string parameter in parameters.Keys)
                 {
                     cmd.Parameters.AddWithValue(parameter, parameters[parameter]);
                 }
-
                 using (MySqlDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
@@ -67,7 +62,6 @@ namespace MySQLUtility
                     }
                 }
             }
-
             return rows;
         }
     }

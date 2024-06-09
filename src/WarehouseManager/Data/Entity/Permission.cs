@@ -1,4 +1,4 @@
-namespace WarehouseManager.Data.Entities
+namespace WarehouseManager.Data.Entity
 {
     class Permission
     {
