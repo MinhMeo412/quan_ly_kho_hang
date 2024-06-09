@@ -19,7 +19,7 @@ CREATE TABLE user(
 );
 
 CREATE TABLE token(
-	token_uuid VARCHAR(36) NOT NULL,
+	token_uuid VARCHAR(36),
 	user_id INT NOT NULL,
 	token_last_activity_timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 	PRIMARY KEY (token_uuid),
