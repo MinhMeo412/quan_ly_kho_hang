@@ -164,15 +164,15 @@ CREATE TABLE outbound_shipment_detail(
 
 CREATE TABLE stock_transfer(
 	stock_transfer_id INT AUTO_INCREMENT,
-	stock_transfer_from_warehouse_id INT NOT NULL,
-	stock_transfer_to_warehouse_id INT NOT NULL,
+	from_warehouse_id INT NOT NULL,
+	to_warehouse_id INT NOT NULL,
 	stock_transfer_starting_date DATETIME DEFAULT CURRENT_TIMESTAMP(),
 	stock_transfer_status ENUM('Processing','Completed') NOT NULL DEFAULT 'Processing',
 	stock_transfer_description TEXT,
 	user_id INT,
 	PRIMARY KEY (stock_transfer_id),
-	FOREIGN KEY (stock_transfer_from_warehouse_id) REFERENCES warehouse(warehouse_id) ON DELETE CASCADE,
-	FOREIGN KEY (stock_transfer_to_warehouse_id) REFERENCES warehouse(warehouse_id) ON DELETE CASCADE,
+	FOREIGN KEY (from_warehouse_id) REFERENCES warehouse(warehouse_id) ON DELETE CASCADE,
+	FOREIGN KEY (to_warehouse_id) REFERENCES warehouse(warehouse_id) ON DELETE CASCADE,
 	FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE SET NULL
 );
 

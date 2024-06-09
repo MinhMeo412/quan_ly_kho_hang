@@ -1,4 +1,4 @@
-namespace WarehouseManager.Data.Entities
+namespace WarehouseManager.Data.Entity
 {
     class Product
     {
@@ -6,6 +6,6 @@ namespace WarehouseManager.Data.Entities
         public string ProductName { get; set; } = "";
         public string? ProductDescription { get; set; }
         public int? ProductPrice { get; set; }
-        public int? ProductCategoryID { get; set; }
+        public int? CategoryID { get; set; }
     }
 }

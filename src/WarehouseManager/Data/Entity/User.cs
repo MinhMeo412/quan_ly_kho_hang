@@ -8,6 +8,6 @@ namespace WarehouseManager.Data.Entity
         public string? UserFullName { get; set; }
         public string? UserEmail { get; set; }
         public string? UserPhoneNumber { get; set; }
-        public int UserPermissionLevel { get; set; }
+        public int PermissionLevel { get; set; }
     }
 }
