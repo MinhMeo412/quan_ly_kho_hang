@@ -4,6 +4,6 @@ namespace WarehouseManager.Data.Table
 {
     class CategoryTable
     {
-        public List<Category>? Categories { get; }
+        public List<Category>? Categories { get; private set;}
     }
 }

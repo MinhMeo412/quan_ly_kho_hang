@@ -4,6 +4,6 @@ namespace WarehouseManager.Data.Table
 {
     class ProductVariantTable
     {
-        public List<ProductVariant>? ProductVariants { get; }
+        public List<ProductVariant>? ProductVariants { get; private set; }
     }
 }

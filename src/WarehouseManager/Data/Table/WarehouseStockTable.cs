@@ -4,6 +4,6 @@ namespace WarehouseManager.Data.Table
 {
     class WarehouseStockTable
     {
-        public List<WarehouseStock>? WarehouseStocks { get; }
+        public List<WarehouseStock>? WarehouseStocks { get; private set; }
     }
 }

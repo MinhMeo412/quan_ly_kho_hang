@@ -4,6 +4,6 @@ namespace WarehouseManager.Data.Table
 {
     class OutboundShipmentTable
     {
-        public List<OutboundShipment>? OutboundShipments { get; }
+        public List<OutboundShipment>? OutboundShipments { get; private set; }
     }
 }
