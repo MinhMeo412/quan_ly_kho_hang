@@ -4,6 +4,6 @@ namespace WarehouseManager.Data.Table
 {
     class PermissionTable
     {
-        private List<Permission>? Permissions { get; set; }
+        public List<Permission>? Permissions { get; }
     }
 }
