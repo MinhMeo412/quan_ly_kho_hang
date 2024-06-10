@@ -4,6 +4,6 @@ namespace WarehouseManager.Data.Table
 {
     class TokenTable
     {
-        public List<Token>? Tokens { get; }
+        public List<Token>? Tokens { get; private set; }
     }
 }

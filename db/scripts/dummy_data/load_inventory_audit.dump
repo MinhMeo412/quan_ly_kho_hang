@@ -1,4 +1,4 @@
-INSERT INTO inventory_audit(inventory_audit_id, inventory_audit_warehouse_id, inventory_audit_user_id, inventory_audit_time) VALUES
+INSERT INTO inventory_audit(inventory_audit_id, warehouse_id, user_id, inventory_audit_time) VALUES
 ('1', '613', '786', '2008-03-05 03:28:05'),
 ('2', '850', '358', '1997-06-18 00:50:45'),
 ('3', '208', '526', '2018-03-31 13:34:49'),

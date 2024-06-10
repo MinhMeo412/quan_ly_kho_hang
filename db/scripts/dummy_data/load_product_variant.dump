@@ -1,4 +1,4 @@
-INSERT INTO product_variant(product_variant_id, product_variant_product_id, product_variant_image_url, product_variant_color, product_variant_size) VALUES
+INSERT INTO product_variant(product_variant_id, product_id, product_variant_image_url, product_variant_color, product_variant_size) VALUES
 ('1', '1', 'https://chen.info//major-image.png', 'DeepSkyBlue', 'M'),
 ('2', '2', 'https://brown.com//ago-image.png', 'PaleVioletRed', 'S'),
 ('3', '3', 'http://www.mcgrath-taylor.com//history-image.png', 'DeepPink', 'One Size'),

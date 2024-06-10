@@ -4,6 +4,6 @@ namespace WarehouseManager.Data.Table
 {
     class InboundShipmentTable
     {
-        public List<InboundShipment>? InboundShipments { get; }
+        public List<InboundShipment>? InboundShipments { get; private set; }
     }
 }

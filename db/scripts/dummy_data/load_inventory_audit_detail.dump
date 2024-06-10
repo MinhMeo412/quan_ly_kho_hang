@@ -1,4 +1,4 @@
-INSERT INTO inventory_audit_detail(inventory_audit_detail_inventory_audit_id, inventory_audit_detail_product_variant_id, inventory_audit_detail_actual_quantity) VALUES
+INSERT INTO inventory_audit_detail(inventory_audit_id, product_variant_id, inventory_audit_detail_actual_quantity) VALUES
 ('665', '1611', '4566'),
 ('232', '2742', '1588'),
 ('553', '1557', '4724'),

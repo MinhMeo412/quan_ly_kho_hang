@@ -1,4 +1,4 @@
-INSERT INTO user(user_id, user_name, user_password, user_full_name, user_email, user_phone_number, user_permission_level) VALUES
+INSERT INTO user(user_id, user_name, user_password, user_full_name, user_email, user_phone_number, permission_level) VALUES
 ('1', 'patrickmoore', 'L)7z7Op_XV', 'Michael Morris', 'brandimartinez@levine.com', '335-473-9629', '2'),
 ('2', 'garciakaren', '8)3EetoYf!', 'Austin Smith', 'melissagarner@leonard-page.net', '4649619969', '0'),
 ('3', 'xhaynes', 'kWJ4%HsNA*', 'Daniel Esparza', 'darrellduke@evans-hutchinson.net', '8355336711', '1'),

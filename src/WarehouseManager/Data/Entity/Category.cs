@@ -1,9 +1,9 @@
 namespace WarehouseManager.Data.Entity
 {
-    class Category
+    class Category(int categoryID, string categoryName, string? categoryDescription)
     {
-        public int CategoryID { get; set; }
-        public string CategoryName { get; set; } = "";
-        public string? CategoryDescription { get; set; }
+        public int CategoryID { get; set; } = categoryID;
+        public string CategoryName { get; set; } = categoryName;
+        public string? CategoryDescription { get; set; } = categoryDescription;
     }
 }

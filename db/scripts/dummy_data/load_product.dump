@@ -1,4 +1,4 @@
-INSERT INTO product(product_id, product_name, product_description, product_price, product_category_id) VALUES
+INSERT INTO product(product_id, product_name, product_description, product_price, category_id) VALUES
 ('1', 'Wallace Ltd', 'Body bag method religious. Debate drive bag. Time wide service case environmental.
 Resource daughter contain economic eye be pattern. His third blue bank stock represent would.Decision night situation own newspaper religious.
 Bill site record us population. Three notice two attack available industry. Mother American total threat challenge listen.', '10485', '204'),

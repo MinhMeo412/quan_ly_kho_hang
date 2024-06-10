@@ -1,9 +1,9 @@
 namespace WarehouseManager.Data.Entity
 {
-    class InboundShipmentDetail
+    class InboundShipmentDetail(int inboundShipmentID, int productVariantID, int inboundShipmentDetailAmount)
     {
-        public int InboundShipmentID { get; set; }
-        public int ProductVariantID { get; set; }
-        public int InboundShipmentDetailAmount { get; set; }
+        public int InboundShipmentID { get; set; } = inboundShipmentID;
+        public int ProductVariantID { get; set; } = productVariantID;
+        public int InboundShipmentDetailAmount { get; set; } = inboundShipmentDetailAmount;
     }
 }

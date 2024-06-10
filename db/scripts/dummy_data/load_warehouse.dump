@@ -1,4 +1,4 @@
-INSERT INTO warehouse(warehouse_id, warehouse_name, warehouse_warehouse_address_id) VALUES
+INSERT INTO warehouse(warehouse_id, warehouse_name, warehouse_address_id) VALUES
 ('1', 'Johnson, Hill and Johnson', '1'),
 ('2', 'Schmidt Group', '2'),
 ('3', 'Ward and Sons', '3'),

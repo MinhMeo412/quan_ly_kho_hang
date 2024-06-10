@@ -4,6 +4,6 @@ namespace WarehouseManager.Data.Table
 {
     class InventoryAuditDetailTable
     {
-        public List<InventoryAuditDetail>? InventoryAuditDetails { get; }
+        public List<InventoryAuditDetail>? InventoryAuditDetails { get; private set; }
     }
 }

@@ -232,13 +232,13 @@ class Row():
         return Faker().color_name()
 
     def generate_permission_level():
-        return Random().randint(0, 2)
+        return Random().randint(0, 4)
 
     def generate_uuid():
         return uuid4()
     
     def generate_shipment_status():
-        statuses = ['Pending', 'Processing', 'Delivering', 'Delivered', 'On Hold', 'Cancelled', 'Returned', 'Refunded']
+        statuses = ['Completed', 'Processing']
         status = Random().choice(statuses)
         return status
 

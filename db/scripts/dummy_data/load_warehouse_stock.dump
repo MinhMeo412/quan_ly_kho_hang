@@ -1,4 +1,4 @@
-INSERT INTO warehouse_stock(warehouse_stock_warehouse_id, warehouse_stock_product_variant_id, warehouse_stock_quantity) VALUES
+INSERT INTO warehouse_stock(warehouse_id, product_variant_id, warehouse_stock_quantity) VALUES
 ('589', '841', '2910'),
 ('610', '650', '3499'),
 ('551', '1329', '1627'),
