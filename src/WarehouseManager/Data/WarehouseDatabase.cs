@@ -1,4 +1,5 @@
 using WarehouseManager.Data.Table;
+using WarehouseManager.Data.Utility;
 
 namespace WarehouseManager.Data
 {
@@ -29,8 +30,9 @@ namespace WarehouseManager.Data
         public string Database { get; set; }
 
         private string connectionString;
+        private string? token;
 
-        public WarehouseDatabase(string server = "localhost", string user = "root", string password = "1234", string database = "warehouse")
+        public WarehouseDatabase(string server = "localhost", string user = "root", string password = "", string database = "warehouse")
         {
             this.Server = server;
             this.User = user;
@@ -38,6 +40,25 @@ namespace WarehouseManager.Data
             this.Database = database;
 
             this.connectionString = $"server={this.Server}; user={this.User}; password={this.Password}; database={this.Database}";
+        }
+
+        public bool Login(string username, string password)
+        {
+            Dictionary<string, object> inParameters = new Dictionary<string, object>{
+                {"inputted_username", username},
+                {"inputted_password", password}
+            };
+            List<string> outParameters = new List<string>
+            {
+                "success",
+                "token"
+            };
+
+            Dictionary<string, object> output = Procedure.ExecuteNonQuery(this.connectionString, "user_login", inParameters, outParameters);
+            this.token = $"{output["token"]}";
+
+            bool loggedIn = int.Parse($"{output["success"]}") == 1;
+            return loggedIn;
         }
     }
 }

@@ -10,9 +10,9 @@ CREATE FUNCTION get_permission_level(token VARCHAR(36))
 RETURNS INT
 DETERMINISTIC
 BEGIN
-    DECLARE permission_level INT;
-    SELECT user_permission_level from user where user_id = (select token_user_id from token where token_uuid = token) into permission_level;
-    RETURN permission_level;
+    DECLARE user_permission_level INT;
+    SELECT permission_level from user where user_id = (select user_id from token where token_uuid = token) into user_permission_level;
+    RETURN user_permission_level;
 END//
 DELIMITER ;
 
@@ -67,7 +67,7 @@ BEGIN
 	SELECT user_id FROM user WHERE user_name = inputted_username LIMIT 1 INTO actual_user_id;
 	
     if inputted_password = actual_password then
-    	INSERT INTO token(token_uuid, token_user_id) VALUES
+    	INSERT INTO token(token_uuid, user_id) VALUES
     	(token_uuid, actual_user_id);
     
     	SET success = TRUE;
