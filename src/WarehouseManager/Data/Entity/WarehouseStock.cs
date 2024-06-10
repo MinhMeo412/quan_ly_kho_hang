@@ -1,9 +1,9 @@
 namespace WarehouseManager.Data.Entity
 {
-    class WarehouseStock
+    class WarehouseStock(int warehouseID, int productVariantID, int warehouseStockQuantity)
     {
-        public int WarehouseID { get; set; }
-        public int ProductVariantID { get; set; }
-        public int WarehouseStockQuantity { get; set; }
+        public int WarehouseID { get; set; } = warehouseID;
+        public int ProductVariantID { get; set; } = productVariantID;
+        public int WarehouseStockQuantity { get; set; } = warehouseStockQuantity;
     }
 }

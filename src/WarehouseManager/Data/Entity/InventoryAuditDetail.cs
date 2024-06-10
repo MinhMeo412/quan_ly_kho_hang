@@ -1,9 +1,9 @@
 namespace WarehouseManager.Data.Entity
 {
-    class InventoryAuditDetail
+    class InventoryAuditDetail(int inventoryAuditID, int productVariantID, int inventoryAuditDetailActualQuantity)
     {
-        public int InventoryAuditID { get; set; }
-        public int ProductVariantID { get; set; }
-        public int InventoryAuditDetailActualQuantity { get; set; }
+        public int InventoryAuditID { get; set; } = inventoryAuditID;
+        public int ProductVariantID { get; set; } = productVariantID;
+        public int InventoryAuditDetailActualQuantity { get; set; } = inventoryAuditDetailActualQuantity;
     }
 }

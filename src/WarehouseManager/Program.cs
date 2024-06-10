@@ -13,6 +13,6 @@ class Program
         string database = "warehouse";
         WarehouseDatabase warehouse = new WarehouseDatabase(server, user, password, database);
 
-        Console.WriteLine(warehouse.Login(username,user_password));
+        Console.WriteLine(warehouse.Login(username, user_password));
     }
 }

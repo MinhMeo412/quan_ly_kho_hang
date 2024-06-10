@@ -1,9 +1,9 @@
 namespace WarehouseManager.Data.Entity
 {
-    class Token
+    class Token(string tokenUUID, int userID, DateTime tokenLastActivityTimeStamp)
     {
-        public string TokenUUID { get; set; } = "";
-        public int UserID { get; set; }
-        public DateTime TokenLastActivityTimeStamp { get; set; }
+        public string TokenUUID { get; set; } = tokenUUID;
+        public int UserID { get; set; } = userID;
+        public DateTime TokenLastActivityTimeStamp { get; set; } = tokenLastActivityTimeStamp;
     }
 }

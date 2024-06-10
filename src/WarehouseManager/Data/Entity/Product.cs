@@ -1,11 +1,11 @@
 namespace WarehouseManager.Data.Entity
 {
-    class Product
+    class Product(int productID, string productName, string? productDescription, int? productPrice, int? categoryID)
     {
-        public int ProductID { get; set; }
-        public string ProductName { get; set; } = "";
-        public string? ProductDescription { get; set; }
-        public int? ProductPrice { get; set; }
-        public int? CategoryID { get; set; }
+        public int ProductID { get; set; } = productID;
+        public string ProductName { get; set; } = productName;
+        public string? ProductDescription { get; set; } = productDescription;
+        public int? ProductPrice { get; set; } = productPrice;
+        public int? CategoryID { get; set; } = categoryID;
     }
 }

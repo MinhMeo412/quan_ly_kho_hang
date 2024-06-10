@@ -1,9 +1,9 @@
 namespace WarehouseManager.Data.Entity
 {
-    class Permission
+    class Permission(int permissionLevel, string? permissionName, string? permissionDescription)
     {
-        public int PermissionLevel { get; set; }
-        public string? PermissionName { get; set; }
-        public string? PermissionDescription { get; set; }
+        public int PermissionLevel { get; set; } = permissionLevel;
+        public string? PermissionName { get; set; } = permissionName;
+        public string? PermissionDescription { get; set; } = permissionDescription;
     }
 }

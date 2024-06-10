@@ -5,24 +5,24 @@ namespace WarehouseManager.Data
 {
     class WarehouseDatabase
     {
-        public PermissionTable? PermissionTable { get; }
-        public UserTable? UserTable { get; }
-        public TokenTable? TokenTable { get; }
-        public SupplierTable? SupplierTable { get; }
-        public CategoryTable? CategoryTable { get; }
-        public ProductTable? ProductTable { get; }
-        public ProductVariantTable? ProductVariantTable { get; }
-        public WarehouseAddressTable? WarehouseAddressTable { get; }
-        public WarehouseTable? WarehouseTable { get; }
-        public WarehouseStockTable? WarehouseStockTable { get; }
-        public InventoryAuditTable? InventoryAuditTable { get; }
-        public InventoryAuditDetailTable? InventoryAuditDetailTable { get; }
-        public InboundShipmentTable? InboundShipmentTable { get; }
-        public InboundShipmentDetailTable? InboundShipmentDetailTable { get; }
-        public OutboundShipmentTable? OutboundShipmentTable { get; }
-        public OutboundShipmentDetailTable? OutboundShipmentDetailTable { get; }
-        public StockTransferTable? StockTransferTable { get; }
-        public StockTransferDetailTable? StockTransferDetailTable { get; }
+        private PermissionTable? PermissionTable { get; }
+        private UserTable? UserTable { get; }
+        private TokenTable? TokenTable { get; }
+        private SupplierTable? SupplierTable { get; }
+        private CategoryTable? CategoryTable { get; }
+        private ProductTable? ProductTable { get; }
+        private ProductVariantTable? ProductVariantTable { get; }
+        private WarehouseAddressTable? WarehouseAddressTable { get; }
+        private WarehouseTable? WarehouseTable { get; }
+        private WarehouseStockTable? WarehouseStockTable { get; }
+        private InventoryAuditTable? InventoryAuditTable { get; }
+        private InventoryAuditDetailTable? InventoryAuditDetailTable { get; }
+        private InboundShipmentTable? InboundShipmentTable { get; }
+        private InboundShipmentDetailTable? InboundShipmentDetailTable { get; }
+        private OutboundShipmentTable? OutboundShipmentTable { get; }
+        private OutboundShipmentDetailTable? OutboundShipmentDetailTable { get; }
+        private StockTransferTable? StockTransferTable { get; }
+        private StockTransferDetailTable? StockTransferDetailTable { get; }
 
         public string Server { get; set; }
         public string User { get; set; }
