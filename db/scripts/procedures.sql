@@ -56,20 +56,21 @@ BEGIN
 	DECLARE token_uuid VARCHAR(36);
 	DECLARE actual_password VARCHAR(128);
 	DECLARE actual_user_id INT;
-
-	SELECT UUID() INTO token_uuid;
-	SELECT user_password FROM user WHERE user_name = inputted_username LIMIT 1 INTO actual_password;
-	SELECT user_id FROM user WHERE user_name = inputted_username LIMIT 1 INTO actual_user_id;
-	
-    IF inputted_password = actual_password THEN
-    	INSERT INTO token(token_uuid, user_id) VALUES
-    	(token_uuid, actual_user_id);
     
-    	SET success = TRUE;
- 		SET token = token_uuid;
-    ELSE
-        SET success = FALSE;
-        SET token = NULL;
+    SET success = FALSE;
+    SET token = NULL;
+    
+    SELECT user_password, user_id INTO actual_password, actual_user_id
+    FROM user WHERE user_name = inputted_usename LIMIT 1;
+    
+    IF actual_user_id IS NOT NULL THEN
+		IF inputted_password = actual_password THEN
+			SELECT UUID() INTO token_uuid;
+            INSERT INTO token(token_uuid, user_id) VALUES (token_uuid, actutal_user_id);
+            
+            SET success = TRUE;
+            SET token = token_uuid;
+		END IF;
     END IF;
 END //
 
