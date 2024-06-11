@@ -96,7 +96,18 @@ signal sqlstate '45000' set message_text='Insufficient permission.';
 end if ;
 end//
 
-
+create procedure delete_inventory_audit_detail (in input_token VARCHAR(36),in target_product_id int)
+begin 
+declare required_level	int default 1;
+if sufficient_permission(input_token, required_level) then
+delete from inventory_audit_detail    where inventory_audit_id = target_audit_id  and product_variant_id = target_variant_id;
+if ROW_COUNT() = 0 then 
+signal sqlstate '45000' set message_text='Inventory audit detail not found.';
+end if;
+else 
+signal sqlstate '45000' set message_text='Insufficient permission.';
+end if ;
+end//
 
 create procedure delete_inbound_shipment (in input_token VARCHAR(36),in target_product_id int)
 begin 
@@ -104,13 +115,26 @@ declare required_level	int default 1;
 if sufficient_permission(input_token, required_level) then
 delete from inbound_shipment   where inbound_shipment_id  = target_shipment_id;
 if ROW_COUNT() = 0 then 
-signal sqlstate '45000' set message_text='Warehouse not found.';
+signal sqlstate '45000' set message_text='Inbound shipment not found.';
 end if;
 else 
 signal sqlstate '45000' set message_text='Insufficient permission.';
 end if ;
 end//
 
+
+create procedure delete_inbound_shipment_detail (in input_token VARCHAR(36),in target_product_id int)
+begin 
+declare required_level	int default 1;
+if sufficient_permission(input_token, required_level) then
+delete from inbound_shipment_detail    where inbound_shipment_id  = target_shipment_id and product_variant_id = target_variant_id;
+if ROW_COUNT() = 0 then 
+signal sqlstate '45000' set message_text='Inbound shipment detail not found.';
+end if;
+else 
+signal sqlstate '45000' set message_text='Insufficient permission.';
+end if ;
+end//
 
 create procedure delete_outbound_shipment (in input_token VARCHAR(36),in target_product_id int)
 begin 
@@ -118,12 +142,26 @@ declare required_level	int default 1;
 if sufficient_permission(input_token, required_level) then
 delete from outbound_shipment    where outbound_shipment_id  = target_shipment_id;
 if ROW_COUNT() = 0 then 
-signal sqlstate '45000' set message_text='Warehouse not found.';
+signal sqlstate '45000' set message_text='Outbound shipment not found.';
 end if;
 else 
 signal sqlstate '45000' set message_text='Insufficient permission.';
 end if ;
 end//
+
+create procedure delete_outbound_shipment_detail (in input_token VARCHAR(36),in target_product_id int)
+begin 
+declare required_level	int default 1;
+if sufficient_permission(input_token, required_level) then
+delete from outbound_shipment_detail     where outbound_shipment_id   = target_shipment_id and product_variant_id = target_variant_id;
+if ROW_COUNT() = 0 then 
+signal sqlstate '45000' set message_text='Outbound shipment detail not found.';
+end if;
+else 
+signal sqlstate '45000' set message_text='Insufficient permission.';
+end if ;
+end//
+
 
 create procedure delete_stock_transfer (in input_token VARCHAR(36),in target_product_id int)
 begin 
@@ -131,12 +169,27 @@ declare required_level	int default 1;
 if sufficient_permission(input_token, required_level) then
 delete from stock_transfer   where stock_transfer_id   = target_transfer_id;
 if ROW_COUNT() = 0 then 
-signal sqlstate '45000' set message_text='Warehouse not found.';
+signal sqlstate '45000' set message_text='Stock transfer not found.';
 end if;
 else 
 signal sqlstate '45000' set message_text='Insufficient permission.';
 end if ;
 end//
+
+
+create procedure delete_stock_transfer_detail (in input_token VARCHAR(36),in target_product_id int)
+begin 
+declare required_level	int default 1;
+if sufficient_permission(input_token, required_level) then
+delete from stock_transfer   where stock_transfer_id   = target_transfer_id and product_variant_id = target_variant_id;
+if ROW_COUNT() = 0 then 
+signal sqlstate '45000' set message_text='Stock transfer detail not found.';
+end if;
+else 
+signal sqlstate '45000' set message_text='Insufficient permission.';
+end if ;
+end//
+
 
 DELIMITER ;
 
