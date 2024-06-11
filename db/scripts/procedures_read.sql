@@ -56,24 +56,25 @@ BEGIN
 	DECLARE token_uuid VARCHAR(36);
 	DECLARE actual_password VARCHAR(128);
 	DECLARE actual_user_id INT;
-
-	SELECT UUID() INTO token_uuid;
-	SELECT user_password FROM user WHERE user_name = inputted_username LIMIT 1 INTO actual_password;
-	SELECT user_id FROM user WHERE user_name = inputted_username LIMIT 1 INTO actual_user_id;
-	
-    IF inputted_password = actual_password THEN
-    	INSERT INTO token(token_uuid, user_id) VALUES
-    	(token_uuid, actual_user_id);
     
-    	SET success = TRUE;
- 		SET token = token_uuid;
-    ELSE
-        SET success = FALSE;
-        SET token = NULL;
+    SET success = FALSE;
+    SET token = NULL;
+    
+    SELECT user_password, user_id INTO actual_password, actual_user_id
+    FROM user WHERE user_name = inputted_usename LIMIT 1;
+    
+    IF actual_user_id IS NOT NULL THEN
+		IF inputted_password = actual_password THEN
+			SELECT UUID() INTO token_uuid;
+            INSERT INTO token(token_uuid, user_id) VALUES (token_uuid, actutal_user_id);
+            
+            SET success = TRUE;
+            SET token = token_uuid;
+		END IF;
     END IF;
 END //
 
-
+-- Có thể đọc/xem danh sách các permission level nhưng không cần thiết (có thể giữ hoặc bỏ)
 CREATE PROCEDURE read_permission(IN input_token VARCHAR(36))
 BEGIN
     DECLARE required_level INT DEFAULT 0;
@@ -84,6 +85,7 @@ BEGIN
     END IF;
 END //
 
+-- Không thể tạo thêm permission level qua các user (chỉ có thể tạo qua sửa CSDL trực tiếp) và không cần thiết (bỏ procedure này)
 CREATE PROCEDURE create_permission(IN input_token VARCHAR(36),IN input_permission_level INT, IN input_permission_name VARCHAR(32), IN input_permission_description TEXT)
 BEGIN
     DECLARE required_level INT DEFAULT 0;
@@ -95,6 +97,7 @@ BEGIN
     END IF;
 END //
 
+-- Tương tự create_permission (bỏ procedure này)
 CREATE PROCEDURE update_permission(IN input_token VARCHAR(36),IN input_permission_level INT, IN input_permission_name VARCHAR(32), IN input_permission_description TEXT)
 BEGIN
     DECLARE required_level INT DEFAULT 0;
@@ -107,6 +110,7 @@ BEGIN
     END IF;
 END //
 
+-- Tương tự create_permission (bỏ procedure này)
 CREATE PROCEDURE delete_permission(IN input_token VARCHAR(36), IN input_permission_level INT)
 BEGIN
     DECLARE required_level INT DEFAULT 0;
@@ -118,9 +122,10 @@ BEGIN
     END IF;
 END //
 
+-- Xem danh sách user có bao gồm (0,1,2)
 CREATE PROCEDURE read_user(IN input_token VARCHAR(36))
 BEGIN
-    DECLARE required_level INT DEFAULT 0;
+    DECLARE required_level INT DEFAULT 2; -- Sửa level truy cập thành 2
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM user;
     ELSE
@@ -128,6 +133,7 @@ BEGIN
     END IF;
 END //
 
+-- Không user nào nên có quyền truy cập để xem user token (bỏ procedure này)
 CREATE PROCEDURE read_token(IN input_token VARCHAR(36))
 BEGIN
     DECLARE required_level INT DEFAULT 0;
@@ -138,9 +144,10 @@ BEGIN
     END IF;
 END //
 
+
 CREATE PROCEDURE read_supplier(IN input_token VARCHAR(36))
 BEGIN
-    DECLARE required_level INT DEFAULT 0;
+    DECLARE required_level INT DEFAULT 4;
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM supplier;
     ELSE
@@ -150,7 +157,7 @@ END //
 
 CREATE PROCEDURE read_category(IN input_token VARCHAR(36))
 BEGIN
-    DECLARE required_level INT DEFAULT 0;
+    DECLARE required_level INT DEFAULT 4;
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM category;
     ELSE
@@ -160,7 +167,7 @@ END //
 
 CREATE PROCEDURE read_product(IN input_token VARCHAR(36))
 BEGIN
-    DECLARE required_level INT DEFAULT 0;
+    DECLARE required_level INT DEFAULT 4;
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM product;
     ELSE
@@ -170,7 +177,7 @@ END //
 
 CREATE PROCEDURE read_product_variant(IN input_token VARCHAR(36))
 BEGIN
-    DECLARE required_level INT DEFAULT 0;
+    DECLARE required_level INT DEFAULT 4;
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM product_variant;
     ELSE
@@ -180,7 +187,7 @@ END //
 
 CREATE PROCEDURE read_warehouse_address(IN input_token VARCHAR(36))
 BEGIN
-    DECLARE required_level INT DEFAULT 0;
+    DECLARE required_level INT DEFAULT 4;
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM warehouse_address;
     ELSE
@@ -190,7 +197,7 @@ END //
 
 CREATE PROCEDURE read_warehouse(IN input_token VARCHAR(36))
 BEGIN
-    DECLARE required_level INT DEFAULT 0;
+    DECLARE required_level INT DEFAULT 4;
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM warehouse;
     ELSE
@@ -200,7 +207,7 @@ END //
 
 CREATE PROCEDURE read_warehouse_stock(IN input_token VARCHAR(36))
 BEGIN
-    DECLARE required_level INT DEFAULT 0;
+    DECLARE required_level INT DEFAULT 4;
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM warehouse_stock;
     ELSE
@@ -210,7 +217,7 @@ END //
 
 CREATE PROCEDURE read_inventory_audit(IN input_token VARCHAR(36))
 BEGIN
-    DECLARE required_level INT DEFAULT 0;
+    DECLARE required_level INT DEFAULT 4;
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM inventory_audit;
     ELSE
@@ -220,7 +227,7 @@ END //
 
 CREATE PROCEDURE read_inventory_audit_detail(IN input_token VARCHAR(36))
 BEGIN
-    DECLARE required_level INT DEFAULT 0;
+    DECLARE required_level INT DEFAULT 4;
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM inventory_audit_detail;
     ELSE
@@ -230,7 +237,7 @@ END //
 
 CREATE PROCEDURE read_inbound_shipment(IN input_token VARCHAR(36))
 BEGIN
-    DECLARE required_level INT DEFAULT 0;
+    DECLARE required_level INT DEFAULT 4;
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM inbound_shipment;
     ELSE
@@ -240,7 +247,7 @@ END //
 
 CREATE PROCEDURE read_inbound_shipment_detail(IN input_token VARCHAR(36))
 BEGIN
-    DECLARE required_level INT DEFAULT 0;
+    DECLARE required_level INT DEFAULT 4;
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM inbound_shipment_detail;
     ELSE
@@ -250,7 +257,7 @@ END //
 
 CREATE PROCEDURE read_outbound_shipment(IN input_token VARCHAR(36))
 BEGIN
-    DECLARE required_level INT DEFAULT 0;
+    DECLARE required_level INT DEFAULT 4;
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM outbound_shipment;
     ELSE
@@ -260,7 +267,7 @@ END //
 
 CREATE PROCEDURE read_outbound_shipment_detail(IN input_token VARCHAR(36))
 BEGIN
-    DECLARE required_level INT DEFAULT 0;
+    DECLARE required_level INT DEFAULT 4;
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM outbound_shipment_detail;
     ELSE
@@ -270,7 +277,7 @@ END //
 
 CREATE PROCEDURE read_stock_transfer(IN input_token VARCHAR(36))
 BEGIN
-    DECLARE required_level INT DEFAULT 0;
+    DECLARE required_level INT DEFAULT 4;
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM stock_transfer;
     ELSE
@@ -280,68 +287,11 @@ END //
 
 CREATE PROCEDURE read_stock_transfer_detail(IN input_token VARCHAR(36))
 BEGIN
-    DECLARE required_level INT DEFAULT 0;
+    DECLARE required_level INT DEFAULT 4;
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM stock_transfer_detail;
     ELSE
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Insufficient permission.';
     END IF;
 END //
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 DELIMITER ;
