@@ -1,4 +1,4 @@
-using System;
+ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -63,6 +63,28 @@ namespace WarehouseManager.Data.Table
             Procedure.ExecuteNonQuery(connectionString, "update_supplier", inParameters);
 
             var permission=this.Permissions?.FirstOrDefault(p => p.PermissionLevel == permissionLevel);
+
+            if (permission != null)
+            {
+                permission.PermissionName = permissionName;
+                permission.PermissionDescription = permissionDescription;
+            }
+        }
+
+        public void Delete(string connectionString, string token, int permissionLevel)
+        {
+            Dictionary<string,object>? inParameters = new Dictionary<string, object>{
+                {"input_token", token},
+                {"input_permission_level", permissionLevel}
+            };
+            Procedure.ExecuteNonQuery(connectionString, "delete_supplier", inParameters);
+
+            var permission = this.Permissions?.FirstOrDefault(p => p.PermissionLevel == permissionLevel);
+            if (permission != null)
+            {
+                this.Permissions ??= new List<Permission>();
+                this.Permissions.Remove(permission);
+            }
         }
     }
 }
