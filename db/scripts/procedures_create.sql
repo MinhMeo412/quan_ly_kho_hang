@@ -151,71 +151,34 @@ BEGIN
 END //
 DELIMITER ;
 
-/*
- * Check if warehouse address already exists
- */
-DELIMITER //
-CREATE PROCEDURE get_or_create_warehouse_address_id(
-    IN new_warehouse_address_address VARCHAR(128),
-    IN new_warehouse_address_district VARCHAR(64),
-    IN new_warehouse_address_postal_code VARCHAR(16),
-    IN new_warehouse_address_city VARCHAR(32),
-    IN new_warehouse_address_country VARCHAR(64),
-    OUT new_warehouse_address_id INT
-)
-BEGIN
-    DECLARE address_exists INT;
-
-    SELECT COUNT(*) INTO address_exists
-    FROM warehouse_address
-    WHERE warehouse_address_address = new_warehouse_address_address
-    AND warehouse_address_district = new_warehouse_address_district
-    AND warehouse_address_postal_code = new_warehouse_address_postal_code
-    AND warehouse_address_city = new_warehouse_address_city
-    AND warehouse_address_country = new_warehouse_address_country;
-
-    IF address_exists > 0 THEN
-        SELECT warehouse_address_id INTO new_warehouse_address_id
-        FROM warehouse_address
-        WHERE warehouse_address_address = new_warehouse_address_address
-        AND warehouse_address_district = new_warehouse_address_district
-        AND warehouse_address_postal_code = new_warehouse_address_postal_code
-        AND warehouse_address_city = new_warehouse_address_city
-        AND warehouse_address_country = new_warehouse_address_country;
-    ELSE
-        INSERT INTO warehouse_address (warehouse_address_address, warehouse_address_district, warehouse_address_postal_code, warehouse_address_city, warehouse_address_country)
-        VALUES (new_warehouse_address_address, new_warehouse_address_district, new_warehouse_address_postal_code, new_warehouse_address_city, new_warehouse_address_country);
-        SET new_warehouse_address_id = LAST_INSERT_ID();
-    END IF;
-END //
-DELIMITER ;
-
 
 DELIMITER //
 CREATE PROCEDURE create_warehouse(
     IN input_token VARCHAR(36),
     IN new_warehouse_name VARCHAR(32),
-    IN new_warehouse_address_address VARCHAR(128),
-    IN new_warehouse_address_district VARCHAR(64),
-    IN new_warehouse_address_postal_code VARCHAR(16),
-    IN new_warehouse_address_city VARCHAR(32),
-    IN new_warehouse_address_country VARCHAR(64)
+    IN new_warehouse_address_id INT
 )
 BEGIN
     DECLARE required_level INT DEFAULT 1;
-    DECLARE warehouse_address_id INT;
+    DECLARE address_exists INT;
+
+    SELECT COUNT(*)
+    INTO address_exists
+    FROM warehouse_address
+    WHERE warehouse_address_id = new_warehouse_address_id;
 
     IF sufficient_permission(input_token, required_level) THEN
-        CALL get_or_create_warehouse_address_id(new_warehouse_address_address, new_warehouse_address_district, new_warehouse_address_postal_code, new_warehouse_address_city, new_warehouse_address_country, warehouse_address_id);
-
-        INSERT INTO warehouse (warehouse_name, warehouse_address_id)
-        VALUES (new_warehouse_name, warehouse_address_id);
+        IF address_exists > 0 THEN
+            INSERT INTO warehouse (warehouse_name, warehouse_address_id)
+            VALUES (new_warehouse_name, new_warehouse_address_id);
+        ELSE
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Warehouse address ID does not exist.';
+        END IF;
     ELSE
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Insufficient permission.';
     END IF;
 END //
 DELIMITER ;
-
 
 
 DELIMITER //
