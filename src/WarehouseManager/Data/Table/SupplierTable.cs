@@ -1,11 +1,4 @@
- using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WarehouseManager.Data.Entity;
-using System.Data.SqlClient;
-using System.Data;
 
 namespace WarehouseManager.Data.Table
 {
