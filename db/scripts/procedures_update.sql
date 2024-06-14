@@ -55,7 +55,6 @@ BEGIN
     IF current_permission_level > required_level THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Insufficient permission to update supplier information.';
     ELSE
-        -- Cập nhật thông tin nhà cung cấp
         UPDATE supplier
         SET supplier_name = new_supplier_name,
             supplier_description = new_supplier_description,
@@ -218,9 +217,7 @@ BEGIN
     DECLARE current_permission_level INT;
     DECLARE warehouse_exists INT;
     DECLARE product_variant_exists INT;
-    DECLARE stock_exists INT;
 
-    -- Check user permission level
     SET current_permission_level = get_permission_level(input_token);
 
     IF current_permission_level > required_level THEN
@@ -239,18 +236,9 @@ BEGIN
         ELSEIF product_variant_exists = 0 THEN
             SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Product variant does not exist.';
         ELSE
-            SELECT COUNT(*) INTO stock_exists
-            FROM warehouse_stock
-            WHERE warehouse_id = warehouse_id AND product_variant_id = product_variant_id;
-
-            IF stock_exists > 0 THEN
-                UPDATE warehouse_stock
-                SET warehouse_stock_quantity = warehouse_stock_quantity + new_warehouse_stock_quantity
-                WHERE warehouse_id = warehouse_id AND product_variant_id = product_variant_id;
-            ELSE
-                INSERT INTO warehouse_stock (warehouse_id, product_variant_id, warehouse_stock_quantity)
-                VALUES (warehouse_id, product_variant_id, new_warehouse_stock_quantity);
-            END IF;
+			UPDATE warehouse_stock
+			SET warehouse_stock_quantity = warehouse_stock_quantity + new_warehouse_stock_quantity
+			WHERE warehouse_id = warehouse_id AND product_variant_id = product_variant_id;
         END IF;
     END IF;
 END //

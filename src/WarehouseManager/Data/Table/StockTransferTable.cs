@@ -48,5 +48,49 @@ namespace WarehouseManager.Data.Table
             this.StockTransfers ??= new List<StockTransfer>();
             this.StockTransfers.Add(stockTransfer);
         }
+
+        public void Update(string connectionString, string token, int stockTransferID, int fromWarehouseID, int toWarehouseID, DateTime? stockTransferStartingDate, string stockTransferStatus, string? stockTransferDescription, int? userID)
+        {
+            Dictionary<string, object>? inParameters = new Dictionary<string, object>
+            {
+                {"input_token", token},
+                {"stock_transfer_id", stockTransferID},
+                {"new_from_warehouse_id", fromWarehouseID},
+                {"new_to_warehouse_id", toWarehouseID},
+                {"new_stock_transfer_starting_date", stockTransferStartingDate},
+                {"new_stock_transfer_status", stockTransferStatus},
+                {"new_stock_transfer_description", stockTransferDescription},
+                {"new_user_id", userID}
+            };
+            Procedure.ExecuteNonQuery(connectionString, "update_stock_transfer", inParameters);
+
+            var stockTransfer = this.StockTransfers?.FirstOrDefault(temp => temp.StockTransferID == stockTransferID);
+            if (stockTransfer != null)
+            {
+                stockTransfer.FromWarehouseID = fromWarehouseID;
+                stockTransfer.ToWarehouseID = toWarehouseID;
+                stockTransfer.StockTransferStartingDate = stockTransferStartingDate;
+                stockTransfer.StockTransferStatus = stockTransferStatus;
+                stockTransfer.StockTransferDescription = stockTransferDescription;
+                stockTransfer.UserID = userID;
+            }
+        }
+
+        public void Delete(string connectionString, string token, int stockTransferID)
+        {
+            Dictionary<string, object>? inParameters = new Dictionary<string, object>
+            {
+                {"input_token", token},
+                {"target_transfer_id", stockTransferID}
+            };
+            Procedure.ExecuteNonQuery(connectionString, "delete_stock_transfer", inParameters);
+
+            var stockTransfer = this.StockTransfers?.FirstOrDefault(temp => temp.StockTransferID == stockTransferID);
+            if (stockTransfer != null)
+            {
+                this.StockTransfers ??= new List<StockTransfer>();
+                this.StockTransfers.Remove(stockTransfer);
+            }
+        }
     }
 }

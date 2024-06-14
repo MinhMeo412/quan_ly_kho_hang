@@ -38,4 +38,41 @@ namespace WarehouseManager.Data.Table
             this.Warehouses ??= new List<Warehouse>();
             this.Warehouses.Add(warehouse);
         }
+
+        public void Update(string connectionString, string token, int warehouseID, string warehouseName, int warehouseAddressID)
+        {
+            Dictionary<string, object>? inParameters = new Dictionary<string, object>
+            {
+                {"input_token", token},
+                {"warehouse_id",warehouseID},
+                {"new_warehouse_name", warehouseName},
+                {"new_warehouse_address_id", warehouseAddressID}
+            };
+            Procedure.ExecuteNonQuery(connectionString, "update_warehouse", inParameters);
+
+            var warehouse = this.Warehouses?.FirstOrDefault(temp => temp.WarehouseID == warehouseID)
+            if (warehouse != null)
+            {
+                warehouse.WarehouseName = warehouseName;
+                warehouse.WarehouseAddressID = warehouseAddressID;
+            }
+        }
+
+        public void Delete(string connectionString, string token, int warehouseID)
+        {
+            Dictionary<string, object>? inParameters = new Dictionary<string, object>
+            {
+                {"input_token", token},
+                {"target_warehouse_id",warehouseID}
+            };
+            Procedure.ExecuteNonQuery(connectionString, "delete_warehouse", inParameters);
+
+            var warehouse = this.Warehouses?.FirstOrDefault(temp => temp.WarehouseID == warehouseID)
+            if (warehouse != null)
+            {
+                this.Warehouses ??= new List<Warehouse>();
+                this.Warehouses.Remove(warehouse);
+            }
+        }
+    }
 }

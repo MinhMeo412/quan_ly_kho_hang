@@ -49,6 +49,46 @@ namespace WarehouseManager.Data.Table
             this.WarehouseAddresses.Add(warehouseAddress);
         }
 
+        public void Update(string connectionString, string token, int warehouseAddressID, string warehouseAddressAddress, string warehouseAddressDistrict, string warehouseAddressPostalCode, string warehouseAddressCity, string warehouseAddressCountry)
+        {
+            Dictionary<string, object>? inParameters = new Dictionary<string, object>
+            {
+                {"input_token", token},
+                {"warehouse_address_id",warehouseAddressID},
+                {"new_warehouse_address_address", warehouseAddressAddress},
+                {"new_warehouse_address_district", warehouseAddressDistrict},
+                {"new_warehouse_address_postal_code", warehouseAddressPostalCode},
+                {"new_warehouse_address_city", warehouseAddressCity},
+                {"new_warehouse_address_country", warehouseAddressCountry}
+            };
+            Procedure.ExecuteNonQuery(connectionString, "update_warehouse_address", inParameters);
+
+            var warehouseAddress = this.WarehouseAddresses?.FirstOrDefault(temp => temp.WarehouseAddressID == warehouseAddressID);
+            if (warehouseAddress != null)
+            {
+                warehouseAddress.WarehouseAddressAddress = warehouseAddressAddress;
+                warehouseAddress.WarehouseAddressDistrict = warehouseAddressDistrict;
+                warehouseAddress.WarehouseAddressPostalCode = warehouseAddressPostalCode;
+                warehouseAddress.WarehouseAddressCity = warehouseAddressCity;
+                warehouseAddress.WarehouseAddressCountry = warehouseAddressCountry;
+            }
+        }
         
+        public void Delete(string connectionString, string token, int warehouseAddressID)
+        {
+            Dictionary<string, object>? inParameters = new Dictionary<string, object>
+            {
+                {"input_token", token},
+                {"target_address_id", warehouseAddressID}
+            };
+            Procedure.ExecuteNonQuery(connectionString, "delete_warehouse_address", inParameters);
+
+            var warehouseAddress = this.WarehouseAddresses?.FirstOrDefault(temp => temp.WarehouseAddressID == warehouseAddressID);
+            if (warehouseAddress != null)
+            {
+                this.WarehouseAddresses ??= new List<WarehouseAddress>();
+                this.WarehouseAddresses.Remove(warehouseAddress);
+            } 
+        }
     }
 }

@@ -43,5 +43,41 @@ namespace WarehouseManager.Data.Table
             this.StockTransferDetails ??= new List<StockTransferDetail>();
             this.StockTransferDetails.Add(stockTransferDetail);
         }
+
+        public void Update(string connectionString, string token, int stockTransferID, int productVariantID, int stockTransferDetailAmount)
+        {
+            Dictionary<string, object>? inParameters = new Dictionary<string, object>
+            {
+                {"input_token", token},
+                {"stock_transfer_id", stockTransferID},
+                {"product_variant_id", productVariantID},
+                {"new_stock_transfer_detail_amount", stockTransferDetailAmount}
+            };
+            Procedure.ExecuteNonQuery(connectionString, "update_stock_transfer_detail", inParameters);
+
+            var stockTransferDetail = this.StockTransferDetails?.FirstOrDefault(temp => temp.stockTransferID == stockTransferID && temp.ProductVariantID == productVariantID);
+            if (stockTransferDetail != null)
+            {
+                stockTransferDetail.StockTransferDetailAmount = stockTransferDetailAmount;
+            }
+        }
+
+        public void Delete(string connectionString, string token, int stockTransferID, int productVariantID)
+        {
+            Dictionary<string, object>? inParameters = new Dictionary<string, object>
+            {
+                {"input_token", token},
+                {"target_transfer_id", stockTransferID},
+                {"target_variant_id", productVariantID}
+            };
+            Procedure.ExecuteNonQuery(connectionString, "delete_stock_transfer_detail", inParameters);
+
+            var stockTransferDetail = this.StockTransferDetails?.FirstOrDefault(temp => temp.stockTransferID == stockTransferID && temp.ProductVariantID == productVariantID);
+            if (stockTransferDetail != null)
+            {
+                this.StockTransferDetails ??= new List<StockTransferDetail>();
+                this.StockTransferDetails.Remove(stockTransferDetail);
+            }
+        }
     }
 }
