@@ -13,70 +13,81 @@ namespace WarehouseManager.Data.Table
                 {"input_token",token }
             };
 
-            List<List<object>> rawPermissions = Procedure.ExecuteReader(connectionString, "read_permission", inParameters);
+            List<List<object>> rawSuppliers = Procedure.ExecuteReader(connectionString, "read_supplier", inParameters);
 
-            List<Permission> permissions = new List<Permission>();
-            foreach(List<object> rawPermission in rawPermissions)
+            List<Supplier> suppliers = new List<Supplier>();
+            foreach(List<object> rawSupplier in rawSuppliers)
             {
-                Permission permission=new Permission((int)rawPermission[0], (string)rawPermission[1], (string)rawPermission[2]);
-                permissions.Add(permission);
+                Supplier supplier = new Supplier((int)supplierID[0], (string)supplierName[1], (string)supplierDescription[2], (string)supplierAddress[3], (string)supplierEmail[4], (string)supplierPhoneNumber[5], (string)supplierWebsite[6]);
+                suppliers.Add(supplier);
             }
             this.Add(permission);
         }
 
-        public void add(string connectionString, string token, int permissionLevel, string permissionName, string permissionDescription)
+        public void Add(string connectionString, string token, int supplierID, string supplierName, string? supplierDescription, string? supplierAddress, string? supplierEmail, string? supplierPhoneNumber, string? supplierWebsite)
         {
             Dictionary<string, object>? inParameters = new Dictionary<string, object>
             {
                 {"input_token", token},
-                {"input_permission_level", permissionLevel},
-                {"input_permission_name", permissionName},
-                {"input_permission_description", permissionDescription}
+                {"new_supplier_name", supplierName},
+                {"new_supplier_description", supplierDescription},
+                {"new_supplier_address", permissionDescription},
+                {"new_supplier_email", supplierEmail},
+                {"new_supplier_phone_number", supplierPhoneNumber},
+                {"new_supplier_website", supplierWebsite}
             };
 
             Procedure.ExecuteNonQuery(connectionString, "create_supplier", inParameters);
 
-            Permission permission = new Permission(permissionLevel, permissionName, permissionDescription);
+            Supplier supplier = new Supplier(supplierName, supplierDescription, permissionDescription, supplierEmail, supplierPhoneNumber, supplierWebsite);
 
 
-            this.Permissions ??= new List<Permission>();
-            this.Permissions.Add(permission);
+            this.Suppliers ??= new List<Supplier>();
+            this.Suppliers.Add(supplier);
         }
         
-        public void Update(string connectionString, string token, int permissionLevel, string permissionName, string permissionDescription)
+        public void Update(string connectionString, string token, int supplierID, string supplierName, string? supplierDescription, string? supplierAddress, string? supplierEmail, string? supplierPhoneNumber, string? supplierWebsite)
         {
             Dictionary<string, object>? inParameters = new Dictionary<string, object>
             {
                 {"input_token", token},
-                {"input_permission_level", permissionLevel},
-                {"input_permission_name", permissionName},
-                {"input_permission_description", permissionDescription}
+                {"new_supplier_name", supplierName},
+                {"new_supplier_description", supplierDescription},
+                {"new_supplier_address", supplierAddress},
+                {"new_supplier_email", supplierEmail},
+                {"new_supplier_phone_number", supplierPhoneNumber},
+                {"new_supplier_website", supplierWebsite}
             };
 
             Procedure.ExecuteNonQuery(connectionString, "update_supplier", inParameters);
 
-            var permission=this.Permissions?.FirstOrDefault(p => p.PermissionLevel == permissionLevel);
+            var supplier=this.Suppliers?.FirstOrDefault(s => s.SupplierID == supplierID);
 
-            if (permission != null)
+            if (supplier != null)
             {
-                permission.PermissionName = permissionName;
-                permission.PermissionDescription = permissionDescription;
+                supplier.SupplierName = supplierName;
+                supplier.SupplierDescription = supplierDescription;
+                supplier.SupplierAddress = supplierName;
+                supplier.SupplierEmail = supplierEmail;
+                supplier.SupplierPhoneNumber = supplierPhoneNumber;
+                supplier.SupplierWebsite = supplierWebsite;
             }
         }
 
-        public void Delete(string connectionString, string token, int permissionLevel)
+        public void Delete(string connectionString, string token, int supplierID)
         {
-            Dictionary<string,object>? inParameters = new Dictionary<string, object>{
+            Dictionary<string, object>? inParameters = new Dictionary<string, object>
+            {
                 {"input_token", token},
-                {"input_permission_level", permissionLevel}
+                {"target_supplier_id", supplierID},
             };
             Procedure.ExecuteNonQuery(connectionString, "delete_supplier", inParameters);
 
-            var permission = this.Permissions?.FirstOrDefault(p => p.PermissionLevel == permissionLevel);
-            if (permission != null)
+            var supplier = this.Suppliers?.FirstOrDefault(s => s.SupplierID == supplierID);
+            if (supplier != null)
             {
-                this.Permissions ??= new List<Permission>();
-                this.Permissions.Remove(permission);
+                this.Suppliers ??= new List<Supplier>();
+                this.Suppliers.Remove(supplier);
             }
         }
     }
