@@ -43,5 +43,43 @@ namespace WarehouseManager.Data.Table
             this.InventoryAudits ??= new List<InventoryAudit>();
             this.InventoryAudits.Add(inventoryAudit);
         }
+
+        public void Update(string connectionString, string token, int inventoryAuditID, int warehouseID, int userID, DateTime inventoryAuditTime)
+        {
+            Dictionary<string, object>? inParameters = new Dictionary<string, object>
+            {
+                {"input_token", token},
+                {"inventory_audit_id",inventoryAuditID},
+                {"new_warehouse_id", warehouseID},
+                {"new_user_id", userID},
+                {"new_inventory_audit_time", inventoryAuditTime}
+            };
+            Procedure.ExecuteNonQuery(connectionString, "update_inventory_audit", inParameters);
+
+            var inventoryAudit = this.InventoryAudits?.FirstOrDefault(temp => temp.InventoryAuditID == inventoryAuditID);
+            if (inventoryAudit != null)
+            {
+                inventoryAudit.WarehouseID = warehouseID;
+                inventoryAudit.UserID = userID;
+                inventoryAudit.InventoryAuditTime = inventoryAuditTime;
+            }
+        }
+
+        public void Delete(string connectionString, string token, int inventoryAuditID)
+        {
+            Dictionary<string, object>? inParameters = new Dictionary<string, object>
+            {
+                {"input_token", token},
+                {"target_audit_id",inventoryAuditID}
+            };
+            Procedure.ExecuteNonQuery(connectionString, "delete_inventory_audit", inParameters);
+
+            var inventoryAudit = this.InventoryAudits?.FirstOrDefault(temp => temp.InventoryAuditID == inventoryAuditID);
+            if (inventoryAudit != null)
+            {
+                this.InventoryAudits ??= new List<InventoryAudit>();
+                this.InventoryAudits.Remove(inventoryAudit);
+            }
+        }
     }
 }

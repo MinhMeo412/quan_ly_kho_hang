@@ -44,5 +44,24 @@ namespace WarehouseManager.Data.Table
             this.WarehouseStocks.Add(warehouseStock);
         }
 
+        public void Update(string connectionString, string token, int warehouseID, int productVariantID, int warehouseStockQuantity)
+        {
+            Dictionary<string, object>? inParameters = new Dictionary<string, object>
+            {
+                {"input_token", token},
+                {"warehouse_id", warehouseID},
+                {"product_variant_id", productVariantID},
+                {"warehouse_stock_quantity", warehouseStockQuantity}
+            };
+            Procedure.ExecuteNonQuery(connectionString, "update_warehouse_stock", inParameters);
+            
+            var warehouseStock = this.WarehouseStocks?.FirstOrDefault(temp => temp.WarehouseID == warehouseID && temp.ProductVariantID == productVariantID);
+            if (warehouseStock != null)
+            {
+                warehouseStock.WarehouseStockQuantity = warehouseStockQuantity; 
+            }
+        }
+
+        //public void Delete()
     }
 }

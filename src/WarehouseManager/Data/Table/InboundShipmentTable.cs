@@ -48,5 +48,49 @@ namespace WarehouseManager.Data.Table
             this.InboundShipments ??= new List<InboundShipment>();
             this.InboundShipments.Add(inboundShipment);
         }
+
+        public void Update(string connectionString, string token, int inboundShipmentID, int supplierID, int warehouseID, DateTime inboundShipmentStartingDate, string inboundShipmentStatus, string inboundShipmentDescription, int userID)
+        {
+            Dictionary<string, object>? inParameters = new Dictionary<string, object>
+            {
+                {"input_token", token},
+                {"inbound_shipment_id", inboundShipmentID},
+                {"new_supplier_id", supplierID},
+                {"new_warehouse_id", warehouseID},
+                {"new_inbound_shipment_starting_date", inboundShipmentStartingDate},
+                {"new_inbound_shipment_status", inboundShipmentStatus},
+                {"new_inbound_shipment_description", inboundShipmentDescription},
+                {"new_user_id", userID}
+            };
+            Procedure.ExecuteNonQuery(connectionString, "update_inbound_shipment", inParameters);
+
+            var inboundShipment = this.InboundShipments?.FirstOrDefault(temp => temp.InboundShipmentID == inboundShipmentID);
+            if (inboundShipment != null)
+            {
+                inboundShipment.SupplierID = supplierID;
+                inboundShipment.WarehouseID = warehouseID;
+                inboundShipment.InboundShipmentStartingDate = inboundShipmentStartingDate;
+                inboundShipment.InboundShipmentStatus = inboundShipmentStatus;
+                inboundShipment.InboundShipmentDescription = inboundShipmentDescription;
+                inboundShipment.UserID = userID;
+            }
+        }
+
+        public void Delete(string connectionString, string token, int inboundShipmentID)
+        {
+            Dictionary<string, object>? inParameters = new Dictionary<string, object>
+            {
+                {"input_token", token},
+                {"target_shipment_id", inboundShipmentID}
+            };
+            Procedure.ExecuteNonQuery(connectionString, "delete_inbound_shipment", inParameters);
+
+            var inboundShipment = this.InboundShipments?.FirstOrDefault(temp => temp.InboundShipmentID == inboundShipmentID);
+            if (inboundShipment != null)
+            {
+                this.InboundShipments ??= new List<InboundShipment>();
+                this.InboundShipments.Remove(inboundShipment);
+            }
+        }
     }
 }

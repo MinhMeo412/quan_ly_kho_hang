@@ -43,5 +43,41 @@ namespace WarehouseManager.Data.Table
             this.OutboundShipmentDetails ??= new List<OutboundShipmentDetail>();
             this.OutboundShipmentDetails.Add(outboundShipmentDetail);
         }
+
+        public void Update(string connectionString, string token, int outboundShipmentID, int productVariantID, int outboundShipmentDetailAmount)
+        {
+            Dictionary<string, object>? inParameters = new Dictionary<string, object>
+            {
+                {"input_token", token},
+                {"outbound_shipment_id", outboundShipmentID},
+                {"product_variant_id", productVariantID},
+                {"new_outbound_shipment_detail_amount", outboundShipmentDetailAmount}
+            };
+            Procedure.ExecuteNonQuery(connectionString, "update_outbound_shipment_detail", inParameters);
+
+            var outboundShipmentDetail = this.OutboundShipmentDetails?.FirstOrDefault(temp => temp.OutboundShipmentID == outboundShipmentID && temp.ProductVariantID == productVariantID);
+            if (outboundShipmentDetail != null)
+            {
+                outboundShipmentDetail.OutboundShipmentDetailAmount = outboundShipmentDetailAmount;
+            }
+        }
+
+        public void Delete(string connectionString, string token, int outboundShipmentID, int productVariantID)
+        {
+            Dictionary<string, object>? inParameters = new Dictionary<string, object>
+            {
+                {"input_token", token},
+                {"target_shipment_id", outboundShipmentID},
+                {"target_variant_id", productVariantID}
+            };
+            Procedure.ExecuteNonQuery(connectionString, "delete_outbound_shipment_detail", inParameters);
+
+            var outboundShipmentDetail = this.OutboundShipmentDetails?.FirstOrDefault(temp => temp.OutboundShipmentID == outboundShipmentID && temp.ProductVariantID == productVariantID);
+            if (outboundShipmentDetail != null)
+            {
+                this.OutboundShipmentDetails ??= new List<OutboundShipmentDetail>();
+                this.OutboundShipmentDetails.Remove(outboundShipmentDetail);
+            }
+        }
     }
 }
