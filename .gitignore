@@ -1,5 +1,3 @@
-.mono/
-.vscode/
 bin/
 obj/
-quan_ly_kho_hang.sln
+*.sln
