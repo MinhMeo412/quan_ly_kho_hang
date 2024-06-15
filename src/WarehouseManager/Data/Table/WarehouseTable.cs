@@ -1,4 +1,5 @@
 using WarehouseManager.Data.Entity;
+using WarehouseManager.Data.Utility;
 
 namespace WarehouseManager.Data.Table
 {

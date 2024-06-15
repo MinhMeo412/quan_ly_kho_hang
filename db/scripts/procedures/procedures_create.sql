@@ -1,4 +1,5 @@
 DELIMITER //
+
 CREATE PROCEDURE create_user(
     IN input_token VARCHAR(36),
     IN new_user_name VARCHAR(32),

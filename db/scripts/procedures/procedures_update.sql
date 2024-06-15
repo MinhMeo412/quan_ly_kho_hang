@@ -1,5 +1,7 @@
 -- Quyền hạn update user thay đổi theo mức level, tất cả các level thay đổi được password còn 0,1 sửa được thông tin user
 DELIMITER //
+
+
 CREATE PROCEDURE update_user(
     IN input_token VARCHAR(36),
     IN user_id INT,
