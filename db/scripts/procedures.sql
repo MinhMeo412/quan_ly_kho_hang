@@ -1,3 +1,5 @@
+SOURCE procedures/common.sql;
+
 SOURCE procedures/permission.sql;
 
 SOURCE procedures/user.sql;

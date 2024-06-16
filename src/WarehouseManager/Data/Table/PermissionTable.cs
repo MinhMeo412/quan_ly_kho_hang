@@ -9,16 +9,16 @@ namespace WarehouseManager.Data.Table
 
         public void Load(string connectionString, string token)
         {
-            Dictionary<string, object>? inParameters = new Dictionary<string, object>{
+            Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"input_token", token}
             };
 
-            List<List<object>> rawPermissions = Procedure.ExecuteReader(connectionString, "read_permission", inParameters);
+            List<List<object?>> rawPermissions = Procedure.ExecuteReader(connectionString, "read_permission", inParameters);
 
             List<Permission> permissions = new List<Permission>();
-            foreach (List<object> rawPermission in rawPermissions)
+            foreach (List<object?> rawPermission in rawPermissions)
             {
-                Permission permission = new Permission((int)rawPermission[0], (string)rawPermission[1], (string)rawPermission[2]);
+                Permission permission = new Permission((int)(rawPermission[0] ?? 0), (string)(rawPermission[1] ?? ""), (string)(rawPermission[2] ?? ""));
                 permissions.Add(permission);
             }
 
@@ -27,7 +27,7 @@ namespace WarehouseManager.Data.Table
 
         public void Add(string connectionString, string token, int permissionLevel, string permissionName, string permissionDescription)
         {
-            Dictionary<string, object>? inParameters = new Dictionary<string, object>{
+            Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"input_token", token},
                 {"input_permission_level", permissionLevel},
                 {"input_permission_name", permissionName},
@@ -43,7 +43,7 @@ namespace WarehouseManager.Data.Table
 
         public void Update(string connectionString, string token, int permissionLevel, string permissionName, string permissionDescription)
         {
-            Dictionary<string, object>? inParameters = new Dictionary<string, object>{
+            Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"input_token", token},
                 {"input_permission_level", permissionLevel},
                 {"input_permission_name", permissionName},
@@ -62,7 +62,7 @@ namespace WarehouseManager.Data.Table
 
         public void Delete(string connectionString, string token, int permissionLevel)
         {
-            Dictionary<string, object>? inParameters = new Dictionary<string, object>{
+            Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"input_token", token},
                 {"input_permission_level", permissionLevel}
             };

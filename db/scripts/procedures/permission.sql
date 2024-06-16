@@ -1,7 +1,12 @@
 DELIMITER //
 
--- Không thể tạo thêm permission level qua các user (chỉ có thể tạo qua sửa CSDL trực tiếp) và không cần thiết (bỏ procedure này)
-CREATE PROCEDURE create_permission(IN input_token VARCHAR(36),IN input_permission_level INT, IN input_permission_name VARCHAR(32), IN input_permission_description TEXT)
+-- Không thể tạo thêm permission level qua các user (chỉ có thể tạo qua sửa CSDL trực tiếp) và không cần thiết (bỏ procedure này / để quyền = -1)
+CREATE PROCEDURE create_permission(
+    IN input_token VARCHAR(36),
+    IN input_permission_level INT, 
+    IN input_permission_name VARCHAR(32), 
+    IN input_permission_description TEXT
+)
 BEGIN
     DECLARE required_level INT DEFAULT -1;
     IF sufficient_permission(input_token, required_level) THEN
@@ -12,8 +17,10 @@ BEGIN
     END IF;
 END //
 
--- Có thể đọc/xem danh sách các permission level nhưng không cần thiết (có thể giữ hoặc bỏ)
-CREATE PROCEDURE read_permission(IN input_token VARCHAR(36))
+-- Có thể đọc/xem danh sách các permission level nhưng không cần thiết (có thể giữ hoặc bỏ / để quyền = -1)
+CREATE PROCEDURE read_permission(
+    IN input_token VARCHAR(36)
+)
 BEGIN
     DECLARE required_level INT DEFAULT -1;
     IF sufficient_permission(input_token, required_level) THEN
@@ -23,8 +30,13 @@ BEGIN
     END IF;
 END //
 
--- Tương tự create_permission (bỏ procedure này)
-CREATE PROCEDURE update_permission(IN input_token VARCHAR(36),IN input_permission_level INT, IN input_permission_name VARCHAR(32), IN input_permission_description TEXT)
+-- Tương tự create_permission (bỏ procedure này / để quyền = -1)
+CREATE PROCEDURE update_permission(
+    IN input_token VARCHAR(36),
+    IN input_permission_level INT,
+    IN input_permission_name VARCHAR(32),
+    IN input_permission_description TEXT
+)
 BEGIN
     DECLARE required_level INT DEFAULT -1;
     IF sufficient_permission(input_token, required_level) THEN
@@ -36,8 +48,11 @@ BEGIN
     END IF;
 END //
 
--- Tương tự create_permission (bỏ procedure này)
-CREATE PROCEDURE delete_permission(IN input_token VARCHAR(36), IN input_permission_level INT)
+-- Tương tự create_permission (bỏ procedure này / để quyền = -1)
+CREATE PROCEDURE delete_permission(
+    IN input_token VARCHAR(36),
+    IN input_permission_level INT
+)
 BEGIN
     DECLARE required_level INT DEFAULT -1;
     IF sufficient_permission(input_token, required_level) THEN

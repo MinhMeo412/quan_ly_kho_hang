@@ -14,12 +14,12 @@ namespace WarehouseManager.Data.Utility
         <param name="outParameters">List of out parameters.</param>
         <returns>key value pairs of the procedure's output</returns>
         */
-        public static Dictionary<string, object> ExecuteNonQuery(string connectionString, string procedure, Dictionary<string, object>? inParameters = null, List<string>? outParameters = null)
+        public static Dictionary<string, object?> ExecuteNonQuery(string connectionString, string procedure, Dictionary<string, object?>? inParameters = null, List<string>? outParameters = null)
         {
-            inParameters ??= new Dictionary<string, object>();
+            inParameters ??= new Dictionary<string, object?>();
             outParameters ??= new List<string>();
 
-            Dictionary<string, object> output = new Dictionary<string, object>();
+            Dictionary<string, object?> output = new Dictionary<string, object?>();
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -44,9 +44,8 @@ namespace WarehouseManager.Data.Utility
                 {
                     output.Add(outParameter, cmd.Parameters[outParameter].Value);
                 }
-
-                return output;
             }
+            return output;
         }
 
         /**
@@ -58,10 +57,10 @@ namespace WarehouseManager.Data.Utility
         <param name="inParameters">Dictionary with parameter name as keys and their respective arguments as values.</param>
         <returns> A list containing each row of the table as a sublist.</returns>
         */
-        public static List<List<object>> ExecuteReader(string connectionString, string procedure, Dictionary<string, object>? inParameters = null)
+        public static List<List<object?>> ExecuteReader(string connectionString, string procedure, Dictionary<string, object?>? inParameters = null)
         {
-            inParameters ??= new Dictionary<string, object>();
-            List<List<object>> rows = new List<List<object>>();
+            inParameters ??= new Dictionary<string, object?>();
+            List<List<object?>> rows = new List<List<object?>>();
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -75,7 +74,7 @@ namespace WarehouseManager.Data.Utility
                 {
                     while (reader.Read())
                     {
-                        List<object> row = new List<object>();
+                        List<object?> row = new List<object?>();
                         for (int i = 0; i < reader.FieldCount; i++)
                         {
                             row.Add(reader.GetValue(i));
