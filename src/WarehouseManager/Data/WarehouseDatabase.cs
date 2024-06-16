@@ -44,7 +44,7 @@ namespace WarehouseManager.Data
 
         public bool Login(string username, string password)
         {
-            Dictionary<string, object> inParameters = new Dictionary<string, object>{
+            Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"inputted_username", username},
                 {"inputted_password", password}
             };
@@ -54,7 +54,7 @@ namespace WarehouseManager.Data
                 "token"
             };
 
-            Dictionary<string, object> output = Procedure.ExecuteNonQuery(this.connectionString, "user_login", inParameters, outParameters);
+            Dictionary<string, object?> output = Procedure.ExecuteNonQuery(this.connectionString, "user_login", inParameters, outParameters);
             this.token = $"{output["token"]}";
 
             bool loggedIn = int.Parse($"{output["success"]}") == 1;

@@ -8,6 +8,7 @@ return: permission level of that user
 */
 CREATE FUNCTION get_permission_level(token VARCHAR(36))
 RETURNS INT
+READS SQL DATA
 BEGIN
     DECLARE user_permission_level INT;
     SELECT permission_level from user where user_id = (select user_id from token where token_uuid = token) into user_permission_level;
@@ -23,6 +24,7 @@ return: true if the user has sufficient permission. false if otherwise.
 */
 CREATE FUNCTION sufficient_permission(token VARCHAR(36), required_level INT)
 RETURNS BOOLEAN
+READS SQL DATA
 BEGIN
     DECLARE user_permission_level INT;
     SELECT get_permission_level(token) into user_permission_level;
