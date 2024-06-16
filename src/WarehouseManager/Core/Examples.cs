@@ -4,6 +4,5 @@ namespace WarehouseManager.Core
 {
     static class Examples
     {
-
     }
 }
