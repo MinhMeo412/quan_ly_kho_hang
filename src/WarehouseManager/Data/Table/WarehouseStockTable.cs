@@ -1,4 +1,5 @@
 using WarehouseManager.Data.Entity;
+using WarehouseManager.Data.Utility;
 
 namespace WarehouseManager.Data.Table
 {
@@ -8,18 +9,19 @@ namespace WarehouseManager.Data.Table
 
         public void Load(string connectionString, string token)
         {
-            Dictionary<string, object>? inParameters = new Dictionary<string, object>
-            {{"input_token", token}};
-            
-            List<List<object>> rawWarehouseStocks = Procedure.ExecuteReader(connectionString, "read_warehouse_stock", inParameters);
+            Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
+                {"input_token", token}
+            };
+
+            List<List<object?>> rawWarehouseStocks = Procedure.ExecuteReader(connectionString, "read_warehouse_stock", inParameters);
 
             List<WarehouseStock> warehouseStocks = new List<WarehouseStock>();
-            foreach (List<object> rawWarehouseStock in rawWarehouseStocks)
+            foreach (List<object?> rawWarehouseStock in rawWarehouseStocks)
             {
                 WarehouseStock warehouseStock = new WarehouseStock(
-                    (int)rawWarehouseStock[0],  // warehouse_id
-                    (int)rawWarehouseStock[1],  // product_variant_id
-                    (int)rawWarehouseStock[2]   // warehouse_stock_quantity
+                     (int)(rawWarehouseStock[0] ?? 0),
+                     (int)(rawWarehouseStock[1] ?? 0),
+                     (int)(rawWarehouseStock[2] ?? 0)
                 );
                 warehouseStocks.Add(warehouseStock);
             }
@@ -29,16 +31,15 @@ namespace WarehouseManager.Data.Table
 
         public void Add(string connectionString, string token, int warehouseID, int productVariantID, int warehouseStockQuantity)
         {
-            Dictionary<string, object>? inParameters = new Dictionary<string, object>
-            {
+            Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"input_token", token},
-                {"warehouse_id", warehouseID},
-                {"product_variant_id", productVariantID},
-                {"warehouse_stock_quantity", warehouseStockQuantity}
+                {"input_warehouse_id", warehouseID},
+                {"input_product_variant_id", productVariantID},
+                {"input_warehouse_stock_quantity", warehouseStockQuantity}
             };
             Procedure.ExecuteNonQuery(connectionString, "create_warehouse_stock", inParameters);
 
-            WarehouseStock warehouseStock = new WarehouseStock(warehouseID,productVariantID,warehouseStockQuantity);
+            WarehouseStock warehouseStock = new WarehouseStock(warehouseID, productVariantID, warehouseStockQuantity);
 
             this.WarehouseStocks ??= new List<WarehouseStock>();
             this.WarehouseStocks.Add(warehouseStock);
@@ -46,22 +47,38 @@ namespace WarehouseManager.Data.Table
 
         public void Update(string connectionString, string token, int warehouseID, int productVariantID, int warehouseStockQuantity)
         {
-            Dictionary<string, object>? inParameters = new Dictionary<string, object>
-            {
+            Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"input_token", token},
-                {"warehouse_id", warehouseID},
-                {"product_variant_id", productVariantID},
-                {"warehouse_stock_quantity", warehouseStockQuantity}
+                {"input_warehouse_id", warehouseID},
+                {"input_product_variant_id", productVariantID},
+                {"input_warehouse_stock_quantity", warehouseStockQuantity}
             };
+
             Procedure.ExecuteNonQuery(connectionString, "update_warehouse_stock", inParameters);
-            
-            var warehouseStock = this.WarehouseStocks?.FirstOrDefault(temp => temp.WarehouseID == warehouseID && temp.ProductVariantID == productVariantID);
+
+            var warehouseStock = this.WarehouseStocks?.FirstOrDefault(ws => ws.WarehouseID == warehouseID && ws.ProductVariantID == productVariantID);
             if (warehouseStock != null)
             {
-                warehouseStock.WarehouseStockQuantity = warehouseStockQuantity; 
+                warehouseStock.WarehouseStockQuantity = warehouseStockQuantity;
             }
         }
 
-        //public void Delete()
+        public void Delete(string connectionString, string token, int warehouseID, int productVariantID)
+        {
+            Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
+                {"input_token", token},
+                {"input_warehouse_id", warehouseID},
+                {"input_product_variant_id", productVariantID}
+            };
+
+            Procedure.ExecuteNonQuery(connectionString, "delete_warehouse_stock", inParameters);
+
+            var warehouseStock = this.WarehouseStocks?.FirstOrDefault(ws => ws.WarehouseID == warehouseID && ws.ProductVariantID == productVariantID);
+            if (warehouseStock != null)
+            {
+                this.WarehouseStocks ??= new List<WarehouseStock>();
+                this.WarehouseStocks.Remove(warehouseStock);
+            }
+        }
     }
 }

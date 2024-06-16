@@ -7,11 +7,11 @@ SOURCE tables.sql;
 SELECT 'Executing triggers.sql' AS 'INFO';
 SOURCE triggers.sql;
 
-SELECT 'Executing procedures.sql' AS 'INFO';
-SOURCE procedures.sql;
-
 SELECT 'Executing views.sql' AS 'INFO';
 SOURCE views.sql;
+
+SELECT 'Executing procedures.sql' AS 'INFO';
+SOURCE procedures.sql;
 
 SELECT 'Executing indexes.sql' AS 'INFO';
 SOURCE indexes.sql;

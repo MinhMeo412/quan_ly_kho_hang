@@ -1,4 +1,5 @@
 using WarehouseManager.Data.Entity;
+using WarehouseManager.Data.Utility;
 
 namespace WarehouseManager.Data.Table
 {
@@ -8,77 +9,80 @@ namespace WarehouseManager.Data.Table
 
         public void Load(string connectionString, string token)
         {
-            Dictionary<string, object>? inParameters = new Dictionary<string, object>
-            {{"input_token", token}};
-            
-            List<List<object>> rawInventoryAudits = Procedure.ExecuteReader(connectionString, "read_inventory_audit", inParameters);
+            Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
+                {"input_token", token}
+            };
+
+            List<List<object?>> rawInventoryAudits = Procedure.ExecuteReader(connectionString, "read_inventory_audit", inParameters);
 
             List<InventoryAudit> inventoryAudits = new List<InventoryAudit>();
-            foreach (List<object> rawInventoryAudit in rawInventoryAudits)
+            foreach (List<object?> rawAudit in rawInventoryAudits)
             {
-                InventoryAudit inventoryAudit = new InventoryAudit(
-                    (int)rawInventoryAudit[0],    // inventory_audit_id
-                    (int)rawInventoryAudit[1],    // warehouse_id
-                    (int?)rawInventoryAudit[2],   // user_id (nullable)
-                    (DateTime)rawInventoryAudit[3] // inventory_audit_time
+                InventoryAudit audit = new InventoryAudit(
+                    (int)(rawAudit[0] ?? 0),
+                    (int)(rawAudit[1] ?? 0),
+                    (int?)rawAudit[2],
+                    (DateTime)(rawAudit[3] ?? DateTime.Now)
                 );
-                inventoryAudits.Add(inventoryAudit);
+                inventoryAudits.Add(audit);
             }
 
             this.InventoryAudits = inventoryAudits;
         }
 
-        public void Add(string connectionString, string token, int inventoryAuditID, int warehouseID, int userID, DateTime inventoryAuditTime)
+        public void Add(string connectionString, string token, int inventoryAuditID, int warehouseID, int? userID, DateTime inventoryAuditTime)
         {
-            Dictionary<string, object>? inParameters = new Dictionary<string, object>
-            {
+            Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"input_token", token},
-                {"warehouse_id",warehouseID},
-                {"user_id", userID}
+                {"input_inventory_audit_id", inventoryAuditID},
+                {"input_warehouse_id", warehouseID},
+                {"input_user_id", userID},
+                {"input_inventory_audit_time", inventoryAuditTime}
             };
             Procedure.ExecuteNonQuery(connectionString, "create_inventory_audit", inParameters);
 
-            InventoryAudit inventoryAudit = new InventoryAudit(inventoryAuditID, warehouseID, userID, inventoryAuditTime);
+            InventoryAudit audit = new InventoryAudit(
+                inventoryAuditID, warehouseID, userID, inventoryAuditTime);
 
             this.InventoryAudits ??= new List<InventoryAudit>();
-            this.InventoryAudits.Add(inventoryAudit);
+            this.InventoryAudits.Add(audit);
         }
 
-        public void Update(string connectionString, string token, int inventoryAuditID, int warehouseID, int userID, DateTime inventoryAuditTime)
+        public void Update(string connectionString, string token, int inventoryAuditID, int warehouseID, int? userID, DateTime inventoryAuditTime)
         {
-            Dictionary<string, object>? inParameters = new Dictionary<string, object>
-            {
+            Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"input_token", token},
-                {"inventory_audit_id",inventoryAuditID},
-                {"new_warehouse_id", warehouseID},
-                {"new_user_id", userID},
-                {"new_inventory_audit_time", inventoryAuditTime}
+                {"input_inventory_audit_id", inventoryAuditID},
+                {"input_warehouse_id", warehouseID},
+                {"input_user_id", userID},
+                {"input_inventory_audit_time", inventoryAuditTime}
             };
+
             Procedure.ExecuteNonQuery(connectionString, "update_inventory_audit", inParameters);
 
-            var inventoryAudit = this.InventoryAudits?.FirstOrDefault(temp => temp.InventoryAuditID == inventoryAuditID);
-            if (inventoryAudit != null)
+            var audit = this.InventoryAudits?.FirstOrDefault(a => a.InventoryAuditID == inventoryAuditID);
+            if (audit != null)
             {
-                inventoryAudit.WarehouseID = warehouseID;
-                inventoryAudit.UserID = userID;
-                inventoryAudit.InventoryAuditTime = inventoryAuditTime;
+                audit.WarehouseID = warehouseID;
+                audit.UserID = userID;
+                audit.InventoryAuditTime = inventoryAuditTime;
             }
         }
 
         public void Delete(string connectionString, string token, int inventoryAuditID)
         {
-            Dictionary<string, object>? inParameters = new Dictionary<string, object>
-            {
+            Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"input_token", token},
-                {"target_audit_id",inventoryAuditID}
+                {"input_inventory_audit_id", inventoryAuditID}
             };
+
             Procedure.ExecuteNonQuery(connectionString, "delete_inventory_audit", inParameters);
 
-            var inventoryAudit = this.InventoryAudits?.FirstOrDefault(temp => temp.InventoryAuditID == inventoryAuditID);
-            if (inventoryAudit != null)
+            var audit = this.InventoryAudits?.FirstOrDefault(a => a.InventoryAuditID == inventoryAuditID);
+            if (audit != null)
             {
                 this.InventoryAudits ??= new List<InventoryAudit>();
-                this.InventoryAudits.Remove(inventoryAudit);
+                this.InventoryAudits.Remove(audit);
             }
         }
     }

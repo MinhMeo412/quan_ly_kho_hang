@@ -1,31 +1,47 @@
 ﻿using WarehouseManager.Data;
-using WarehouseManager.Data.Table;
+using WarehouseManager.Data.Entity;
 
 class Program
 {
     public static void Main(String[] args)
     {
-        string username = "garciakaren";
-        string user_password = "8)3EetoYf!";
+        // Ví dụ cách tạo:
 
-        string server = "localhost";
-        string user = "root";
-        string password = "7777";
-        string database = "warehouse";
-        WarehouseDatabase warehouse = new WarehouseDatabase(server, user, password, database);
+        // Tạo 1 thực thể database
+        WarehouseDatabase warehouse = new WarehouseDatabase("localhost", "root", "7777", "warehouse");
 
-        Console.WriteLine(warehouse.Login(username, user_password));
+        // Đăng nhập
+        warehouse.Login("admin", "1234");
 
-        PermissionTable permissionTable = new PermissionTable();
-
-        string token = "d2b147e0-2729-11ef-a4ec-56e8b7964de4";
-        string connectionString = $"server={server}; user={user}; password={password}; database={database}";
-        permissionTable.Load(connectionString, token);
-        
-        // permissionTable.Add(connectionString, token, -2147483648, "fieuafha3d", "poopy");
-        // permissionTable.Update(connectionString, token, -2147483648, "this is updated", "poopy");
-        // permissionTable.Delete(connectionString, token, 3);
+        // Tải dữ liệu database vào C#
+        warehouse.Initialize();
 
 
+
+
+
+        // Ví dụ cách dùng:
+
+        // Thêm vào bảng category
+        warehouse.AddCategory(1001, "Thể loại mới 1", "Mô tả 1");
+        warehouse.AddCategory(1002, "Thể loại mới 2", "Mô tả 2");
+        warehouse.AddCategory(1003, "Thể loại mới 3", "Mô tả 3");
+
+        // Sửa trong bảng category
+        warehouse.UpdateCategory(1001, "Thể loại mới 1", "3 người bạn chuối mặc pyjama");
+
+        // Xóa trong bảng category
+        warehouse.DeleteCategory(1002);
+
+
+        // Lấy về danh sách category
+        List<Category>? categories = warehouse.GetCategories();
+
+        // In danh sách category
+        foreach (Category category in categories)
+        {
+            Console.WriteLine($"Category ID: {category.CategoryID}, Category Name: {category.CategoryName}");
+        }
     }
+
 }

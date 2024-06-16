@@ -9,28 +9,33 @@ namespace WarehouseManager.Data.Table
 
         public void Load(string connectionString, string token)
         {
-            Dictionary<string,object>? inParameters = new Dictionary<string, object>
-            {{"input_token",token}};
-            
-            List<List<object>> rawWarehouses = Procedure.ExecuteReader(connectionString,"read_warehouse",inParameters);
+            Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
+                {"input_token", token}
+            };
 
-            List<Warehouses> warehouses = new List<Warehouses>();
-            foreach (List<object> rawWarehouse in rawWarehouses)
+            List<List<object?>> rawWarehouses = Procedure.ExecuteReader(connectionString, "read_warehouse", inParameters);
+
+            List<Warehouse> warehouses = new List<Warehouse>();
+            foreach (List<object?> rawWarehouse in rawWarehouses)
             {
-                Warehouse warehouse = new Warehouse((int)rawWarehouse[0], (string)rawWarehouse[1], (int)rawWarehouse[2]);
+                Warehouse warehouse = new Warehouse(
+                    (int)(rawWarehouse[0] ?? 0),
+                    (string)(rawWarehouse[1] ?? ""),
+                    (int?)rawWarehouse[2]
+                );
                 warehouses.Add(warehouse);
             }
 
             this.Warehouses = warehouses;
         }
 
-        public void Add(string connectionString, string token, int warehouseID, string warehouseName, int warehouseAddressID)
+        public void Add(string connectionString, string token, int warehouseID, string warehouseName, int? warehouseAddressID)
         {
-            Dictionary<string, object>? inParameters = new Dictionary<string, object>
-            {
+            Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"input_token", token},
-                {"new_warehouse_name", warehouseName},
-                {"new_warehouse_address_id", warehouseAddressID}
+                {"input_warehouse_id", warehouseID},
+                {"input_warehouse_name", warehouseName},
+                {"input_warehouse_address_id", warehouseAddressID}
             };
             Procedure.ExecuteNonQuery(connectionString, "create_warehouse", inParameters);
 
@@ -40,18 +45,18 @@ namespace WarehouseManager.Data.Table
             this.Warehouses.Add(warehouse);
         }
 
-        public void Update(string connectionString, string token, int warehouseID, string warehouseName, int warehouseAddressID)
+        public void Update(string connectionString, string token, int warehouseID, string warehouseName, int? warehouseAddressID)
         {
-            Dictionary<string, object>? inParameters = new Dictionary<string, object>
-            {
+            Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"input_token", token},
-                {"warehouse_id",warehouseID},
-                {"new_warehouse_name", warehouseName},
-                {"new_warehouse_address_id", warehouseAddressID}
+                {"input_warehouse_id", warehouseID},
+                {"input_warehouse_name", warehouseName},
+                {"input_warehouse_address_id", warehouseAddressID}
             };
+
             Procedure.ExecuteNonQuery(connectionString, "update_warehouse", inParameters);
 
-            var warehouse = this.Warehouses?.FirstOrDefault(temp => temp.WarehouseID == warehouseID)
+            var warehouse = this.Warehouses?.FirstOrDefault(w => w.WarehouseID == warehouseID);
             if (warehouse != null)
             {
                 warehouse.WarehouseName = warehouseName;
@@ -61,14 +66,14 @@ namespace WarehouseManager.Data.Table
 
         public void Delete(string connectionString, string token, int warehouseID)
         {
-            Dictionary<string, object>? inParameters = new Dictionary<string, object>
-            {
+            Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"input_token", token},
-                {"target_warehouse_id",warehouseID}
+                {"input_warehouse_id", warehouseID}
             };
+
             Procedure.ExecuteNonQuery(connectionString, "delete_warehouse", inParameters);
 
-            var warehouse = this.Warehouses?.FirstOrDefault(temp => temp.WarehouseID == warehouseID)
+            var warehouse = this.Warehouses?.FirstOrDefault(w => w.WarehouseID == warehouseID);
             if (warehouse != null)
             {
                 this.Warehouses ??= new List<Warehouse>();
