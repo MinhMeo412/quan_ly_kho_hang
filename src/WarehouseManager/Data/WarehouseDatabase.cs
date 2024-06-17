@@ -61,6 +61,8 @@ namespace WarehouseManager.Data
             this.StockTransferDetailTable = new StockTransferDetailTable();
         }
 
+
+
         public bool Login(string username, string password)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
@@ -82,7 +84,7 @@ namespace WarehouseManager.Data
                 this.token = $"{output["token"]}";
                 this.Initialize();
             }
-            
+
             return success;
         }
 
@@ -260,8 +262,6 @@ namespace WarehouseManager.Data
             catch (Exception)
             {
             }
-
-
         }
 
         public List<Permission>? GetPermissions()

@@ -68,7 +68,7 @@ namespace WarehouseManager.UI.Utility
 
             return selected;
         }
-        
+
         public static void PrintFiglet(string figlet)
         {
             try
@@ -81,7 +81,7 @@ namespace WarehouseManager.UI.Utility
                 AnsiConsole.Write(new FigletText(figlet).LeftJustified().Color(Color.SteelBlue));
             }
         }
-        
+
         public static void PrintTable(List<string> columns, List<List<string>> rows)
         {
             var table = new Table();
@@ -102,7 +102,7 @@ namespace WarehouseManager.UI.Utility
 
             AnsiConsole.Write(table);
         }
-        
+
         public static void WrappingTable(List<string> columns, List<List<string>> rows, int pageSize = 10)
         {
             int pageCount = (int)Math.Ceiling((double)rows.Count / (double)pageSize);
