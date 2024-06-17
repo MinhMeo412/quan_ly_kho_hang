@@ -10,12 +10,8 @@ class Program
         // Tạo 1 thực thể database
         WarehouseDatabase warehouse = new WarehouseDatabase("localhost", "root", "7777", "warehouse");
 
-        // Đăng nhập
-        warehouse.Login("admin", "1234");
-
-        // Tải dữ liệu database vào C#
-        warehouse.Initialize();
-
+        // Đăng nhập (sẽ trả về true nếu đăng nhập thành công)
+        bool success = warehouse.Login("admin", "1234");
 
 
 

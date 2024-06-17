@@ -74,10 +74,16 @@ namespace WarehouseManager.Data
             };
 
             Dictionary<string, object?> output = Procedure.ExecuteNonQuery(this.connectionString, "user_login", inParameters, outParameters);
-            this.token = $"{output["token"]}";
 
-            bool loggedIn = int.Parse($"{output["success"]}") == 1;
-            return loggedIn;
+            bool success = int.Parse($"{output["success"]}") == 1;
+
+            if (success)
+            {
+                this.token = $"{output["token"]}";
+                this.Initialize();
+            }
+            
+            return success;
         }
 
         public bool ChangePassword(string username, string oldPassword, string newPassword)
@@ -104,7 +110,7 @@ namespace WarehouseManager.Data
             return success;
         }
 
-        public void Initialize()
+        private void Initialize()
         {
             if (this.token == null)
             {
