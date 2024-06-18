@@ -7,7 +7,20 @@ namespace WarehouseManager.Data.Table
     {
         private string ConnectionString = connectionString;
         private string? Token = token;
-        public List<StockTransferDetail>? StockTransferDetails { get; private set; }
+
+        private List<StockTransferDetail>? _stockTransferDetails;
+        public List<StockTransferDetail>? StockTransferDetails
+        {
+            get
+            {
+                this.Load();
+                return this._stockTransferDetails;
+            }
+            private set
+            {
+                this._stockTransferDetails = value;
+            }
+        }
 
         private void Load()
         {

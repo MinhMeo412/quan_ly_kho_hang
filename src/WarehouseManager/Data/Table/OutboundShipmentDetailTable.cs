@@ -7,9 +7,22 @@ namespace WarehouseManager.Data.Table
     {
         private string ConnectionString = connectionString;
         private string? Token = token;
-        public List<OutboundShipmentDetail>? OutboundShipmentDetails { get; private set; }
 
-        private void Load(string connectionString, string token)
+        private List<OutboundShipmentDetail>? _outboundShipmentDetails;
+        public List<OutboundShipmentDetail>? OutboundShipmentDetails
+        {
+            get
+            {
+                this.Load();
+                return this._outboundShipmentDetails;
+            }
+            private set
+            {
+                this._outboundShipmentDetails = value;
+            }
+        }
+
+        private void Load()
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"input_token", this.Token}

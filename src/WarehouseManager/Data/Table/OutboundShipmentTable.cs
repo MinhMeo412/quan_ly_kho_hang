@@ -7,7 +7,20 @@ namespace WarehouseManager.Data.Table
     {
         private string ConnectionString = connectionString;
         private string? Token = token;
-        public List<OutboundShipment>? OutboundShipments { get; private set; }
+
+        private List<OutboundShipment>? _outboundShipments;
+        public List<OutboundShipment>? OutboundShipments
+        {
+            get
+            {
+                this.Load();
+                return this._outboundShipments;
+            }
+            private set
+            {
+                this._outboundShipments = value;
+            }
+        }
 
         private void Load()
         {

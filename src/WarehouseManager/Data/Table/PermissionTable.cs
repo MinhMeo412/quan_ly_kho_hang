@@ -7,7 +7,20 @@ namespace WarehouseManager.Data.Table
     {
         private string ConnectionString = connectionString;
         private string? Token = token;
-        public List<Permission>? Permissions { get; private set; }
+
+        private List<Permission>? _permissions;
+        public List<Permission>? Permissions
+        {
+            get
+            {
+                this.Load();
+                return this._permissions;
+            }
+            private set
+            {
+                this._permissions = value;
+            }
+        }
 
         private void Load()
         {

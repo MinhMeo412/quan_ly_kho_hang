@@ -7,7 +7,20 @@ namespace WarehouseManager.Data.Table
     {
         private string ConnectionString = connectionString;
         private string? Token = token;
-        public List<Warehouse>? Warehouses { get; private set; }
+
+        private List<Warehouse>? _warehouses;
+        public List<Warehouse>? Warehouses
+        {
+            get
+            {
+                this.Load();
+                return this._warehouses;
+            }
+            private set
+            {
+                this._warehouses = value;
+            }
+        }
 
         private void Load()
         {

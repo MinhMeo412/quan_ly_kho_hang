@@ -5,24 +5,24 @@ namespace WarehouseManager.Data
 {
     class WarehouseDatabase
     {
-        public PermissionTable? PermissionTable { get; private set; }
-        public UserTable? UserTable { get; private set; }
-        public TokenTable? TokenTable { get; private set; }
-        public SupplierTable? SupplierTable { get; private set; }
-        public CategoryTable? CategoryTable { get; private set; }
-        public ProductTable? ProductTable { get; private set; }
-        public ProductVariantTable? ProductVariantTable { get; private set; }
-        public WarehouseAddressTable? WarehouseAddressTable { get; private set; }
-        public WarehouseTable? WarehouseTable { get; private set; }
-        public WarehouseStockTable? WarehouseStockTable { get; private set; }
-        public InventoryAuditTable? InventoryAuditTable { get; private set; }
-        public InventoryAuditDetailTable? InventoryAuditDetailTable { get; private set; }
-        public InboundShipmentTable? InboundShipmentTable { get; private set; }
-        public InboundShipmentDetailTable? InboundShipmentDetailTable { get; private set; }
-        public OutboundShipmentTable? OutboundShipmentTable { get; private set; }
-        public OutboundShipmentDetailTable? OutboundShipmentDetailTable { get; private set; }
-        public StockTransferTable? StockTransferTable { get; private set; }
-        public StockTransferDetailTable? StockTransferDetailTable { get; private set; }
+        public PermissionTable PermissionTable { get; private set; }
+        public UserTable UserTable { get; private set; }
+        public TokenTable TokenTable { get; private set; }
+        public SupplierTable SupplierTable { get; private set; }
+        public CategoryTable CategoryTable { get; private set; }
+        public ProductTable ProductTable { get; private set; }
+        public ProductVariantTable ProductVariantTable { get; private set; }
+        public WarehouseAddressTable WarehouseAddressTable { get; private set; }
+        public WarehouseTable WarehouseTable { get; private set; }
+        public WarehouseStockTable WarehouseStockTable { get; private set; }
+        public InventoryAuditTable InventoryAuditTable { get; private set; }
+        public InventoryAuditDetailTable InventoryAuditDetailTable { get; private set; }
+        public InboundShipmentTable InboundShipmentTable { get; private set; }
+        public InboundShipmentDetailTable InboundShipmentDetailTable { get; private set; }
+        public OutboundShipmentTable OutboundShipmentTable { get; private set; }
+        public OutboundShipmentDetailTable OutboundShipmentDetailTable { get; private set; }
+        public StockTransferTable StockTransferTable { get; private set; }
+        public StockTransferDetailTable StockTransferDetailTable { get; private set; }
 
         private string ConnectionString;
         private string? Token;
@@ -30,6 +30,25 @@ namespace WarehouseManager.Data
         public WarehouseDatabase(string server = "localhost", string user = "root", string password = "", string database = "warehouse")
         {
             this.ConnectionString = $"server={server}; user={user}; password={password}; database={database}";
+
+            this.PermissionTable = new PermissionTable(this.ConnectionString, this.Token);
+            this.UserTable = new UserTable(this.ConnectionString, this.Token);
+            this.TokenTable = new TokenTable(this.ConnectionString, this.Token);
+            this.SupplierTable = new SupplierTable(this.ConnectionString, this.Token);
+            this.CategoryTable = new CategoryTable(this.ConnectionString, this.Token);
+            this.ProductTable = new ProductTable(this.ConnectionString, this.Token);
+            this.ProductVariantTable = new ProductVariantTable(this.ConnectionString, this.Token);
+            this.WarehouseAddressTable = new WarehouseAddressTable(this.ConnectionString, this.Token);
+            this.WarehouseTable = new WarehouseTable(this.ConnectionString, this.Token);
+            this.WarehouseStockTable = new WarehouseStockTable(this.ConnectionString, this.Token);
+            this.InventoryAuditTable = new InventoryAuditTable(this.ConnectionString, this.Token);
+            this.InventoryAuditDetailTable = new InventoryAuditDetailTable(this.ConnectionString, this.Token);
+            this.InboundShipmentTable = new InboundShipmentTable(this.ConnectionString, this.Token);
+            this.InboundShipmentDetailTable = new InboundShipmentDetailTable(this.ConnectionString, this.Token);
+            this.OutboundShipmentTable = new OutboundShipmentTable(this.ConnectionString, this.Token);
+            this.OutboundShipmentDetailTable = new OutboundShipmentDetailTable(this.ConnectionString, this.Token);
+            this.StockTransferTable = new StockTransferTable(this.ConnectionString, this.Token);
+            this.StockTransferDetailTable = new StockTransferDetailTable(this.ConnectionString, this.Token);
         }
 
         public bool Login(string username, string password)

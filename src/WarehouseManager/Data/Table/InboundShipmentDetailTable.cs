@@ -14,11 +14,11 @@ namespace WarehouseManager.Data.Table
             get
             {
                 this.Load();
-                return _inboundShipmentDetails;
+                return this._inboundShipmentDetails;
             }
             private set
             {
-                _inboundShipmentDetails = value;
+                this._inboundShipmentDetails = value;
             }
         }
 
