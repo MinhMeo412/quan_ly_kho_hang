@@ -3,17 +3,19 @@ using WarehouseManager.Data.Utility;
 
 namespace WarehouseManager.Data.Table
 {
-    class WarehouseStockTable
+    class WarehouseStockTable(string connectionString, string? token)
     {
+        private string ConnectionString = connectionString;
+        private string? Token = token;
         public List<WarehouseStock>? WarehouseStocks { get; private set; }
 
-        public void Load(string connectionString, string token)
+        private void Load()
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token}
+                {"input_token", this.Token}
             };
 
-            List<List<object?>> rawWarehouseStocks = Procedure.ExecuteReader(connectionString, "read_warehouse_stock", inParameters);
+            List<List<object?>> rawWarehouseStocks = Procedure.ExecuteReader(this.ConnectionString, "read_warehouse_stock", inParameters);
 
             List<WarehouseStock> warehouseStocks = new List<WarehouseStock>();
             foreach (List<object?> rawWarehouseStock in rawWarehouseStocks)
@@ -29,56 +31,38 @@ namespace WarehouseManager.Data.Table
             this.WarehouseStocks = warehouseStocks;
         }
 
-        public void Add(string connectionString, string token, int warehouseID, int productVariantID, int warehouseStockQuantity)
+        public void Add(int warehouseID, int productVariantID, int warehouseStockQuantity)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_warehouse_id", warehouseID},
                 {"input_product_variant_id", productVariantID},
                 {"input_warehouse_stock_quantity", warehouseStockQuantity}
             };
-            Procedure.ExecuteNonQuery(connectionString, "create_warehouse_stock", inParameters);
-
-            WarehouseStock warehouseStock = new WarehouseStock(warehouseID, productVariantID, warehouseStockQuantity);
-
-            this.WarehouseStocks ??= new List<WarehouseStock>();
-            this.WarehouseStocks.Add(warehouseStock);
+            Procedure.ExecuteNonQuery(this.ConnectionString, "create_warehouse_stock", inParameters);
         }
 
-        public void Update(string connectionString, string token, int warehouseID, int productVariantID, int warehouseStockQuantity)
+        public void Update(int warehouseID, int productVariantID, int warehouseStockQuantity)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_warehouse_id", warehouseID},
                 {"input_product_variant_id", productVariantID},
                 {"input_warehouse_stock_quantity", warehouseStockQuantity}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "update_warehouse_stock", inParameters);
-
-            var warehouseStock = this.WarehouseStocks?.FirstOrDefault(ws => ws.WarehouseID == warehouseID && ws.ProductVariantID == productVariantID);
-            if (warehouseStock != null)
-            {
-                warehouseStock.WarehouseStockQuantity = warehouseStockQuantity;
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "update_warehouse_stock", inParameters);
         }
 
-        public void Delete(string connectionString, string token, int warehouseID, int productVariantID)
+        public void Delete(int warehouseID, int productVariantID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_warehouse_id", warehouseID},
                 {"input_product_variant_id", productVariantID}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "delete_warehouse_stock", inParameters);
-
-            var warehouseStock = this.WarehouseStocks?.FirstOrDefault(ws => ws.WarehouseID == warehouseID && ws.ProductVariantID == productVariantID);
-            if (warehouseStock != null)
-            {
-                this.WarehouseStocks ??= new List<WarehouseStock>();
-                this.WarehouseStocks.Remove(warehouseStock);
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "delete_warehouse_stock", inParameters);
         }
     }
 }

@@ -3,17 +3,19 @@ using WarehouseManager.Data.Utility;
 
 namespace WarehouseManager.Data.Table
 {
-    class WarehouseAddressTable
+    class WarehouseAddressTable(string connectionString, string? token)
     {
+        private string ConnectionString = connectionString;
+        private string? Token = token;
         public List<WarehouseAddress>? WarehouseAddresses { get; private set; }
 
-        public void Load(string connectionString, string token)
+        private void Load()
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token}
+                {"input_token", this.Token}
             };
 
-            List<List<object?>> rawWarehouseAddresses = Procedure.ExecuteReader(connectionString, "read_warehouse_address", inParameters);
+            List<List<object?>> rawWarehouseAddresses = Procedure.ExecuteReader(this.ConnectionString, "read_warehouse_address", inParameters);
 
             List<WarehouseAddress> warehouseAddresses = new List<WarehouseAddress>();
             foreach (List<object?> rawWarehouseAddress in rawWarehouseAddresses)
@@ -32,10 +34,10 @@ namespace WarehouseManager.Data.Table
             this.WarehouseAddresses = warehouseAddresses;
         }
 
-        public void Add(string connectionString, string token, int warehouseAddressID, string warehouseAddressAddress, string? warehouseAddressDistrict, string? warehouseAddressPostalCode, string? warehouseAddressCity, string? warehouseAddressCountry)
+        public void Add(int warehouseAddressID, string warehouseAddressAddress, string? warehouseAddressDistrict, string? warehouseAddressPostalCode, string? warehouseAddressCity, string? warehouseAddressCountry)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_warehouse_address_id", warehouseAddressID},
                 {"input_warehouse_address_address", warehouseAddressAddress},
                 {"input_warehouse_address_district", warehouseAddressDistrict},
@@ -43,18 +45,13 @@ namespace WarehouseManager.Data.Table
                 {"input_warehouse_address_city", warehouseAddressCity},
                 {"input_warehouse_address_country", warehouseAddressCountry}
             };
-            Procedure.ExecuteNonQuery(connectionString, "create_warehouse_address", inParameters);
-
-            WarehouseAddress warehouseAddress = new WarehouseAddress(warehouseAddressID, warehouseAddressAddress, warehouseAddressDistrict, warehouseAddressPostalCode, warehouseAddressCity, warehouseAddressCountry);
-
-            this.WarehouseAddresses ??= new List<WarehouseAddress>();
-            this.WarehouseAddresses.Add(warehouseAddress);
+            Procedure.ExecuteNonQuery(this.ConnectionString, "create_warehouse_address", inParameters);
         }
 
-        public void Update(string connectionString, string token, int warehouseAddressID, string warehouseAddressAddress, string? warehouseAddressDistrict, string? warehouseAddressPostalCode, string? warehouseAddressCity, string? warehouseAddressCountry)
+        public void Update(int warehouseAddressID, string warehouseAddressAddress, string? warehouseAddressDistrict, string? warehouseAddressPostalCode, string? warehouseAddressCity, string? warehouseAddressCountry)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_warehouse_address_id", warehouseAddressID},
                 {"input_warehouse_address_address", warehouseAddressAddress},
                 {"input_warehouse_address_district", warehouseAddressDistrict},
@@ -63,34 +60,17 @@ namespace WarehouseManager.Data.Table
                 {"input_warehouse_address_country", warehouseAddressCountry}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "update_warehouse_address", inParameters);
-
-            var warehouseAddress = this.WarehouseAddresses?.FirstOrDefault(wa => wa.WarehouseAddressID == warehouseAddressID);
-            if (warehouseAddress != null)
-            {
-                warehouseAddress.WarehouseAddressAddress = warehouseAddressAddress;
-                warehouseAddress.WarehouseAddressDistrict = warehouseAddressDistrict;
-                warehouseAddress.WarehouseAddressPostalCode = warehouseAddressPostalCode;
-                warehouseAddress.WarehouseAddressCity = warehouseAddressCity;
-                warehouseAddress.WarehouseAddressCountry = warehouseAddressCountry;
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "update_warehouse_address", inParameters);
         }
 
-        public void Delete(string connectionString, string token, int warehouseAddressID)
+        public void Delete(int warehouseAddressID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_warehouse_address_id", warehouseAddressID}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "delete_warehouse_address", inParameters);
-
-            var warehouseAddress = this.WarehouseAddresses?.FirstOrDefault(wa => wa.WarehouseAddressID == warehouseAddressID);
-            if (warehouseAddress != null)
-            {
-                this.WarehouseAddresses ??= new List<WarehouseAddress>();
-                this.WarehouseAddresses.Remove(warehouseAddress);
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "delete_warehouse_address", inParameters);
         }
     }
 }

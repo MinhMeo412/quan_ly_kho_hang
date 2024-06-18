@@ -3,17 +3,19 @@ using WarehouseManager.Data.Utility;
 
 namespace WarehouseManager.Data.Table
 {
-    class WarehouseTable
+    class WarehouseTable(string connectionString, string? token)
     {
+        private string ConnectionString = connectionString;
+        private string? Token = token;
         public List<Warehouse>? Warehouses { get; private set; }
 
-        public void Load(string connectionString, string token)
+        private void Load()
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token}
+                {"input_token", this.Token}
             };
 
-            List<List<object?>> rawWarehouses = Procedure.ExecuteReader(connectionString, "read_warehouse", inParameters);
+            List<List<object?>> rawWarehouses = Procedure.ExecuteReader(this.ConnectionString, "read_warehouse", inParameters);
 
             List<Warehouse> warehouses = new List<Warehouse>();
             foreach (List<object?> rawWarehouse in rawWarehouses)
@@ -29,56 +31,37 @@ namespace WarehouseManager.Data.Table
             this.Warehouses = warehouses;
         }
 
-        public void Add(string connectionString, string token, int warehouseID, string warehouseName, int? warehouseAddressID)
+        public void Add(int warehouseID, string warehouseName, int? warehouseAddressID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_warehouse_id", warehouseID},
                 {"input_warehouse_name", warehouseName},
                 {"input_warehouse_address_id", warehouseAddressID}
             };
-            Procedure.ExecuteNonQuery(connectionString, "create_warehouse", inParameters);
-
-            Warehouse warehouse = new Warehouse(warehouseID, warehouseName, warehouseAddressID);
-
-            this.Warehouses ??= new List<Warehouse>();
-            this.Warehouses.Add(warehouse);
+            Procedure.ExecuteNonQuery(this.ConnectionString, "create_warehouse", inParameters);
         }
 
-        public void Update(string connectionString, string token, int warehouseID, string warehouseName, int? warehouseAddressID)
+        public void Update(int warehouseID, string warehouseName, int? warehouseAddressID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_warehouse_id", warehouseID},
                 {"input_warehouse_name", warehouseName},
                 {"input_warehouse_address_id", warehouseAddressID}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "update_warehouse", inParameters);
-
-            var warehouse = this.Warehouses?.FirstOrDefault(w => w.WarehouseID == warehouseID);
-            if (warehouse != null)
-            {
-                warehouse.WarehouseName = warehouseName;
-                warehouse.WarehouseAddressID = warehouseAddressID;
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "update_warehouse", inParameters);
         }
 
-        public void Delete(string connectionString, string token, int warehouseID)
+        public void Delete(int warehouseID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_warehouse_id", warehouseID}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "delete_warehouse", inParameters);
-
-            var warehouse = this.Warehouses?.FirstOrDefault(w => w.WarehouseID == warehouseID);
-            if (warehouse != null)
-            {
-                this.Warehouses ??= new List<Warehouse>();
-                this.Warehouses.Remove(warehouse);
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "delete_warehouse", inParameters);
         }
     }
 }

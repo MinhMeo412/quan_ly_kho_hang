@@ -3,17 +3,19 @@ using WarehouseManager.Data.Utility;
 
 namespace WarehouseManager.Data.Table
 {
-    class UserTable
+    class UserTable(string connectionString, string? token)
     {
+        private string ConnectionString = connectionString;
+        private string? Token = token;
         public List<User>? Users { get; private set; }
 
-        public void Load(string connectionString, string token)
+        private void Load()
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token}
+                {"input_token", this.Token}
             };
 
-            List<List<object?>> rawUsers = Procedure.ExecuteReader(connectionString, "read_user", inParameters);
+            List<List<object?>> rawUsers = Procedure.ExecuteReader(this.ConnectionString, "read_user", inParameters);
 
             List<User> users = new List<User>();
             foreach (List<object?> rawUser in rawUsers)
@@ -33,10 +35,10 @@ namespace WarehouseManager.Data.Table
             this.Users = users;
         }
 
-        public void Add(string connectionString, string token, int userID, string userName, string userPassword, string? userFullName, string? userEmail, string? userPhoneNumber, int permissionLevel)
+        public void Add(int userID, string userName, string userPassword, string? userFullName, string? userEmail, string? userPhoneNumber, int permissionLevel)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_user_id", userID},
                 {"input_user_name", userName},
                 {"input_user_password", userPassword},
@@ -45,18 +47,13 @@ namespace WarehouseManager.Data.Table
                 {"input_user_phone_number", userPhoneNumber},
                 {"input_permission_level", permissionLevel}
             };
-            Procedure.ExecuteNonQuery(connectionString, "create_user", inParameters);
-
-            User user = new User(userID, userName, userPassword, userFullName, userEmail, userPhoneNumber, permissionLevel);
-
-            this.Users ??= new List<User>();
-            this.Users.Add(user);
+            Procedure.ExecuteNonQuery(this.ConnectionString, "create_user", inParameters);
         }
 
-        public void Update(string connectionString, string token, int userID, string userName, string userPassword, string? userFullName, string? userEmail, string? userPhoneNumber, int permissionLevel)
+        public void Update(int userID, string userName, string userPassword, string? userFullName, string? userEmail, string? userPhoneNumber, int permissionLevel)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_user_id", userID},
                 {"input_user_name", userName},
                 {"input_user_password", userPassword},
@@ -66,35 +63,17 @@ namespace WarehouseManager.Data.Table
                 {"input_permission_level", permissionLevel}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "update_user", inParameters);
-
-            var user = this.Users?.FirstOrDefault(u => u.UserID == userID);
-            if (user != null)
-            {
-                user.UserName = userName;
-                user.UserPassword = userPassword;
-                user.UserFullName = userFullName;
-                user.UserEmail = userEmail;
-                user.UserPhoneNumber = userPhoneNumber;
-                user.PermissionLevel = permissionLevel;
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "update_user", inParameters);
         }
 
-        public void Delete(string connectionString, string token, int userID)
+        public void Delete(int userID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_user_id", userID}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "delete_user", inParameters);
-
-            var user = this.Users?.FirstOrDefault(u => u.UserID == userID);
-            if (user != null)
-            {
-                this.Users ??= new List<User>();
-                this.Users.Remove(user);
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "delete_user", inParameters);
         }
     }
 }

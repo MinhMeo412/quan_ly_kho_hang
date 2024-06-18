@@ -3,17 +3,19 @@ using WarehouseManager.Data.Utility;
 
 namespace WarehouseManager.Data.Table
 {
-    class StockTransferDetailTable
+    class StockTransferDetailTable(string connectionString, string? token)
     {
+        private string ConnectionString = connectionString;
+        private string? Token = token;
         public List<StockTransferDetail>? StockTransferDetails { get; private set; }
 
-        public void Load(string connectionString, string token)
+        private void Load()
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token}
+                {"input_token", this.Token}
             };
 
-            List<List<object?>> rawStockTransferDetails = Procedure.ExecuteReader(connectionString, "read_stock_transfer_detail", inParameters);
+            List<List<object?>> rawStockTransferDetails = Procedure.ExecuteReader(this.ConnectionString, "read_stock_transfer_detail", inParameters);
 
             List<StockTransferDetail> stockTransferDetails = new List<StockTransferDetail>();
             foreach (List<object?> rawStockTransferDetail in rawStockTransferDetails)
@@ -29,56 +31,38 @@ namespace WarehouseManager.Data.Table
             this.StockTransferDetails = stockTransferDetails;
         }
 
-        public void Add(string connectionString, string token, int stockTransferID, int productVariantID, int stockTransferDetailAmount)
+        public void Add(int stockTransferID, int productVariantID, int stockTransferDetailAmount)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_stock_transfer_id", stockTransferID},
                 {"input_product_variant_id", productVariantID},
                 {"input_stock_transfer_detail_amount", stockTransferDetailAmount}
             };
-            Procedure.ExecuteNonQuery(connectionString, "create_stock_transfer_detail", inParameters);
-
-            StockTransferDetail stockTransferDetail = new StockTransferDetail(stockTransferID, productVariantID, stockTransferDetailAmount);
-
-            this.StockTransferDetails ??= new List<StockTransferDetail>();
-            this.StockTransferDetails.Add(stockTransferDetail);
+            Procedure.ExecuteNonQuery(this.ConnectionString, "create_stock_transfer_detail", inParameters);
         }
 
-        public void Update(string connectionString, string token, int stockTransferID, int productVariantID, int stockTransferDetailAmount)
+        public void Update(int stockTransferID, int productVariantID, int stockTransferDetailAmount)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_stock_transfer_id", stockTransferID},
                 {"input_product_variant_id", productVariantID},
                 {"input_stock_transfer_detail_amount", stockTransferDetailAmount}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "update_stock_transfer_detail", inParameters);
-
-            var stockTransferDetail = this.StockTransferDetails?.FirstOrDefault(std => std.StockTransferID == stockTransferID && std.ProductVariantID == productVariantID);
-            if (stockTransferDetail != null)
-            {
-                stockTransferDetail.StockTransferDetailAmount = stockTransferDetailAmount;
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "update_stock_transfer_detail", inParameters);
         }
 
-        public void Delete(string connectionString, string token, int stockTransferID, int productVariantID)
+        public void Delete(int stockTransferID, int productVariantID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_stock_transfer_id", stockTransferID},
                 {"input_product_variant_id", productVariantID}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "delete_stock_transfer_detail", inParameters);
-
-            var stockTransferDetail = this.StockTransferDetails?.FirstOrDefault(std => std.StockTransferID == stockTransferID && std.ProductVariantID == productVariantID);
-            if (stockTransferDetail != null)
-            {
-                this.StockTransferDetails ??= new List<StockTransferDetail>();
-                this.StockTransferDetails.Remove(stockTransferDetail);
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "delete_stock_transfer_detail", inParameters);
         }
     }
 }

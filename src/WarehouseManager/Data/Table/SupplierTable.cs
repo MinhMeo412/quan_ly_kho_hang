@@ -3,17 +3,19 @@ using WarehouseManager.Data.Utility;
 
 namespace WarehouseManager.Data.Table
 {
-    class SupplierTable
+    class SupplierTable(string connectionString, string? token)
     {
+        private string ConnectionString = connectionString;
+        private string? Token = token;
         public List<Supplier>? Suppliers { get; private set; }
 
-        public void Load(string connectionString, string token)
+        private void Load()
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token}
+                {"input_token", this.Token}
             };
 
-            List<List<object?>> rawSuppliers = Procedure.ExecuteReader(connectionString, "read_supplier", inParameters);
+            List<List<object?>> rawSuppliers = Procedure.ExecuteReader(this.ConnectionString, "read_supplier", inParameters);
 
             List<Supplier> suppliers = new List<Supplier>();
             foreach (List<object?> rawSupplier in rawSuppliers)
@@ -33,10 +35,10 @@ namespace WarehouseManager.Data.Table
             this.Suppliers = suppliers;
         }
 
-        public void Add(string connectionString, string token, int supplierID, string supplierName, string? supplierDescription, string? supplierAddress, string? supplierEmail, string? supplierPhoneNumber, string? supplierWebsite)
+        public void Add(int supplierID, string supplierName, string? supplierDescription, string? supplierAddress, string? supplierEmail, string? supplierPhoneNumber, string? supplierWebsite)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_supplier_id", supplierID},
                 {"input_supplier_name", supplierName},
                 {"input_supplier_description", supplierDescription},
@@ -45,18 +47,13 @@ namespace WarehouseManager.Data.Table
                 {"input_supplier_phone_number", supplierPhoneNumber},
                 {"input_supplier_website", supplierWebsite}
             };
-            Procedure.ExecuteNonQuery(connectionString, "create_supplier", inParameters);
-
-            Supplier supplier = new Supplier(supplierID, supplierName, supplierDescription, supplierAddress, supplierEmail, supplierPhoneNumber, supplierWebsite);
-
-            this.Suppliers ??= new List<Supplier>();
-            this.Suppliers.Add(supplier);
+            Procedure.ExecuteNonQuery(this.ConnectionString, "create_supplier", inParameters);
         }
 
-        public void Update(string connectionString, string token, int supplierID, string supplierName, string? supplierDescription, string? supplierAddress, string? supplierEmail, string? supplierPhoneNumber, string? supplierWebsite)
+        public void Update(int supplierID, string supplierName, string? supplierDescription, string? supplierAddress, string? supplierEmail, string? supplierPhoneNumber, string? supplierWebsite)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_supplier_id", supplierID},
                 {"input_supplier_name", supplierName},
                 {"input_supplier_description", supplierDescription},
@@ -66,35 +63,17 @@ namespace WarehouseManager.Data.Table
                 {"input_supplier_website", supplierWebsite}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "update_supplier", inParameters);
-
-            var supplier = this.Suppliers?.FirstOrDefault(s => s.SupplierID == supplierID);
-            if (supplier != null)
-            {
-                supplier.SupplierName = supplierName;
-                supplier.SupplierDescription = supplierDescription;
-                supplier.SupplierAddress = supplierAddress;
-                supplier.SupplierEmail = supplierEmail;
-                supplier.SupplierPhoneNumber = supplierPhoneNumber;
-                supplier.SupplierWebsite = supplierWebsite;
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "update_supplier", inParameters);
         }
 
-        public void Delete(string connectionString, string token, int supplierID)
+        public void Delete(int supplierID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_supplier_id", supplierID}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "delete_supplier", inParameters);
-
-            var supplier = this.Suppliers?.FirstOrDefault(s => s.SupplierID == supplierID);
-            if (supplier != null)
-            {
-                this.Suppliers ??= new List<Supplier>();
-                this.Suppliers.Remove(supplier);
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "delete_supplier", inParameters);
         }
     }
 }

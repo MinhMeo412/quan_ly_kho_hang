@@ -3,17 +3,32 @@ using WarehouseManager.Data.Utility;
 
 namespace WarehouseManager.Data.Table
 {
-    class CategoryTable
+    class CategoryTable(string connectionString, string? token)
     {
-        public List<Category>? Categories { get; private set; }
+        private string ConnectionString = connectionString;
+        private string? Token = token;
 
-        public void Load(string connectionString, string token)
+        private List<Category>? _categories;
+        public List<Category>? Categories
+        {
+            get
+            {
+                this.Load();
+                return _categories;
+            }
+            private set
+            {
+                _categories = value;
+            }
+        }
+
+        private void Load()
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token}
+                {"input_token", this.Token}
             };
 
-            List<List<object?>> rawCategories = Procedure.ExecuteReader(connectionString, "read_category", inParameters);
+            List<List<object?>> rawCategories = Procedure.ExecuteReader(this.ConnectionString, "read_category", inParameters);
 
             List<Category> categories = new List<Category>();
             foreach (List<object?> rawCategory in rawCategories)
@@ -29,56 +44,37 @@ namespace WarehouseManager.Data.Table
             this.Categories = categories;
         }
 
-        public void Add(string connectionString, string token, int categoryID, string categoryName, string? categoryDescription)
+        public void Add(int categoryID, string categoryName, string? categoryDescription)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_category_id", categoryID},
                 {"input_category_name", categoryName},
                 {"input_category_description", categoryDescription}
             };
-            Procedure.ExecuteNonQuery(connectionString, "create_category", inParameters);
-
-            Category category = new Category(categoryID, categoryName, categoryDescription);
-
-            this.Categories ??= new List<Category>();
-            this.Categories.Add(category);
+            Procedure.ExecuteNonQuery(this.ConnectionString, "create_category", inParameters);
         }
 
-        public void Update(string connectionString, string token, int categoryID, string categoryName, string? categoryDescription)
+        public void Update(int categoryID, string categoryName, string? categoryDescription)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_category_id", categoryID},
                 {"input_category_name", categoryName},
                 {"input_category_description", categoryDescription}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "update_category", inParameters);
-
-            var category = this.Categories?.FirstOrDefault(c => c.CategoryID == categoryID);
-            if (category != null)
-            {
-                category.CategoryName = categoryName;
-                category.CategoryDescription = categoryDescription;
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "update_category", inParameters);
         }
 
-        public void Delete(string connectionString, string token, int categoryID)
+        public void Delete(int categoryID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_category_id", categoryID}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "delete_category", inParameters);
-
-            var category = this.Categories?.FirstOrDefault(c => c.CategoryID == categoryID);
-            if (category != null)
-            {
-                this.Categories ??= new List<Category>();
-                this.Categories.Remove(category);
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "delete_category", inParameters);
         }
     }
 }
