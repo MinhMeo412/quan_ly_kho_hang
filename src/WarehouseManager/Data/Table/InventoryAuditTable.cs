@@ -3,17 +3,32 @@ using WarehouseManager.Data.Utility;
 
 namespace WarehouseManager.Data.Table
 {
-    class InventoryAuditTable
+    class InventoryAuditTable(string connectionString, string? token)
     {
-        public List<InventoryAudit>? InventoryAudits { get; private set; }
+        private string ConnectionString = connectionString;
+        private string? Token = token;
 
-        public void Load(string connectionString, string token)
+        private List<InventoryAudit>? _inventoryAudits;
+        public List<InventoryAudit>? InventoryAudits
+        {
+            get
+            {
+                this.Load();
+                return this._inventoryAudits;
+            }
+            private set
+            {
+                this._inventoryAudits = value;
+            }
+        }
+
+        private void Load()
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token}
+                {"input_token", this.Token}
             };
 
-            List<List<object?>> rawInventoryAudits = Procedure.ExecuteReader(connectionString, "read_inventory_audit", inParameters);
+            List<List<object?>> rawInventoryAudits = Procedure.ExecuteReader(this.ConnectionString, "read_inventory_audit", inParameters);
 
             List<InventoryAudit> inventoryAudits = new List<InventoryAudit>();
             foreach (List<object?> rawAudit in rawInventoryAudits)
@@ -30,60 +45,39 @@ namespace WarehouseManager.Data.Table
             this.InventoryAudits = inventoryAudits;
         }
 
-        public void Add(string connectionString, string token, int inventoryAuditID, int warehouseID, int? userID, DateTime inventoryAuditTime)
+        public void Add(int inventoryAuditID, int warehouseID, int? userID, DateTime inventoryAuditTime)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_inventory_audit_id", inventoryAuditID},
                 {"input_warehouse_id", warehouseID},
                 {"input_user_id", userID},
                 {"input_inventory_audit_time", inventoryAuditTime}
             };
-            Procedure.ExecuteNonQuery(connectionString, "create_inventory_audit", inParameters);
-
-            InventoryAudit audit = new InventoryAudit(
-                inventoryAuditID, warehouseID, userID, inventoryAuditTime);
-
-            this.InventoryAudits ??= new List<InventoryAudit>();
-            this.InventoryAudits.Add(audit);
+            Procedure.ExecuteNonQuery(this.ConnectionString, "create_inventory_audit", inParameters);
         }
 
-        public void Update(string connectionString, string token, int inventoryAuditID, int warehouseID, int? userID, DateTime inventoryAuditTime)
+        public void Update(int inventoryAuditID, int warehouseID, int? userID, DateTime inventoryAuditTime)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_inventory_audit_id", inventoryAuditID},
                 {"input_warehouse_id", warehouseID},
                 {"input_user_id", userID},
                 {"input_inventory_audit_time", inventoryAuditTime}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "update_inventory_audit", inParameters);
-
-            var audit = this.InventoryAudits?.FirstOrDefault(a => a.InventoryAuditID == inventoryAuditID);
-            if (audit != null)
-            {
-                audit.WarehouseID = warehouseID;
-                audit.UserID = userID;
-                audit.InventoryAuditTime = inventoryAuditTime;
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "update_inventory_audit", inParameters);
         }
 
-        public void Delete(string connectionString, string token, int inventoryAuditID)
+        public void Delete(int inventoryAuditID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_inventory_audit_id", inventoryAuditID}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "delete_inventory_audit", inParameters);
-
-            var audit = this.InventoryAudits?.FirstOrDefault(a => a.InventoryAuditID == inventoryAuditID);
-            if (audit != null)
-            {
-                this.InventoryAudits ??= new List<InventoryAudit>();
-                this.InventoryAudits.Remove(audit);
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "delete_inventory_audit", inParameters);
         }
     }
 }

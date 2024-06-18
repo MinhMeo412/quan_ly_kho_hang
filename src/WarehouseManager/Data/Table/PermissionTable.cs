@@ -3,17 +3,32 @@ using WarehouseManager.Data.Utility;
 
 namespace WarehouseManager.Data.Table
 {
-    class PermissionTable
+    class PermissionTable(string connectionString, string? token)
     {
-        public List<Permission>? Permissions { get; private set; }
+        private string ConnectionString = connectionString;
+        private string? Token = token;
 
-        public void Load(string connectionString, string token)
+        private List<Permission>? _permissions;
+        public List<Permission>? Permissions
+        {
+            get
+            {
+                this.Load();
+                return this._permissions;
+            }
+            private set
+            {
+                this._permissions = value;
+            }
+        }
+
+        private void Load()
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token}
+                {"input_token", this.Token}
             };
 
-            List<List<object?>> rawPermissions = Procedure.ExecuteReader(connectionString, "read_permission", inParameters);
+            List<List<object?>> rawPermissions = Procedure.ExecuteReader(this.ConnectionString, "read_permission", inParameters);
 
             List<Permission> permissions = new List<Permission>();
             foreach (List<object?> rawPermission in rawPermissions)
@@ -25,56 +40,37 @@ namespace WarehouseManager.Data.Table
             this.Permissions = permissions;
         }
 
-        public void Add(string connectionString, string token, int permissionLevel, string permissionName, string permissionDescription)
+        public void Add(int permissionLevel, string permissionName, string permissionDescription)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_permission_level", permissionLevel},
                 {"input_permission_name", permissionName},
                 {"input_permission_description", permissionDescription}
             };
-            Procedure.ExecuteNonQuery(connectionString, "create_permission", inParameters);
-
-            Permission permission = new Permission(permissionLevel, permissionName, permissionDescription);
-
-            this.Permissions ??= new List<Permission>();
-            this.Permissions.Add(permission);
+            Procedure.ExecuteNonQuery(this.ConnectionString, "create_permission", inParameters);
         }
 
-        public void Update(string connectionString, string token, int permissionLevel, string permissionName, string permissionDescription)
+        public void Update(int permissionLevel, string permissionName, string permissionDescription)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_permission_level", permissionLevel},
                 {"input_permission_name", permissionName},
                 {"input_permission_description", permissionDescription}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "update_permission", inParameters);
-
-            var permission = this.Permissions?.FirstOrDefault(p => p.PermissionLevel == permissionLevel);
-            if (permission != null)
-            {
-                permission.PermissionName = permissionName;
-                permission.PermissionDescription = permissionDescription;
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "update_permission", inParameters);
         }
 
-        public void Delete(string connectionString, string token, int permissionLevel)
+        public void Delete(int permissionLevel)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_permission_level", permissionLevel}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "delete_permission", inParameters);
-
-            var permission = this.Permissions?.FirstOrDefault(p => p.PermissionLevel == permissionLevel);
-            if (permission != null)
-            {
-                this.Permissions ??= new List<Permission>();
-                this.Permissions.Remove(permission);
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "delete_permission", inParameters);
         }
     }
 }

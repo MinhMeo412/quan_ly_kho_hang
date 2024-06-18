@@ -3,17 +3,32 @@ using WarehouseManager.Data.Utility;
 
 namespace WarehouseManager.Data.Table
 {
-    class ProductTable
+    class ProductTable(string connectionString, string? token)
     {
-        public List<Product>? Products { get; private set; }
+        private string ConnectionString = connectionString;
+        private string? Token = token;
 
-        public void Load(string connectionString, string token)
+        private List<Product>? _products;
+        public List<Product>? Products
+        {
+            get
+            {
+                this.Load();
+                return this._products;
+            }
+            private set
+            {
+                this._products = value;
+            }
+        }
+
+        private void Load()
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token}
+                {"input_token", this.Token}
             };
 
-            List<List<object?>> rawProducts = Procedure.ExecuteReader(connectionString, "read_product", inParameters);
+            List<List<object?>> rawProducts = Procedure.ExecuteReader(this.ConnectionString, "read_product", inParameters);
 
             List<Product> products = new List<Product>();
             foreach (List<object?> rawProduct in rawProducts)
@@ -30,28 +45,23 @@ namespace WarehouseManager.Data.Table
             this.Products = products;
         }
 
-        public void Add(string connectionString, string token, int productID, string productName, string? productDescription, int? productPrice, int? categoryID)
+        public void Add(int productID, string productName, string? productDescription, int? productPrice, int? categoryID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_product_id", productID},
                 {"input_product_name", productName},
                 {"input_product_description", productDescription},
                 {"input_product_price", productPrice},
                 {"input_category_id", categoryID}
             };
-            Procedure.ExecuteNonQuery(connectionString, "create_product", inParameters);
-
-            Product product = new Product(productID, productName, productDescription, productPrice, categoryID);
-
-            this.Products ??= new List<Product>();
-            this.Products.Add(product);
+            Procedure.ExecuteNonQuery(this.ConnectionString, "create_product", inParameters);
         }
 
-        public void Update(string connectionString, string token, int productID, string productName, string? productDescription, int? productPrice, int? categoryID)
+        public void Update(int productID, string productName, string? productDescription, int? productPrice, int? categoryID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_product_id", productID},
                 {"input_product_name", productName},
                 {"input_product_description", productDescription},
@@ -59,33 +69,17 @@ namespace WarehouseManager.Data.Table
                 {"input_category_id", categoryID}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "update_product", inParameters);
-
-            var product = this.Products?.FirstOrDefault(p => p.ProductID == productID);
-            if (product != null)
-            {
-                product.ProductName = productName;
-                product.ProductDescription = productDescription;
-                product.ProductPrice = productPrice;
-                product.CategoryID = categoryID;
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "update_product", inParameters);
         }
 
-        public void Delete(string connectionString, string token, int productID)
+        public void Delete(int productID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_product_id", productID}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "delete_product", inParameters);
-
-            var product = this.Products?.FirstOrDefault(p => p.ProductID == productID);
-            if (product != null)
-            {
-                this.Products ??= new List<Product>();
-                this.Products.Remove(product);
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "delete_product", inParameters);
         }
     }
 }

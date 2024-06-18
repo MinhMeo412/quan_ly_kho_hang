@@ -3,17 +3,32 @@ using WarehouseManager.Data.Utility;
 
 namespace WarehouseManager.Data.Table
 {
-    class StockTransferTable
+    class StockTransferTable(string connectionString, string? token)
     {
-        public List<StockTransfer>? StockTransfers { get; private set; }
+        private string ConnectionString = connectionString;
+        private string? Token = token;
 
-        public void Load(string connectionString, string token)
+        private List<StockTransfer>? _stockTransfers;
+        public List<StockTransfer>? StockTransfers
+        {
+            get
+            {
+                this.Load();
+                return this._stockTransfers;
+            }
+            private set
+            {
+                this._stockTransfers = value;
+            }
+        }
+
+        private void Load()
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token}
+                {"input_token", this.Token}
             };
 
-            List<List<object?>> rawStockTransfers = Procedure.ExecuteReader(connectionString, "read_stock_transfer", inParameters);
+            List<List<object?>> rawStockTransfers = Procedure.ExecuteReader(this.ConnectionString, "read_stock_transfer", inParameters);
 
             List<StockTransfer> stockTransfers = new List<StockTransfer>();
             foreach (List<object?> rawStockTransfer in rawStockTransfers)
@@ -33,10 +48,10 @@ namespace WarehouseManager.Data.Table
             this.StockTransfers = stockTransfers;
         }
 
-        public void Add(string connectionString, string token, int stockTransferID, int fromWarehouseID, int toWarehouseID, DateTime? stockTransferStartingDate, string stockTransferStatus, string? stockTransferDescription, int? userID)
+        public void Add(int stockTransferID, int fromWarehouseID, int toWarehouseID, DateTime? stockTransferStartingDate, string stockTransferStatus, string? stockTransferDescription, int? userID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_stock_transfer_id", stockTransferID},
                 {"input_from_warehouse_id", fromWarehouseID},
                 {"input_to_warehouse_id", toWarehouseID},
@@ -45,18 +60,13 @@ namespace WarehouseManager.Data.Table
                 {"input_stock_transfer_description", stockTransferDescription},
                 {"input_user_id", userID}
             };
-            Procedure.ExecuteNonQuery(connectionString, "create_stock_transfer", inParameters);
-
-            StockTransfer stockTransfer = new StockTransfer(stockTransferID, fromWarehouseID, toWarehouseID, stockTransferStartingDate, stockTransferStatus, stockTransferDescription, userID);
-
-            this.StockTransfers ??= new List<StockTransfer>();
-            this.StockTransfers.Add(stockTransfer);
+            Procedure.ExecuteNonQuery(this.ConnectionString, "create_stock_transfer", inParameters);
         }
 
-        public void Update(string connectionString, string token, int stockTransferID, int fromWarehouseID, int toWarehouseID, DateTime? stockTransferStartingDate, string stockTransferStatus, string? stockTransferDescription, int? userID)
+        public void Update(int stockTransferID, int fromWarehouseID, int toWarehouseID, DateTime? stockTransferStartingDate, string stockTransferStatus, string? stockTransferDescription, int? userID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_stock_transfer_id", stockTransferID},
                 {"input_from_warehouse_id", fromWarehouseID},
                 {"input_to_warehouse_id", toWarehouseID},
@@ -66,35 +76,17 @@ namespace WarehouseManager.Data.Table
                 {"input_user_id", userID}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "update_stock_transfer", inParameters);
-
-            var stockTransfer = this.StockTransfers?.FirstOrDefault(st => st.StockTransferID == stockTransferID);
-            if (stockTransfer != null)
-            {
-                stockTransfer.FromWarehouseID = fromWarehouseID;
-                stockTransfer.ToWarehouseID = toWarehouseID;
-                stockTransfer.StockTransferStartingDate = stockTransferStartingDate;
-                stockTransfer.StockTransferStatus = stockTransferStatus;
-                stockTransfer.StockTransferDescription = stockTransferDescription;
-                stockTransfer.UserID = userID;
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "update_stock_transfer", inParameters);
         }
 
-        public void Delete(string connectionString, string token, int stockTransferID)
+        public void Delete(int stockTransferID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_stock_transfer_id", stockTransferID}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "delete_stock_transfer", inParameters);
-
-            var stockTransfer = this.StockTransfers?.FirstOrDefault(st => st.StockTransferID == stockTransferID);
-            if (stockTransfer != null)
-            {
-                this.StockTransfers ??= new List<StockTransfer>();
-                this.StockTransfers.Remove(stockTransfer);
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "delete_stock_transfer", inParameters);
         }
     }
 }

@@ -19,25 +19,29 @@ class Program
         // Ví dụ cách dùng:
 
         // Thêm vào bảng category
-        warehouse.AddCategory(1001, "Thể loại mới 1", "Mô tả 1");
-        warehouse.AddCategory(1002, "Thể loại mới 2", "Mô tả 2");
-        warehouse.AddCategory(1003, "Thể loại mới 3", "Mô tả 3");
+        warehouse.CategoryTable.Add(1001, "Thể loại mới 1", "Mô tả 1");
+        warehouse.CategoryTable.Add(1002, "Thể loại mới 2", "Mô tả 2");
+        warehouse.CategoryTable.Add(1003, "Thể loại mới 3", "Mô tả 3");
 
         // Sửa trong bảng category
-        warehouse.UpdateCategory(1001, "Thể loại mới 1", "3 người bạn chuối mặc pyjama");
+        warehouse.CategoryTable.Update(1001, "Thể loại mới 1", "3 người bạn chuối mặc pyjama");
 
         // Xóa trong bảng category
-        warehouse.DeleteCategory(1002);
+        warehouse.CategoryTable.Delete(1002);
 
 
         // Lấy về danh sách category
-        List<Category>? categories = warehouse.GetCategories();
+        List<Category>? categories = warehouse.CategoryTable.Categories;
 
         // In danh sách category
-        foreach (Category category in categories)
+        if (categories != null)
         {
-            Console.WriteLine($"Category ID: {category.CategoryID}, Category Name: {category.CategoryName}");
+            foreach (Category category in categories)
+            {
+                Console.WriteLine($"Category ID: {category.CategoryID}, Category Name: {category.CategoryName}");
+            }
         }
+
     }
 
 }

@@ -3,17 +3,32 @@ using WarehouseManager.Data.Utility;
 
 namespace WarehouseManager.Data.Table
 {
-    class OutboundShipmentDetailTable
+    class OutboundShipmentDetailTable(string connectionString, string? token)
     {
-        public List<OutboundShipmentDetail>? OutboundShipmentDetails { get; private set; }
+        private string ConnectionString = connectionString;
+        private string? Token = token;
 
-        public void Load(string connectionString, string token)
+        private List<OutboundShipmentDetail>? _outboundShipmentDetails;
+        public List<OutboundShipmentDetail>? OutboundShipmentDetails
+        {
+            get
+            {
+                this.Load();
+                return this._outboundShipmentDetails;
+            }
+            private set
+            {
+                this._outboundShipmentDetails = value;
+            }
+        }
+
+        private void Load()
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token}
+                {"input_token", this.Token}
             };
 
-            List<List<object?>> rawOutboundShipmentDetails = Procedure.ExecuteReader(connectionString, "read_outbound_shipment_detail", inParameters);
+            List<List<object?>> rawOutboundShipmentDetails = Procedure.ExecuteReader(this.ConnectionString, "read_outbound_shipment_detail", inParameters);
 
             List<OutboundShipmentDetail> outboundShipmentDetails = new List<OutboundShipmentDetail>();
             foreach (List<object?> rawDetail in rawOutboundShipmentDetails)
@@ -29,57 +44,38 @@ namespace WarehouseManager.Data.Table
             this.OutboundShipmentDetails = outboundShipmentDetails;
         }
 
-        public void Add(string connectionString, string token, int outboundShipmentID, int productVariantID, int outboundShipmentDetailAmount)
+        public void Add(int outboundShipmentID, int productVariantID, int outboundShipmentDetailAmount)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_outbound_shipment_id", outboundShipmentID},
                 {"input_product_variant_id", productVariantID},
                 {"input_outbound_shipment_detail_amount", outboundShipmentDetailAmount}
             };
-            Procedure.ExecuteNonQuery(connectionString, "create_outbound_shipment_detail", inParameters);
-
-            OutboundShipmentDetail detail = new OutboundShipmentDetail(
-                outboundShipmentID, productVariantID, outboundShipmentDetailAmount);
-
-            this.OutboundShipmentDetails ??= new List<OutboundShipmentDetail>();
-            this.OutboundShipmentDetails.Add(detail);
+            Procedure.ExecuteNonQuery(this.ConnectionString, "create_outbound_shipment_detail", inParameters);
         }
 
-        public void Update(string connectionString, string token, int outboundShipmentID, int productVariantID, int outboundShipmentDetailAmount)
+        public void Update(int outboundShipmentID, int productVariantID, int outboundShipmentDetailAmount)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_outbound_shipment_id", outboundShipmentID},
                 {"input_product_variant_id", productVariantID},
                 {"input_outbound_shipment_detail_amount", outboundShipmentDetailAmount}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "update_outbound_shipment_detail", inParameters);
-
-            var detail = this.OutboundShipmentDetails?.FirstOrDefault(d => d.OutboundShipmentID == outboundShipmentID && d.ProductVariantID == productVariantID);
-            if (detail != null)
-            {
-                detail.OutboundShipmentDetailAmount = outboundShipmentDetailAmount;
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "update_outbound_shipment_detail", inParameters);
         }
 
-        public void Delete(string connectionString, string token, int outboundShipmentID, int productVariantID)
+        public void Delete(int outboundShipmentID, int productVariantID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_outbound_shipment_id", outboundShipmentID},
                 {"input_product_variant_id", productVariantID}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "delete_outbound_shipment_detail", inParameters);
-
-            var detail = this.OutboundShipmentDetails?.FirstOrDefault(d => d.OutboundShipmentID == outboundShipmentID && d.ProductVariantID == productVariantID);
-            if (detail != null)
-            {
-                this.OutboundShipmentDetails ??= new List<OutboundShipmentDetail>();
-                this.OutboundShipmentDetails.Remove(detail);
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "delete_outbound_shipment_detail", inParameters);
         }
     }
 }

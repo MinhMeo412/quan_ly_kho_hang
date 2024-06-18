@@ -3,17 +3,32 @@ using WarehouseManager.Data.Utility;
 
 namespace WarehouseManager.Data.Table
 {
-    class InboundShipmentTable
+    class InboundShipmentTable(string connectionString, string? token)
     {
-        public List<InboundShipment>? InboundShipments { get; private set; }
+        private string ConnectionString = connectionString;
+        private string? Token = token;
 
-        public void Load(string connectionString, string token)
+        private List<InboundShipment>? _inboundShipments;
+        public List<InboundShipment>? InboundShipments
+        {
+            get
+            {
+                this.Load();
+                return this._inboundShipments;
+            }
+            private set
+            {
+                this._inboundShipments = value;
+            }
+        }
+
+        private void Load()
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token}
+                {"input_token", this.Token}
             };
 
-            List<List<object?>> rawInboundShipments = Procedure.ExecuteReader(connectionString, "read_inbound_shipment", inParameters);
+            List<List<object?>> rawInboundShipments = Procedure.ExecuteReader(this.ConnectionString, "read_inbound_shipment", inParameters);
 
             List<InboundShipment> inboundShipments = new List<InboundShipment>();
             foreach (List<object?> rawShipment in rawInboundShipments)
@@ -33,10 +48,10 @@ namespace WarehouseManager.Data.Table
             this.InboundShipments = inboundShipments;
         }
 
-        public void Add(string connectionString, string token, int inboundShipmentID, int? supplierID, int warehouseID, DateTime? inboundShipmentStartingDate, string inboundShipmentStatus, string? inboundShipmentDescription, int? userID)
+        public void Add(int inboundShipmentID, int? supplierID, int warehouseID, DateTime? inboundShipmentStartingDate, string inboundShipmentStatus, string? inboundShipmentDescription, int? userID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_inbound_shipment_id", inboundShipmentID},
                 {"input_supplier_id", supplierID},
                 {"input_warehouse_id", warehouseID},
@@ -45,19 +60,13 @@ namespace WarehouseManager.Data.Table
                 {"input_inbound_shipment_description", inboundShipmentDescription},
                 {"input_user_id", userID}
             };
-            Procedure.ExecuteNonQuery(connectionString, "create_inbound_shipment", inParameters);
-
-            InboundShipment shipment = new InboundShipment(
-                inboundShipmentID, supplierID, warehouseID, inboundShipmentStartingDate, inboundShipmentStatus, inboundShipmentDescription, userID);
-
-            this.InboundShipments ??= new List<InboundShipment>();
-            this.InboundShipments.Add(shipment);
+            Procedure.ExecuteNonQuery(this.ConnectionString, "create_inbound_shipment", inParameters);
         }
 
-        public void Update(string connectionString, string token, int inboundShipmentID, int? supplierID, int warehouseID, DateTime? inboundShipmentStartingDate, string inboundShipmentStatus, string? inboundShipmentDescription, int? userID)
+        public void Update(int inboundShipmentID, int? supplierID, int warehouseID, DateTime? inboundShipmentStartingDate, string inboundShipmentStatus, string? inboundShipmentDescription, int? userID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_inbound_shipment_id", inboundShipmentID},
                 {"input_supplier_id", supplierID},
                 {"input_warehouse_id", warehouseID},
@@ -67,35 +76,17 @@ namespace WarehouseManager.Data.Table
                 {"input_user_id", userID}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "update_inbound_shipment", inParameters);
-
-            var shipment = this.InboundShipments?.FirstOrDefault(s => s.InboundShipmentID == inboundShipmentID);
-            if (shipment != null)
-            {
-                shipment.SupplierID = supplierID;
-                shipment.WarehouseID = warehouseID;
-                shipment.InboundShipmentStartingDate = inboundShipmentStartingDate;
-                shipment.InboundShipmentStatus = inboundShipmentStatus;
-                shipment.InboundShipmentDescription = inboundShipmentDescription;
-                shipment.UserID = userID;
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "update_inbound_shipment", inParameters);
         }
 
-        public void Delete(string connectionString, string token, int inboundShipmentID)
+        public void Delete(int inboundShipmentID)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"input_token", token},
+                {"input_token", this.Token},
                 {"input_inbound_shipment_id", inboundShipmentID}
             };
 
-            Procedure.ExecuteNonQuery(connectionString, "delete_inbound_shipment", inParameters);
-
-            var shipment = this.InboundShipments?.FirstOrDefault(s => s.InboundShipmentID == inboundShipmentID);
-            if (shipment != null)
-            {
-                this.InboundShipments ??= new List<InboundShipment>();
-                this.InboundShipments.Remove(shipment);
-            }
+            Procedure.ExecuteNonQuery(this.ConnectionString, "delete_inbound_shipment", inParameters);
         }
     }
 }
