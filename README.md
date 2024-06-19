@@ -5,7 +5,8 @@ Repo này chứa chương trình quản lí kho hàng được viết bằng C#.
 ## Mục lục
 
 1. [Tổng quan](#tổng-quan)
-2. [Việc cần làm](#việc-cần-làm)
+2. [Cách dùng](#cách-dùng)
+3. [Việc cần làm](#việc-cần-làm)
 
 ## Tổng quan
 
@@ -18,8 +19,22 @@ Trong repo này:
     * scripts/: chứa các file sql 
 * docs/
     * STYLE_GUIDE.md: quy ước chung
-* Project_Slide.pptx: file thuyết trình của nhóm
-* Projects_Report.docx: file báo cáo của nhóm
+* ProjectReport/: Các file báo cáo của nhóm
+    * Examples/: Mẫu báo cáo
+## Cách dùng
+
+Thiết lập database:
+```bash
+cd db/scripts
+mysql -uroot -p
+source main.sql;
+```
+
+Chạy trương trình:
+```bash
+cd src/WarehouseManager
+dotnet run
+```
 
 ## Việc cần làm
 
