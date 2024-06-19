@@ -14,6 +14,18 @@ namespace WarehouseManager.UI.Utility
             HotNormal = Application.Driver.MakeAttribute(Color.BrightYellow, Color.Black),
             HotFocus = Application.Driver.MakeAttribute(Color.Black, Color.BrightYellow)
         };
+
+        /*
+        Light theme 🤢
+        */
+        public static ColorScheme GenericLight { get; } = new ColorScheme()
+        {
+            Normal = Application.Driver.MakeAttribute(Color.Black, Color.White),
+            Focus = Application.Driver.MakeAttribute(Color.White, Color.Black),
+            HotNormal = Application.Driver.MakeAttribute(Color.BrightBlue, Color.White),
+            HotFocus = Application.Driver.MakeAttribute(Color.White, Color.BrightBlue)
+        };
+
     }
 
 }
