@@ -10,9 +10,9 @@ namespace WarehouseManager.UI.Utility
         public static ColorScheme SerikaDark { get; } = new ColorScheme()
         {
             Normal = Application.Driver.MakeAttribute(Color.White, Color.Black),
-            Focus = Application.Driver.MakeAttribute(Color.White, Color.DarkGray),
+            Focus = Application.Driver.MakeAttribute(Color.Black, Color.White),
             HotNormal = Application.Driver.MakeAttribute(Color.BrightYellow, Color.Black),
-            HotFocus = Application.Driver.MakeAttribute(Color.BrightYellow, Color.DarkGray)
+            HotFocus = Application.Driver.MakeAttribute(Color.Black, Color.BrightYellow)
         };
     }
 
