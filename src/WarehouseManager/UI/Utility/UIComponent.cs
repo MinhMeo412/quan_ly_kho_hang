@@ -116,6 +116,8 @@ namespace WarehouseManager.UI.Utility
             return userPermissionLabel;
         }
 
+
+        // Bảng để dùng trong các menu hiển thị
         public static TableView Table(DataTable dataTable)
         {
             var tableView = new TableView()
@@ -132,6 +134,7 @@ namespace WarehouseManager.UI.Utility
             return tableView;
         }
 
+        // Nút xóa trong các menu hiển thị
         public static Button DeleteButton()
         {
             var deleteButton = new Button("Delete")
@@ -142,6 +145,7 @@ namespace WarehouseManager.UI.Utility
             return deleteButton;
         }
 
+        // Nút thêm trong các menu hiển thị
         public static Button AddButton(string addPrompt)
         {
             var addButton = new Button(addPrompt)

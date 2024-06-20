@@ -130,7 +130,7 @@ namespace WarehouseManager.UI.Menu
                 ReadOnly = !sufficientPermission
             };
 
-            var saveButton = new Button("Save")
+            var saveButton = new Button("Save", is_default: true)
             {
                 X = Pos.Center(),
                 Y = Pos.Bottom(descriptionInput) + 1,
