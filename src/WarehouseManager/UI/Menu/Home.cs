@@ -20,7 +20,6 @@ namespace WarehouseManager.UI.Menu
 
             var userPermissionLabel = UIComponent.UserPermissionLabel("Username", "Permission");
 
-
             mainWindow.Add(errorLabel, userPermissionLabel);
         }
     }

@@ -15,23 +15,9 @@ namespace WarehouseManager.UI.Menu
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Inbound Shipment");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = new Label("Error message here")
-            {
-                X = 1,
-                Y = Pos.AnchorEnd(1),
-                ColorScheme = new ColorScheme
-                {
-                    Normal = Application.Driver.MakeAttribute(Color.BrightRed, Color.Black),
-                }
-            };
+            var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
 
-            var userPermissionLabel = new Label("Username - Permission")
-            {
-                X = 1,
-                Y = Pos.AnchorEnd(1)
-            };
-            userPermissionLabel.X = Pos.Right(mainWindow) - userPermissionLabel.Text.Length - 3;
-
+            var userPermissionLabel = UIComponent.UserPermissionLabel("Username", "Permission");
 
             mainWindow.Add(errorLabel, userPermissionLabel);
         }

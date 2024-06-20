@@ -11,7 +11,7 @@ namespace WarehouseManager.UI.Utility
         */
         private static MenuBar WarehouseMenuBar = new MenuBar(new MenuBarItem[] {
             new MenuBarItem("_Menu", new MenuItem[] {
-                new MenuItem("_Back to home", "", Home.Display),
+                new MenuItem("_Home", "", Home.Display),
                 new MenuItem("_Company information", "", CompanyInformation.Display),
                 new MenuItem("_Switch theme", "Light/Dark", UI.SwitchTheme),
                 new MenuItem("_Exit program", "Ctrl+Q", () => Application.RequestStop())
@@ -100,6 +100,9 @@ namespace WarehouseManager.UI.Utility
             return errorLabel;
         }
 
+        /*
+        Hiển thị tên người dùng và quyền
+        */
         public static Label UserPermissionLabel(string username = "Username", string permission = "Permission")
         {
             string text = $"{username} - {permission}";

@@ -5,11 +5,11 @@ namespace WarehouseManager.UI
 {
     public static class UI
     {
+        public static bool DarkTheme { get; set; } = true;
+
         /*
         Call this to start the interface.
         */
-        public static bool DarkTheme { get; set; } = true;
-
         public static void Start()
         {
             // Initialize the application
@@ -25,10 +25,10 @@ namespace WarehouseManager.UI
             Application.Shutdown();
         }
 
-
+        // Đổi theme 
         public static void SwitchTheme()
         {
-            int result = MessageBox.Query("Switch Theme", "Reload is required. Proceed?", "No", "Yes");
+            int result = MessageBox.Query("Switch Theme", "A reload is required. Proceed?", "No", "Yes");
 
             if (result == 1) // "Yes" button was pressed
             {

@@ -60,9 +60,7 @@ namespace WarehouseManager.UI.Menu
                 Height = Dim.Fill(),
                 Border = new Border()
                 {
-                    BorderStyle = BorderStyle.None,
-                    DrawMarginFrame = false,
-                    Effect3D = false,
+                    BorderStyle = BorderStyle.None
                 }
             };
 
@@ -74,9 +72,7 @@ namespace WarehouseManager.UI.Menu
                 Height = Dim.Fill(),
                 Border = new Border()
                 {
-                    BorderStyle = BorderStyle.None,
-                    DrawMarginFrame = false,
-                    Effect3D = false,
+                    BorderStyle = BorderStyle.None
                 }
             };
 
