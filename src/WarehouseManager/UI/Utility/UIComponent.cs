@@ -5,11 +5,15 @@ namespace WarehouseManager.UI.Utility
 {
     public static class UIComponent
     {
+
+        /*
+        Thanh menu.
+        */
         private static MenuBar WarehouseMenuBar = new MenuBar(new MenuBarItem[] {
             new MenuBarItem("_Menu", new MenuItem[] {
                 new MenuItem("_Back to home", "", Home.Display),
                 new MenuItem("_Company information", "", CompanyInformation.Display),
-                new MenuItem("_Switch theme", "Light/Dark", () => Application.RequestStop()),
+                new MenuItem("_Switch theme", "Light/Dark", UI.SwitchTheme),
                 new MenuItem("_Exit program", "Ctrl+Q", () => Application.RequestStop())
             }),
             new MenuBarItem("_Account", new MenuItem[] {
@@ -42,18 +46,33 @@ namespace WarehouseManager.UI.Utility
             })
         });
 
+
+        /*
+        Cửa sổ chính nhưng ko có thanh menu
+        */
         public static Window MainWindow(string? title = null)
         {
             Window mainWindow = new Window(title)
             {
                 Width = Dim.Fill(),
-                Height = Dim.Fill(),
-                ColorScheme = Theme.SerikaDark
+                Height = Dim.Fill()
             };
+
+            if (UI.DarkTheme)
+            {
+                mainWindow.ColorScheme = Theme.SerikaDark;
+            }
+            else
+            {
+                mainWindow.ColorScheme = Theme.GenericLight;
+            }
 
             return mainWindow;
         }
 
+        /*
+        Cửa sổ chính nhưng có thanh menu
+        */
         public static Window LoggedInMainWindow(string? title = null)
         {
             var mainWindow = UIComponent.MainWindow(title);
@@ -62,6 +81,35 @@ namespace WarehouseManager.UI.Utility
             mainWindow.Add(menuBar);
 
             return mainWindow;
+        }
+
+        /*
+        Thông báo lỗi
+        */
+        public static Label ErrorMessageLabel(string errorMessage = "")
+        {
+            var errorLabel = new Label(errorMessage)
+            {
+                X = 1,
+                Y = Pos.AnchorEnd(1),
+                ColorScheme = new ColorScheme
+                {
+                    Normal = Application.Driver.MakeAttribute(Color.BrightRed, MainWindow().ColorScheme.Normal.Background),
+                }
+            };
+            return errorLabel;
+        }
+
+        public static Label UserPermissionLabel(string username = "Username", string permission = "Permission")
+        {
+            string text = $"{username} - {permission}";
+            var userPermissionLabel = new Label(text)
+            {
+                X = Pos.AnchorEnd(text.Length + 1),
+                Y = Pos.AnchorEnd(1)
+            };
+
+            return userPermissionLabel;
         }
     }
 }
