@@ -1,3 +1,4 @@
+using System.Data;
 using Terminal.Gui;
 using WarehouseManager.UI.Menu;
 
@@ -75,10 +76,10 @@ namespace WarehouseManager.UI.Utility
         */
         public static Window LoggedInMainWindow(string? title = null)
         {
-            var mainWindow = UIComponent.MainWindow(title);
+            var mainWindow = MainWindow(title);
 
-            var menuBar = UIComponent.WarehouseMenuBar;
-            mainWindow.Add(menuBar);
+            var menuBar = WarehouseMenuBar;
+            Application.Top.Add(menuBar);
 
             return mainWindow;
         }
@@ -113,6 +114,42 @@ namespace WarehouseManager.UI.Utility
             };
 
             return userPermissionLabel;
+        }
+
+        public static TableView Table(DataTable dataTable)
+        {
+            var tableView = new TableView()
+            {
+                Width = Dim.Fill(),
+                Height = Dim.Fill(),
+                FullRowSelect = true
+            };
+            tableView.Style.AlwaysShowHeaders = true;
+            tableView.Style.ExpandLastColumn = false;
+            tableView.Style.ShowHorizontalHeaderOverline = false;
+            tableView.Table = dataTable;
+
+            return tableView;
+        }
+
+        public static Button DeleteButton()
+        {
+            var deleteButton = new Button("Delete")
+            {
+                X = 1,
+                Y = Pos.AnchorEnd(3)
+            };
+            return deleteButton;
+        }
+
+        public static Button AddButton(string addPrompt)
+        {
+            var addButton = new Button(addPrompt)
+            {
+                X = Pos.AnchorEnd(addPrompt.Length + 5),
+                Y = Pos.AnchorEnd(3)
+            };
+            return addButton;
         }
     }
 }
