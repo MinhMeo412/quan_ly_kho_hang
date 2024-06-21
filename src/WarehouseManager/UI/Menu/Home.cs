@@ -108,6 +108,10 @@ namespace WarehouseManager.UI.Menu
             // 5% to get secret menu
             if (new Random().Next(100) > 95)
             {
+<<<<<<< HEAD
+                mainWindow.Title = "The end";
+=======
+>>>>>>> refs/remotes/origin/vu_UI
                 List<FrameView> containers = new List<FrameView>();
                 for (int i = 0; i < 25; i++)
                 {
@@ -121,7 +125,10 @@ namespace WarehouseManager.UI.Menu
                 {
                     containers[i - 1].Add(containers[i], UIComponent.ErrorMessageLabel(errorMessage), UIComponent.UserPermissionLabel(username, permission));
                 }
+<<<<<<< HEAD
+=======
                 mainWindow.Title = "The end";
+>>>>>>> refs/remotes/origin/vu_UI
                 mainWindow.Add(containers[0]);
             }
         }

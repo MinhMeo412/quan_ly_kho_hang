@@ -3,12 +3,19 @@ using WarehouseManager.UI.Utility;
 
 namespace WarehouseManager.UI.Menu
 {
-    public static class EditCategory
+    public static class AddStockTransfer
     {
+<<<<<<< HEAD:src/WarehouseManager/UI/Menu/AddStockTransfer.cs
+       /*
+            Todo.
+            Sửa nhà cung cấp.
+        */
+=======
+>>>>>>> refs/remotes/origin/vu_UI:src/WarehouseManager/UI/Menu/EditCategory.cs
         public static void Display()
         {
             Application.Top.RemoveAll();
-            var mainWindow = UIComponent.LoggedInMainWindow("Edit Category");
+            var mainWindow = UIComponent.LoggedInMainWindow("Add New Stock Transfer");
             Application.Top.Add(mainWindow);
 
             var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
@@ -67,7 +74,10 @@ namespace WarehouseManager.UI.Menu
             mainWindow.Add(infoContainer, errorLabel, userPermissionLabel);
         }
 
+<<<<<<< HEAD:src/WarehouseManager/UI/Menu/AddStockTransfer.cs
+=======
 
 
+>>>>>>> refs/remotes/origin/vu_UI:src/WarehouseManager/UI/Menu/EditCategory.cs
     }
 }

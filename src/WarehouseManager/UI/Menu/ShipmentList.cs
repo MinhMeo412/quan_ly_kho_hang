@@ -50,6 +50,9 @@ namespace WarehouseManager.UI.Menu
             var addButtonLeft = UIComponent.AddButton("Add New Outbound Shipment");
             addButtonLeft.X = Pos.Left(addButtonRight) - addButtonLeft.Text.Length - 5;
 
+            var addButtonLeft2 = UIComponent.AddButton("Add New Stock Transfer");
+            addButtonLeft2.X = Pos.Left(addButtonLeft) - addButtonLeft2.Text.Length - 5;
+
 
             var tableContainer = new FrameView()
             {
@@ -125,7 +128,46 @@ namespace WarehouseManager.UI.Menu
             {
                 int column = args.Col;
                 int row = args.Row;
-                MessageBox.Query("Cell Clicked", $"Column: {column}, Row: {row}", "OK");
+
+                // Retrieve the current value of the cell
+                var currentValue = tableView.Table.Rows[row][column].ToString();
+
+                // Create a dialog box with an input field for editing the cell value
+                var editDialog = new Dialog("Edit Cell")
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Center(),
+                    Width = Dim.Percent(50),
+                    Height = Dim.Percent(50)
+                };
+
+                var newValue = new TextView()
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Center(),
+                    Width = Dim.Fill(),
+                    Height = Dim.Fill(),
+                    Text = currentValue
+                };
+
+                var cancelButton = new Button("Cancel");
+                cancelButton.Clicked += () =>
+                {
+                    Application.RequestStop();
+                };
+
+                var okButton = new Button("OK", is_default: true);
+                okButton.Clicked += () =>
+                {
+                    // Update the table with the new value
+                    tableView.Table.Rows[row][column] = newValue.Text.ToString();
+                    Application.RequestStop();
+                };
+
+                editDialog.Add(newValue);
+                editDialog.AddButton(cancelButton);
+                editDialog.AddButton(okButton);
+                Application.Run(editDialog);
             };
 
             deleteButton.Clicked += () =>
@@ -146,9 +188,15 @@ namespace WarehouseManager.UI.Menu
                 AddOutboundShipment.Display();
             };
 
+            addButtonLeft2.Clicked += () =>
+            {
+                // khi nút category đc click
+                AddStockTransfer.Display();
+            };
+
             tableContainer.Add(tableView);
             searchContainer.Add(searchLabel, searchInput, searchButton);
-            mainWindow.Add(searchContainer, tableContainer, addButtonRight, addButtonLeft, deleteButton, errorLabel, userPermissionLabel);
+            mainWindow.Add(searchContainer, tableContainer, addButtonRight, addButtonLeft, addButtonLeft2, deleteButton, errorLabel, userPermissionLabel);
         }
     }
 }

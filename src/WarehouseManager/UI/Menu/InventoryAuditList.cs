@@ -118,11 +118,50 @@ namespace WarehouseManager.UI.Menu
 
             // khi bấm vào 1 ô trong bảng
             tableView.CellActivated += args =>
-            {
-                int column = args.Col;
-                int row = args.Row;
-                MessageBox.Query("Cell Clicked", $"Column: {column}, Row: {row}", "OK");
-            };
+                        {
+                            int column = args.Col;
+                            int row = args.Row;
+
+                            // Retrieve the current value of the cell
+                            var currentValue = tableView.Table.Rows[row][column].ToString();
+
+                            // Create a dialog box with an input field for editing the cell value
+                            var editDialog = new Dialog("Edit Cell")
+                            {
+                                X = Pos.Center(),
+                                Y = Pos.Center(),
+                                Width = Dim.Percent(50),
+                                Height = Dim.Percent(50)
+                            };
+
+                            var newValue = new TextView()
+                            {
+                                X = Pos.Center(),
+                                Y = Pos.Center(),
+                                Width = Dim.Fill(),
+                                Height = Dim.Fill(),
+                                Text = currentValue
+                            };
+
+                            var cancelButton = new Button("Cancel");
+                            cancelButton.Clicked += () =>
+                            {
+                                Application.RequestStop();
+                            };
+
+                            var okButton = new Button("OK", is_default: true);
+                            okButton.Clicked += () =>
+                            {
+                                // Update the table with the new value
+                                tableView.Table.Rows[row][column] = newValue.Text.ToString();
+                                Application.RequestStop();
+                            };
+
+                            editDialog.Add(newValue);
+                            editDialog.AddButton(cancelButton);
+                            editDialog.AddButton(okButton);
+                            Application.Run(editDialog);
+                        };
 
             deleteButton.Clicked += () =>
             {

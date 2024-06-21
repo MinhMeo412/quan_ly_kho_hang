@@ -1,5 +1,7 @@
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
+using WarehouseManager.Core;
+using MySql.Data.MySqlClient;
 
 namespace WarehouseManager.UI.Menu
 {
@@ -84,7 +86,11 @@ namespace WarehouseManager.UI.Menu
             quitButtonContainer.Add(quitButton);
 
             // Create the Login and Quit buttons
+<<<<<<< HEAD
+            var loginButton = new Button("Sign in", is_default: true)
+=======
             var loginButton = new Button("Sign in", is_default:true)
+>>>>>>> refs/remotes/origin/vu_UI
             {
                 X = Pos.Center(),
                 Y = Pos.AnchorEnd(1)
@@ -96,21 +102,29 @@ namespace WarehouseManager.UI.Menu
             // Handle the click events
             loginButton.Clicked += () =>
             {
-                // cái này thành false nếu đăng nhập ko thành cong
-                bool success = true;
+                Home.Display();
 
-                if (success)
-                {
-                    // Pop up username va password:
-                    // MessageBox.Query("Sign in", $"Username: {usernameInput.Text}\nPassword: {passwordInput.Text}", "OK");
+                // bool success = false;
+                // try
+                // {
+                //     success = Core.Login.Check($"{usernameInput.Text}", $"{passwordInput.Text}");
 
-                    // Chuyển sang menu mới
-                    Home.Display();
-                }
-                else
-                {
-                    MessageBox.Query("Login Failed", $"Username or password is incorrect", "OK");
-                }
+                //     if (success)
+                //     {
+                //         Home.Display();
+                //     }
+                //     else
+                //     {
+                //         MessageBox.Query("Login Failed", $" Username or password is incorrect ", "OK");
+                //     }
+
+                // }
+                // catch (Exception ex)
+                // {
+                //     MessageBox.Query("Login Failed", $" {ex.Message} ", "OK");
+                // }
+
+
             };
 
             quitButton.Clicked += () => Application.RequestStop();
