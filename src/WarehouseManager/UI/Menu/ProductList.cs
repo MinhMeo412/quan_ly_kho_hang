@@ -116,18 +116,18 @@ namespace WarehouseManager.UI.Menu
                 }
             };
 
-            // khi bấm vào 1 ô trong bảng
-            tableView.CellActivated += args =>
-            {
-                int column = args.Col;
-                int row = args.Row;
-                MessageBox.Query("Cell Clicked", $"Column: {column}, Row: {row}", "OK");
-            };
-
             deleteButton.Clicked += () =>
             {
                 // khi nút Delete được bấm
                 MessageBox.Query("Delete", $"Row: {tableView.SelectedRow}", "OK");
+            };
+
+            tableView.CellActivated += args =>
+            {
+                int column = args.Col;
+                int row = args.Row;
+
+                EditProduct.Display();
             };
 
             addButton.Clicked += () =>
