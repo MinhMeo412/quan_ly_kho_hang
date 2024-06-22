@@ -4,16 +4,16 @@ using WarehouseManager.UI.Utility;
 
 namespace WarehouseManager.UI.Menu
 {
-    public static class AddOutboundShipment
+    public static class AddTransferShipment
     {
         /*
-            Todo.
-            Thêm phiếu xuất.
-        */
+             Todo.
+             Thêm phiếu nhập .
+         */
         public static void Display()
         {
             Application.Top.RemoveAll();
-            var mainWindow = UIComponent.LoggedInMainWindow("Add Outbound Shipment");
+            var mainWindow = UIComponent.LoggedInMainWindow("Add Transfer Shipment");
             Application.Top.Add(mainWindow);
 
             var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
@@ -43,16 +43,16 @@ namespace WarehouseManager.UI.Menu
                 Width = 50,
             };
 
-            var toAddressLabel = new Label("To Address:")
+            var toWarehouseLabel = new Label("To Warehouse:")
             {
                 X = 3,
                 Y = Pos.Bottom(fromWarehouseLabel) + 2
             };
 
-            var toAddressInput = new TextField("")
+            var toWarehouseInput = new TextField("")
             {
                 X = 20,
-                Y = Pos.Top(toAddressLabel),
+                Y = Pos.Top(toWarehouseLabel),
                 Width = 50,
             };
 
@@ -65,7 +65,7 @@ namespace WarehouseManager.UI.Menu
             var descriptionInput = new TextView()
             {
                 X = 20,
-                Y = Pos.Bottom(toAddressInput) + 2,
+                Y = Pos.Bottom(toWarehouseInput) + 2,
                 Width = 50,
                 Height = 3,
                 Text = "",
@@ -178,9 +178,8 @@ namespace WarehouseManager.UI.Menu
 
 
             tableContainer.Add(tableView);
-            container.Add(fromWarehouseLabel, fromWarehouseInput, descriptionLabel, dateLabel, dateInput, userLabel, userInput, statusLabel, statusBox, toAddressLabel, toAddressInput, descriptionInput);
+            container.Add(fromWarehouseLabel, toWarehouseLabel, descriptionLabel, dateLabel, dateInput, userLabel, userInput, statusLabel, statusBox, fromWarehouseInput, toWarehouseInput, descriptionInput);
             mainWindow.Add(container, tableContainer, separatorLine, errorLabel, userPermissionLabel, saveButton);
         }
-
     }
 }

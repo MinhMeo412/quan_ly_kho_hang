@@ -37,6 +37,7 @@ namespace WarehouseManager.UI.Utility
                 new MenuItem("_Show all shipments", "", ShipmentList.Display),
                 new MenuItem("_Add outbound shipment", "", AddOutboundShipment.Display),
                 new MenuItem("_Add inbound shipment", "", AddInboundShipment.Display),
+                new MenuItem("_Add transfer shipment", "", AddTransferShipment.Display),
                 new MenuItem("_Show all inventory audits", "", InventoryAuditList.Display),
                 new MenuItem("_Add new inventory audit", "", AddInventoryAudit.Display),
                 new MenuItem("_Show all warehouses", "", WarehouseList.Display),
@@ -116,7 +117,18 @@ namespace WarehouseManager.UI.Utility
             return userPermissionLabel;
         }
 
+        //Đường kẻ trên UserPermissionLabel và ErrorMessageLabel
+        public static LineView SeparatorLine()
+        {
+            var separatorLine = new LineView()
+            {
+                X = 0,
+                Y = Pos.AnchorEnd(2),
+                Width = Dim.Fill()
+            };
 
+            return separatorLine;
+        }
         // Bảng để dùng trong các menu hiển thị
         public static TableView Table(DataTable dataTable)
         {
