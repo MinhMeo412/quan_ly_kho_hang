@@ -86,11 +86,7 @@ namespace WarehouseManager.UI.Menu
             quitButtonContainer.Add(quitButton);
 
             // Create the Login and Quit buttons
-<<<<<<< HEAD
             var loginButton = new Button("Sign in", is_default: true)
-=======
-            var loginButton = new Button("Sign in", is_default:true)
->>>>>>> refs/remotes/origin/vu_UI
             {
                 X = Pos.Center(),
                 Y = Pos.AnchorEnd(1)

@@ -5,13 +5,6 @@ namespace WarehouseManager.UI.Menu
 {
     public static class AddStockTransfer
     {
-<<<<<<< HEAD:src/WarehouseManager/UI/Menu/AddStockTransfer.cs
-       /*
-            Todo.
-            Sửa nhà cung cấp.
-        */
-=======
->>>>>>> refs/remotes/origin/vu_UI:src/WarehouseManager/UI/Menu/EditCategory.cs
         public static void Display()
         {
             Application.Top.RemoveAll();
@@ -74,10 +67,7 @@ namespace WarehouseManager.UI.Menu
             mainWindow.Add(infoContainer, errorLabel, userPermissionLabel);
         }
 
-<<<<<<< HEAD:src/WarehouseManager/UI/Menu/AddStockTransfer.cs
-=======
 
 
->>>>>>> refs/remotes/origin/vu_UI:src/WarehouseManager/UI/Menu/EditCategory.cs
     }
 }
