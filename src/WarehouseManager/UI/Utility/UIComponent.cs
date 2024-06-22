@@ -106,10 +106,10 @@ namespace WarehouseManager.UI.Utility
         /*
         Hiển thị tên người dùng và quyền
         */
-        public static Label UserPermissionLabel(string username, string permission)
+        public static Label UserPermissionLabel()
         {
-            username = $"{Program.warehouse.Username}";
-            permission = UIComponentLogic.PermissionName();
+            string username = $"{Program.warehouse.Username}";
+            string permission = UIComponentLogic.PermissionName();
 
             string text = $"{username} - {permission}";
             var userPermissionLabel = new Label(text)

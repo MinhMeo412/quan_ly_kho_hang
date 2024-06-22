@@ -12,12 +12,10 @@ namespace WarehouseManager.UI.Menu
             Application.Top.Add(mainWindow);
 
             string errorMessage = "Error Message Here";
-            string username = "Username";
-            string permission = "Permission";
 
             var errorLabel = UIComponent.ErrorMessageLabel(errorMessage);
 
-            var userPermissionLabel = UIComponent.UserPermissionLabel(username, permission);
+            var userPermissionLabel = UIComponent.UserPermissionLabel();
 
             string speechBubble =
             @"⠀⠀⠀⠀⠀⠀⠀⢀⣠⠤⠴⠒⠒⠒⠒⠒⠒⠒⠦⢤⣀⡀⠀⠀⠀⠀⠀⠀⠀" + "\n" +
@@ -120,7 +118,7 @@ namespace WarehouseManager.UI.Menu
                 }
                 for (int i = 24; i > 0; i--)
                 {
-                    containers[i - 1].Add(containers[i], UIComponent.ErrorMessageLabel(errorMessage), UIComponent.UserPermissionLabel(username, permission));
+                    containers[i - 1].Add(containers[i], UIComponent.ErrorMessageLabel(errorMessage), UIComponent.UserPermissionLabel());
                 }
                 mainWindow.Add(containers[0]);
             }

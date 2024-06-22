@@ -140,7 +140,7 @@ namespace WarehouseManager.UI.Menu
 
             var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
 
-            var userPermissionLabel = UIComponent.UserPermissionLabel("Username", "Permission");
+            var userPermissionLabel = UIComponent.UserPermissionLabel();
 
             saveButton.Clicked += () =>
             {
