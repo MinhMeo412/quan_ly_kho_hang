@@ -7,9 +7,9 @@ namespace WarehouseManager.UI.Menu
     public static class WarehouseStock
     {
         /*
-             Todo.
-             Xem tồn kho.
-         */
+            Todo.
+            Xem tồn kho.
+        */
         public static void Display()
         {
             Application.Top.RemoveAll();

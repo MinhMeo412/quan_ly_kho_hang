@@ -40,40 +40,40 @@ namespace WarehouseManager.UI.Menu
             {
                 X = 20,
                 Y = Pos.Top(fromWarehouseLabel),
-                Width = 50,
+                Width = Dim.Percent(25),
             };
 
             var toAddressLabel = new Label("To Address:")
             {
                 X = 3,
-                Y = Pos.Bottom(fromWarehouseLabel) + 2
+                Y = Pos.Center()
             };
 
             var toAddressInput = new TextField("")
             {
                 X = 20,
                 Y = Pos.Top(toAddressLabel),
-                Width = 50,
+                Width = Dim.Percent(25),
             };
 
             var descriptionLabel = new Label("Description:")
             {
                 X = 3,
-                Y = Pos.Bottom(fromWarehouseLabel) + 6
+                Y = Pos.AnchorEnd() - 2
             };
 
             var descriptionInput = new TextView()
             {
                 X = 20,
-                Y = Pos.Bottom(toAddressInput) + 2,
-                Width = 50,
-                Height = 3,
+                Y = Pos.Top(descriptionLabel),
+                Width = Dim.Percent(25),
+                Height = 2,
                 Text = "",
             };
 
             var dateLabel = new Label("Date:")
             {
-                X = 110,
+                X = Pos.Percent(60),
                 Y = 1
             };
 
