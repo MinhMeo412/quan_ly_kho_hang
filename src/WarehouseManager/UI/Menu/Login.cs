@@ -34,7 +34,7 @@ namespace WarehouseManager.UI.Menu
                 X = 1,
                 Y = 1
             };
-            var usernameInput = new TextField("")
+            var usernameInput = new TextField("admin")
             {
                 X = Pos.Right(usernameLabel) + 1,
                 Y = Pos.Top(usernameLabel),
@@ -47,7 +47,7 @@ namespace WarehouseManager.UI.Menu
                 X = 1,
                 Y = Pos.Bottom(usernameLabel) + 1
             };
-            var passwordInput = new TextField("")
+            var passwordInput = new TextField("1234")
             {
                 X = Pos.Right(passwordLabel) + 1,
                 Y = Pos.Top(passwordLabel),
@@ -98,27 +98,25 @@ namespace WarehouseManager.UI.Menu
             // Handle the click events
             loginButton.Clicked += () =>
             {
-                Home.Display();
+                bool success = false;
+                try
+                {
+                    success = LoginLogic.Check($"{usernameInput.Text}", $"{passwordInput.Text}");
 
-                // bool success = false;
-                // try
-                // {
-                //     success = Core.Login.Check($"{usernameInput.Text}", $"{passwordInput.Text}");
+                    if (success)
+                    {
+                        Home.Display();
+                    }
+                    else
+                    {
+                        MessageBox.Query("Login Failed", $" Username or password is incorrect ", "OK");
+                    }
 
-                //     if (success)
-                //     {
-                //         Home.Display();
-                //     }
-                //     else
-                //     {
-                //         MessageBox.Query("Login Failed", $" Username or password is incorrect ", "OK");
-                //     }
-
-                // }
-                // catch (Exception ex)
-                // {
-                //     MessageBox.Query("Login Failed", $" {ex.Message} ", "OK");
-                // }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Query("Login Failed", $" {ex.Message} ", "OK");
+                }
 
 
             };

@@ -22,7 +22,7 @@ CREATE PROCEDURE read_permission(
     IN input_token VARCHAR(36)
 )
 BEGIN
-    DECLARE required_level INT DEFAULT -1;
+    DECLARE required_level INT DEFAULT 4;
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM permission;
     ELSE

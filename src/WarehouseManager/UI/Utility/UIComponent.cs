@@ -1,6 +1,7 @@
 using System.Data;
 using Terminal.Gui;
 using WarehouseManager.UI.Menu;
+using WarehouseManager.Core;
 
 namespace WarehouseManager.UI.Utility
 {
@@ -105,8 +106,11 @@ namespace WarehouseManager.UI.Utility
         /*
         Hiển thị tên người dùng và quyền
         */
-        public static Label UserPermissionLabel(string username = "Username", string permission = "Permission")
+        public static Label UserPermissionLabel(string username, string permission)
         {
+            username = $"{Program.warehouse.Username}";
+            permission = UIComponentLogic.PermissionName();
+
             string text = $"{username} - {permission}";
             var userPermissionLabel = new Label(text)
             {

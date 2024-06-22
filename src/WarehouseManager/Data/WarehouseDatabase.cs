@@ -26,6 +26,8 @@ namespace WarehouseManager.Data
 
         private string ConnectionString;
         private string? Token;
+        public string? Username;
+        public int? PermissionLevel;
 
         public WarehouseDatabase(string server = "localhost", string user = "root", string password = "", string database = "warehouse")
         {
@@ -60,7 +62,8 @@ namespace WarehouseManager.Data
             List<string> outParameters = new List<string>
             {
                 "success",
-                "token"
+                "token",
+                "permission_level"
             };
 
             Dictionary<string, object?> output = Procedure.ExecuteNonQuery(this.ConnectionString, "user_login", inParameters, outParameters);
@@ -70,16 +73,18 @@ namespace WarehouseManager.Data
             if (success)
             {
                 this.Token = $"{output["token"]}";
+                this.Username = username;
+                this.PermissionLevel = int.Parse($"{output["permission_level"]}");
                 this.Initialize();
             }
 
             return success;
         }
 
-        public bool ChangePassword(string username, string oldPassword, string newPassword)
+        public bool ChangePassword(string oldPassword, string newPassword)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
-                {"inputted_username", username},
+                {"inputted_username", this.Username},
                 {"old_password", oldPassword},
                 {"new_password", newPassword}
             };

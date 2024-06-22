@@ -50,7 +50,8 @@ CREATE PROCEDURE user_login(
     IN inputted_username VARCHAR(32),
     IN inputted_password VARCHAR(128),
     OUT success BOOLEAN,
-    OUT token VARCHAR(36)
+    OUT token VARCHAR(36),
+    OUT permission_level INT
 )
 BEGIN
 	DECLARE token_uuid VARCHAR(36);
@@ -63,12 +64,14 @@ BEGIN
 
     SET success = FALSE;
     SET token = NULL;
+    SET permission_level = NULL;
     
     IF inputted_password = actual_password THEN
         INSERT INTO token(token_uuid, user_id) VALUES (token_uuid, actual_user_id);
         
         SET success = TRUE;
         SET token = token_uuid;
+        SET permission_level = get_permission_level(token_uuid);
     END IF;
 END //
 
