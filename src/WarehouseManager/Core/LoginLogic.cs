@@ -1,7 +1,7 @@
 
 namespace WarehouseManager.Core
 {
-    static class Login
+    static class LoginLogic
     {
         public static bool Check(string username, string password)
         {
