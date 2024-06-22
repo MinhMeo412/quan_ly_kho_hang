@@ -22,7 +22,7 @@ namespace WarehouseManager.UI.Menu
                 X = Pos.Center(),
                 Y = Pos.Center(),
                 Width = Dim.Percent(65),
-                Height = Dim.Percent(50)
+                Height = 20
             };
 
             var warehouseNameLabel = new Label("Warehouse Name:")
@@ -101,7 +101,7 @@ namespace WarehouseManager.UI.Menu
             var saveButton = new Button("Save", is_default: true)
             {
                 X = Pos.Center(),
-                Y = Pos.Bottom(warehouseNameLabel) + 15
+                Y = Pos.AnchorEnd(3)
             };
 
             //Khi nhấn nút save
@@ -132,8 +132,6 @@ namespace WarehouseManager.UI.Menu
 
             container.Add(warehouseNameLabel, warehouseNameInput, warehouseAddressLabel, warehouseAddressInput, districtLabel, districtInput, cityLabel, cityInput, countryLabel, countryInput, postalCodeLabel, postalCodeInput, saveButton);
             mainWindow.Add(container, errorLabel, userPermissionLabel, separatorLine);
-
-
         }
     }
 }

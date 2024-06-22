@@ -16,6 +16,8 @@ namespace WarehouseManager.UI.Menu
 
             var userPermissionLabel = UIComponent.UserPermissionLabel("Username", "Permission");
 
+            var separatorLine = UIComponent.SeparatorLine();
+
             var middleContainer = new FrameView()
             {
                 X = 1,
@@ -284,7 +286,7 @@ namespace WarehouseManager.UI.Menu
             rightContainer.Add(tableView, deleteButton, variantInputContainer, addVariantButton);
             middleContainer.Add(leftContainer, rightContainer, saveButton);
 
-            mainWindow.Add(middleContainer, errorLabel, userPermissionLabel);
+            mainWindow.Add(middleContainer, errorLabel, userPermissionLabel, separatorLine);
         }
 
 
