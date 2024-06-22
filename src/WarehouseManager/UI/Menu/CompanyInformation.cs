@@ -15,6 +15,7 @@ namespace WarehouseManager.UI.Menu
             var mainWindow = UIComponent.LoggedInMainWindow("Company Information");
             Application.Top.Add(mainWindow);
 
+            var separatorLine = UIComponent.SeparatorLine();
 
             // Chỉnh thành true nếu là admin. nếu ko là admin thì sẽ không sửa đươc.
             bool sufficientPermission = true;
@@ -150,7 +151,7 @@ namespace WarehouseManager.UI.Menu
             leftCollumnContainer.Add(companyNameLabel, addressLabel, phoneNumberLabel, companyNameInput, addressInput, phoneNumberInput);
             rightCollumnContainer.Add(emailLabel, representativeLabel, emailInput, representativeInput);
             infoContainer.Add(leftCollumnContainer, rightCollumnContainer, descriptionLabel, descriptionInput, saveButton);
-            mainWindow.Add(errorLabel, userPermissionLabel);
+            mainWindow.Add(errorLabel, userPermissionLabel, separatorLine);
         }
     }
 }
