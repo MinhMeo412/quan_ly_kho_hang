@@ -16,6 +16,8 @@ namespace WarehouseManager.UI.Menu
 
             var userPermissionLabel = UIComponent.UserPermissionLabel("Username", "Permission");
 
+            var separatorLine = UIComponent.SeparatorLine();
+
             var searchContainer = new FrameView()
             {
                 X = Pos.Center(),
@@ -178,7 +180,7 @@ namespace WarehouseManager.UI.Menu
 
             tableContainer.Add(tableView);
             searchContainer.Add(searchLabel, searchInput, searchButton);
-            mainWindow.Add(searchContainer, tableContainer, addButton, deleteButton, errorLabel, userPermissionLabel);
+            mainWindow.Add(searchContainer, tableContainer, addButton, deleteButton, errorLabel, userPermissionLabel, separatorLine);
         }
     }
 }

@@ -16,6 +16,8 @@ namespace WarehouseManager.UI.Menu
 
             var userPermissionLabel = UIComponent.UserPermissionLabel("Username", "Permission");
 
+            var separatorLine = UIComponent.SeparatorLine();
+
             var searchContainer = new FrameView()
             {
                 X = Pos.Center(),
@@ -50,7 +52,7 @@ namespace WarehouseManager.UI.Menu
             var addButtonLeft = UIComponent.AddButton("Add New Outbound Shipment");
             addButtonLeft.X = Pos.Left(addButtonRight) - addButtonLeft.Text.Length - 5;
 
-            var addButtonLeft2 = UIComponent.AddButton("Add New Stock Transfer");
+            var addButtonLeft2 = UIComponent.AddButton("Add New Transfer Shipment");
             addButtonLeft2.X = Pos.Left(addButtonLeft) - addButtonLeft2.Text.Length - 5;
 
 
@@ -191,12 +193,12 @@ namespace WarehouseManager.UI.Menu
             addButtonLeft2.Clicked += () =>
             {
                 // khi nút category đc click
-                AddStockTransfer.Display();
+                AddTransferShipment.Display();
             };
 
             tableContainer.Add(tableView);
             searchContainer.Add(searchLabel, searchInput, searchButton);
-            mainWindow.Add(searchContainer, tableContainer, addButtonRight, addButtonLeft, addButtonLeft2, deleteButton, errorLabel, userPermissionLabel);
+            mainWindow.Add(separatorLine, searchContainer, tableContainer, addButtonRight, addButtonLeft, addButtonLeft2, deleteButton, errorLabel, userPermissionLabel);
         }
     }
 }
