@@ -4,16 +4,16 @@ using WarehouseManager.UI.Utility;
 
 namespace WarehouseManager.UI.Menu
 {
-    public static class AddTransferShipment
+    public static class EditStockTransfer
     {
         /*
              Todo.
-             Thêm phiếu nhập .
+             Sửa phiếu nhập.
          */
         public static void Display()
         {
             Application.Top.RemoveAll();
-            var mainWindow = UIComponent.LoggedInMainWindow("Add Transfer Shipment");
+            var mainWindow = UIComponent.LoggedInMainWindow("Edit Stock Transfer");
             Application.Top.Add(mainWindow);
 
             var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
@@ -170,5 +170,6 @@ namespace WarehouseManager.UI.Menu
             container.Add(leftContainer, rightContainer);
             mainWindow.Add(container, tableContainer, separatorLine, errorLabel, userPermissionLabel, saveButton);
         }
+
     }
 }

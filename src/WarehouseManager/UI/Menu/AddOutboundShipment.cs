@@ -29,6 +29,22 @@ namespace WarehouseManager.UI.Menu
                 Width = Dim.Percent(85),
                 Height = Dim.Percent(30)
             };
+            var leftContainer = new FrameView()
+            {
+                X = 0,
+                Y = 0,
+                Width = Dim.Percent(50),
+                Height = Dim.Percent(100),
+                Border = new Border() { BorderStyle = BorderStyle.None }
+            };
+            var rightContainer = new FrameView()
+            {
+                X = Pos.Percent(50),
+                Y = 0,
+                Width = Dim.Percent(50),
+                Height = Dim.Percent(100),
+                Border = new Border() { BorderStyle = BorderStyle.None }
+            };
 
             var fromWarehouseLabel = new Label("From Warehouse:")
             {
@@ -40,66 +56,66 @@ namespace WarehouseManager.UI.Menu
             {
                 X = 20,
                 Y = Pos.Top(fromWarehouseLabel),
-                Width = Dim.Percent(25),
+                Width = Dim.Percent(60),
             };
 
             var toAddressLabel = new Label("To Address:")
             {
                 X = 3,
-                Y = Pos.Center()
+                Y = Pos.Bottom(fromWarehouseLabel) + 2
             };
 
             var toAddressInput = new TextField("")
             {
                 X = 20,
                 Y = Pos.Top(toAddressLabel),
-                Width = Dim.Percent(25),
+                Width = Dim.Percent(60),
             };
 
             var descriptionLabel = new Label("Description:")
             {
                 X = 3,
-                Y = Pos.AnchorEnd() - 2
+                Y = Pos.Bottom(toAddressLabel) + 2
             };
 
             var descriptionInput = new TextView()
             {
                 X = 20,
                 Y = Pos.Top(descriptionLabel),
-                Width = Dim.Percent(25),
+                Width = Dim.Percent(60),
                 Height = 2,
                 Text = "",
             };
 
             var dateLabel = new Label("Date:")
             {
-                X = Pos.Percent(60),
+                X = 3,
                 Y = 1
             };
 
             var dateInput = new TextField("")
             {
-                X = 120,
+                X = 20,
                 Y = Pos.Top(dateLabel),
-                Width = 50,
+                Width = Dim.Percent(60),
             };
 
             var userLabel = new Label("User:")
             {
-                X = 110,
+                X = 3,
                 Y = Pos.Bottom(dateLabel) + 2
             };
 
             var userInput = new TextField("")
             {
-                X = 120,
+                X = 20,
                 Y = Pos.Top(userLabel),
-                Width = 50,
+                Width = Dim.Percent(60),
             };
 
             var statusLabel = new Label("Status:")
             {
-                X = 110,
+                X = 3,
                 Y = Pos.Bottom(userLabel) + 2
             };
 
@@ -107,9 +123,9 @@ namespace WarehouseManager.UI.Menu
 
             var statusBox = new ComboBox(options)
             {
-                X = 120,
+                X = 20,
                 Y = Pos.Top(statusLabel),
-                Width = 50,
+                Width = Dim.Percent(60),
                 Height = 4
             };
 
@@ -130,36 +146,6 @@ namespace WarehouseManager.UI.Menu
             dataTable.Rows.Add(2, "Bob", 25);
             dataTable.Rows.Add(3, "Charlie", 35);
             dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(2, "Bob", 25);
 
             var tableView = UIComponent.Table(dataTable);
 
@@ -178,7 +164,9 @@ namespace WarehouseManager.UI.Menu
 
 
             tableContainer.Add(tableView);
-            container.Add(fromWarehouseLabel, fromWarehouseInput, descriptionLabel, dateLabel, dateInput, userLabel, userInput, statusLabel, statusBox, toAddressLabel, toAddressInput, descriptionInput);
+            leftContainer.Add(fromWarehouseLabel, fromWarehouseInput, toAddressLabel, toAddressInput, descriptionLabel, descriptionInput);
+            rightContainer.Add(dateLabel, dateInput, userLabel, userInput, statusLabel, statusBox);
+            container.Add(leftContainer, rightContainer);
             mainWindow.Add(container, tableContainer, separatorLine, errorLabel, userPermissionLabel, saveButton);
         }
 
