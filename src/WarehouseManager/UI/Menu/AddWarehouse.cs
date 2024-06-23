@@ -34,7 +34,7 @@ namespace WarehouseManager.UI.Menu
             {
                 X = 25,
                 Y = Pos.Top(warehouseNameLabel),
-                Width = 50,
+                Width = Dim.Percent(65),
             };
 
             var warehouseAddressLabel = new Label("Warehouse Address:")
@@ -46,7 +46,7 @@ namespace WarehouseManager.UI.Menu
             {
                 X = 25,
                 Y = Pos.Top(warehouseAddressLabel),
-                Width = 50,
+                Width = Dim.Percent(65),
             };
 
             var districtLabel = new Label("District:")
@@ -58,7 +58,7 @@ namespace WarehouseManager.UI.Menu
             {
                 X = 25,
                 Y = Pos.Top(districtLabel),
-                Width = 50,
+                Width = Dim.Percent(65),
             };
 
             var cityLabel = new Label("City:")
@@ -70,7 +70,7 @@ namespace WarehouseManager.UI.Menu
             {
                 X = 25,
                 Y = Pos.Top(cityLabel),
-                Width = 50,
+                Width = Dim.Percent(65),
             };
 
             var countryLabel = new Label("Country:")
@@ -82,7 +82,7 @@ namespace WarehouseManager.UI.Menu
             {
                 X = 25,
                 Y = Pos.Top(countryLabel),
-                Width = 50,
+                Width = Dim.Percent(65),
             };
 
             var postalCodeLabel = new Label("Postal Code:")
@@ -94,7 +94,7 @@ namespace WarehouseManager.UI.Menu
             {
                 X = 25,
                 Y = Pos.Top(postalCodeLabel),
-                Width = 50,
+                Width = Dim.Percent(65),
             };
 
             //Tạo nút save
