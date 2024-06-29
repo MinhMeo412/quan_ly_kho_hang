@@ -19,4 +19,7 @@ SOURCE indexes.sql;
 SELECT 'Executing insert_dummy_data.sql' AS 'INFO';
 SOURCE insert_dummy_data.sql;
 
+SELECT 'Executing user.sql' AS 'INFO';
+SOURCE user.sql;
+
 SELECT 'Database creation completed.' AS 'INFO';
