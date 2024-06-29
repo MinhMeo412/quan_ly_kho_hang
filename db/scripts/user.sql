@@ -1,6 +1,5 @@
+DROP USER IF EXISTS 'warehouse_app_user'@'%';
 CREATE USER 'warehouse_app_user'@'%' IDENTIFIED BY '1234';
-
-GRANT USAGE ON warehouse.* TO 'warehouse_app_user'@'%';
 
 GRANT EXECUTE ON PROCEDURE warehouse.user_login TO 'warehouse_app_user'@'%';
 GRANT EXECUTE ON PROCEDURE warehouse.change_password TO 'warehouse_app_user'@'%';
@@ -95,5 +94,4 @@ GRANT EXECUTE ON PROCEDURE warehouse.read_stock_transfer_detail TO 'warehouse_ap
 GRANT EXECUTE ON PROCEDURE warehouse.update_stock_transfer_detail TO 'warehouse_app_user'@'%';
 GRANT EXECUTE ON PROCEDURE warehouse.delete_stock_transfer_detail TO 'warehouse_app_user'@'%';
 
-REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'warehouse_app_user'@'%';
 FLUSH PRIVILEGES;
