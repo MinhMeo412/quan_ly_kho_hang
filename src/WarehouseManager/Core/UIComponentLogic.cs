@@ -2,7 +2,7 @@ using WarehouseManager.Data.Entity;
 
 namespace WarehouseManager.Core
 {
-    class UIComponentLogic
+    public static class UIComponentLogic
     {
         public static string PermissionName()
         {

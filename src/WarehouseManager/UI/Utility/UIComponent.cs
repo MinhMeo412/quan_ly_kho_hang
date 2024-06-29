@@ -11,48 +11,67 @@ namespace WarehouseManager.UI.Utility
         /*
         Thanh menu.
         */
-        private static MenuBar WarehouseMenuBar = new MenuBar(new MenuBarItem[] {
-            new MenuBarItem("_Menu", new MenuItem[] {
-                new MenuItem("_Home", "", Home.Display),
-                new MenuItem("_Company information", "", CompanyInformation.Display),
-                new MenuItem("_Switch theme", "Light/Dark", UI.SwitchTheme),
-                new MenuItem("_Exit program", "Ctrl+Q", () => Application.RequestStop())
-            }),
-            new MenuBarItem("_Account", new MenuItem[] {
-                new MenuItem("_Change password", "", ChangePassword.Display),
-                new MenuItem("_Show all accounts", "", AccountList.Display),
-                new MenuItem("_Create new account", "", AddAccount.Display)
-            }),
-            new MenuBarItem("_Suppliers", new MenuItem[] {
-                new MenuItem("_Show all suppliers", "", SupplierList.Display),
-                new MenuItem("_Add new supplier", "", AddSupplier.Display)
-            }),
-            new MenuBarItem("_Products", new MenuItem[] {
-                new MenuItem("_Show all categories", "", CategoryList.Display),
-                new MenuItem("_Create new category", "", AddCategory.Display),
-                new MenuItem("_Show all products", "", ProductList.Display),
-                new MenuItem("_Add new product", "", AddProduct.Display),
-                new MenuItem("_Show stock quantity", "", WarehouseStock.Display)
-            }),
-            new MenuBarItem("_Warehouses", new MenuItem[] {
-                new MenuItem("_Show all shipments", "", ShipmentList.Display),
-                new MenuItem("_Add outbound shipment", "", AddOutboundShipment.Display),
-                new MenuItem("_Add inbound shipment", "", AddInboundShipment.Display),
-                new MenuItem("_Add transfer shipment", "", AddTransferShipment.Display),
-                new MenuItem("_Show all inventory audits", "", InventoryAuditList.Display),
-                new MenuItem("_Add new inventory audit", "", AddInventoryAudit.Display),
-                new MenuItem("_Show all warehouses", "", WarehouseList.Display),
-                new MenuItem("_Add new warehouse", "", AddWarehouse.Display)
-            }),
-            new MenuBarItem("_Report", new MenuItem[] {
-                new MenuItem("_Generate Report", "", Home.Display)
-            })
-        });
+        private static MenuBar WarehouseMenuBar()
+        {
 
+            var menuBar = new MenuBar(new MenuBarItem[] {
+                new MenuBarItem("_Menu", new MenuItem[] {
+                    new MenuItem("_Home", "", Home.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Company information", "", CompanyInformation.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Switch theme", "Light/Dark", UI.SwitchTheme, () => canExecuteMenu(4)),
+                    new MenuItem("_Exit program", "Ctrl+Q", () => Application.RequestStop(), () => canExecuteMenu(4))
+                }),
+                new MenuBarItem("_Account", new MenuItem[] {
+                    new MenuItem("_Change password", "", ChangePassword.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Show all accounts", "", AccountList.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Create new account", "", AddAccount.Display, () => canExecuteMenu(4))
+                }),
+                new MenuBarItem("_Suppliers", new MenuItem[] {
+                    new MenuItem("_Show all suppliers", "", SupplierList.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Add new supplier", "", AddSupplier.Display, () => canExecuteMenu(4))
+                }),
+                new MenuBarItem("_Products", new MenuItem[] {
+                    new MenuItem("_Show all categories", "", CategoryList.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Create new category", "", AddCategory.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Show all products", "", ProductList.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Add new product", "", AddProduct.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Show stock quantity", "", WarehouseStock.Display, () => canExecuteMenu(4))
+                }),
+                new MenuBarItem("_Warehouses", new MenuItem[] {
+                    new MenuItem("_Show all shipments", "", ShipmentList.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Add outbound shipment", "", AddOutboundShipment.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Add inbound shipment", "", AddInboundShipment.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Add transfer shipment", "", AddTransferShipment.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Show all inventory audits", "", InventoryAuditList.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Add new inventory audit", "", AddInventoryAudit.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Show all warehouses", "", WarehouseList.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Add new warehouse", "", AddWarehouse.Display, () => canExecuteMenu(4))
+                }),
+                new MenuBarItem("_Report", new MenuItem[] {
+                    new MenuItem("_Generate Report", "", Home.Display, () => canExecuteMenu(4))
+                })
+            });
+
+            return menuBar;
+        }
+
+        private static bool canExecuteMenu(int requiredPermission)
+        {
+            int permissionLevel = Program.warehouse.PermissionLevel ?? 4;
+
+            if (permissionLevel <= requiredPermission)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         /*
-        Cửa sổ chính nhưng ko có thanh menu
-        */
+            Cửa sổ chính nhưng ko có thanh menu
+            */
         public static Window MainWindow(string? title = null)
         {
             Window mainWindow = new Window(title)
@@ -80,7 +99,7 @@ namespace WarehouseManager.UI.Utility
         {
             var mainWindow = MainWindow(title);
 
-            var menuBar = WarehouseMenuBar;
+            var menuBar = WarehouseMenuBar();
             Application.Top.Add(menuBar);
 
             return mainWindow;

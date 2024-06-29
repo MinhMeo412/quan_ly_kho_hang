@@ -21,9 +21,10 @@ namespace WarehouseManager.UI.Menu
             var middleContainer = new FrameView()
             {
                 X = 1,
-                Y = 1,
+                Y = 2,
                 Width = Dim.Fill(1),
-                Height = Dim.Fill(2)
+                Height = Dim.Fill(3),
+                Border = new Border() { BorderStyle = BorderStyle.None }
             };
 
             var leftContainer = new FrameView()
