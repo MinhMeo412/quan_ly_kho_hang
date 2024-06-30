@@ -37,8 +37,8 @@ namespace WarehouseManager.Data.Table
                     (int)(rawProduct[0] ?? 0),
                     (string)(rawProduct[1] ?? ""),
                     (string?)rawProduct[2],
-                    (int?)rawProduct[3],
-                    (int?)rawProduct[4]);
+                    rawProduct[3] is DBNull ? null : (int?)rawProduct[3],
+                    rawProduct[4] is DBNull ? null : (int?)rawProduct[4]);
                 products.Add(product);
             }
 

@@ -9,7 +9,7 @@ namespace WarehouseManager.Core
         // Lấy dữ liệu về và đổi kiểu dữ liệu sang dạng DataTable
         public static DataTable GetData()
         {
-            List<Category>? categories = Program.Warehouse.CategoryTable.Categories ?? new List<Category>();
+            List<Category> categories = Program.Warehouse.CategoryTable.Categories ?? new List<Category>();
             return ConvertCategoryListToDataTable(categories);
         }
 

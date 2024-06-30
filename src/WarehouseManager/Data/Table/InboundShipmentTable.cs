@@ -35,12 +35,12 @@ namespace WarehouseManager.Data.Table
             {
                 InboundShipment shipment = new InboundShipment(
                     (int)(rawShipment[0] ?? 0),
-                    (int?)rawShipment[1],
+                    rawShipment[1] is DBNull ? null : (int?)rawShipment[1],
                     (int)(rawShipment[2] ?? 0),
                     (DateTime?)rawShipment[3],
                     (string)(rawShipment[4] ?? ""),
                     (string?)rawShipment[5],
-                    (int?)rawShipment[6]
+                    rawShipment[6] is DBNull ? null : (int?)rawShipment[6]
                 );
                 inboundShipments.Add(shipment);
             }

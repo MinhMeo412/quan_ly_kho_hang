@@ -40,7 +40,7 @@ namespace WarehouseManager.UI.Menu
             };
 
             // Create a TableView and set its data source
-            var tableView = UIComponent.Table(CategoryListLogic.GetData());
+            var tableView = UIComponent.Table(ProductListLogic.GetData());
 
             // Khi người dùng bấm nút refresh sẽ tải lại trang
             refreshButton.Clicked += () =>
@@ -51,7 +51,7 @@ namespace WarehouseManager.UI.Menu
             // Khi người dùng search một chuỗi gì đó
             searchInput.TextChanged += args =>
             {
-                tableView.Table = CategoryListLogic.SortCategoryBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
+                tableView.Table = ProductListLogic.SortProductBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
             };
 
             int columnCurrentlySortBy = -1;
@@ -71,29 +71,37 @@ namespace WarehouseManager.UI.Menu
                     columnCurrentlySortBy = columnClicked;
                     searchInput.Text = "";
 
-                    tableView.Table = CategoryListLogic.SortCategoryByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
+                    tableView.Table = ProductListLogic.SortProductByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
                 }
             };
 
             // khi bấm vào 1 ô trong bảng
             tableView.CellActivated += args =>
             {
-                int column = args.Col;
-                int row = args.Row;
-
-                EditProduct.Display();
+                int productID = (int)tableView.Table.Rows[args.Row][0];
+                EditProduct.Display(productID);
             };
 
             deleteButton.Clicked += () =>
             {
                 // khi nút Delete được bấm
                 DataRow selectedRow = tableView.Table.Rows[tableView.SelectedRow];
-                int categoryID = (int)selectedRow[0];
+                int productID = (int)selectedRow[0];
 
                 int result = MessageBox.Query("Delete", "Are you sure you want to delete this item?", "No", "Yes");
                 if (result == 1) // "Yes" button was pressed
                 {
-                    tableView.Table = CategoryListLogic.DeleteCategory(tableView.Table, categoryID);
+                    try
+                    {
+                        tableView.Table = ProductListLogic.DeleteProduct(tableView.Table, productID);
+                        errorLabel.Text = "";
+                    }
+                    catch (Exception ex)
+                    {
+                        
+                        errorLabel.Text = $"Error: {ex.Message}";
+                    }
+                    
                 }
             };
 
