@@ -1,5 +1,6 @@
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
+using WarehouseManager.Core;
 
 namespace WarehouseManager.UI.Menu
 {
@@ -12,7 +13,7 @@ namespace WarehouseManager.UI.Menu
             var mainWindow = UIComponent.LoggedInMainWindow("Add New Category");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
+            var errorLabel = UIComponent.ErrorMessageLabel();
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
@@ -62,8 +63,18 @@ namespace WarehouseManager.UI.Menu
 
             saveButton.Clicked += () =>
             {
-                // khi nút save được bấm
-                MessageBox.Query("Save", $"name: {categoryNameInput.Text}, desc: {descriptionInput.Text}", "OK");
+                try
+                {
+                    AddCategoryLogic.AddCategory($"{categoryNameInput.Text}", $"{descriptionInput.Text}");
+                    errorLabel.Text = "";
+                    MessageBox.Query("Success", $"Category added successfully", "OK");
+                    categoryNameInput.Text = "";
+                    descriptionInput.Text = "";
+                }
+                catch (Exception ex)
+                {
+                    errorLabel.Text = $"Error: {ex.Message}";
+                }
             };
 
             infoContainer.Add(categorynameLabel, descriptionLabel, categoryNameInput, descriptionInput, saveButton);

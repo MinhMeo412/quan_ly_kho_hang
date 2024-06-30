@@ -40,7 +40,7 @@ namespace WarehouseManager.UI.Menu
             };
 
             // Create a TableView and set its data source
-            var tableView = UIComponent.Table(CategoryListLogic.GetData());
+            var tableView = UIComponent.Table(ProductListLogic.GetData());
 
             // Khi người dùng bấm nút refresh sẽ tải lại trang
             refreshButton.Clicked += () =>

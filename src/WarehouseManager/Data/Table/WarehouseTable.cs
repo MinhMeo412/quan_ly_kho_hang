@@ -36,7 +36,7 @@ namespace WarehouseManager.Data.Table
                 Warehouse warehouse = new Warehouse(
                     (int)(rawWarehouse[0] ?? 0),
                     (string)(rawWarehouse[1] ?? ""),
-                    (int?)rawWarehouse[2]
+                    rawWarehouse[2] is DBNull ? null : (int?)rawWarehouse[2]
                 );
                 warehouses.Add(warehouse);
             }

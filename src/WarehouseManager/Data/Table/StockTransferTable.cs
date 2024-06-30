@@ -40,7 +40,7 @@ namespace WarehouseManager.Data.Table
                     (DateTime?)rawStockTransfer[3],
                     (string)(rawStockTransfer[4] ?? 0),
                     (string?)rawStockTransfer[5],
-                    (int?)rawStockTransfer[6]
+                    rawStockTransfer[6] is DBNull ? null : (int?)rawStockTransfer[6]
                 );
                 stockTransfers.Add(stockTransfer);
             }

@@ -36,7 +36,7 @@ namespace WarehouseManager.Data.Table
                 InventoryAudit audit = new InventoryAudit(
                     (int)(rawAudit[0] ?? 0),
                     (int)(rawAudit[1] ?? 0),
-                    (int?)rawAudit[2],
+                    rawAudit[2] is DBNull ? null : (int?)rawAudit[2],
                     (DateTime)(rawAudit[3] ?? DateTime.Now)
                 );
                 inventoryAudits.Add(audit);
