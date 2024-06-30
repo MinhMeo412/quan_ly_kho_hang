@@ -13,11 +13,17 @@ namespace WarehouseManager.UI.Menu
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Product");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
+            var errorLabel = UIComponent.ErrorMessageLabel();
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
             var separatorLine = UIComponent.SeparatorLine();
+
+            var returnButton = new Button("Back")
+            {
+                X = 3,
+                Y = 1
+            };
 
             var middleContainer = new FrameView()
             {
@@ -109,49 +115,8 @@ namespace WarehouseManager.UI.Menu
                 Y = Pos.Bottom(rightContainer) + 1
             };
 
-            var dataTable = new DataTable();
-            dataTable.Columns.Add("Image URL", typeof(string));
-            dataTable.Columns.Add("Color", typeof(string));
-            dataTable.Columns.Add("Size", typeof(string));
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-
-
             // Create a TableView and set its data source
-            var tableView = UIComponent.Table(dataTable);
+            var tableView = UIComponent.Table(EditProductLogic.GetProductVariantData(productID));
             tableView.Height = Dim.Fill(5);
             tableView.Width = Dim.Fill(2);
             tableView.X = 1;
@@ -220,13 +185,22 @@ namespace WarehouseManager.UI.Menu
             addVariantButton.Clicked += () =>
             {
                 // khi nút add variant được bấm
-                MessageBox.Query("Add Variant", $"Image URL: {imageURLInput.Text}, Color: {colorInput.Text}, Size: {sizeInput.Text}", "OK");
+
+                if (imageURLInput.Text != "" || colorInput.Text != "" || sizeInput.Text != "")
+                {
+                    tableView.Table = EditProductLogic.AddProductVariant(tableView.Table, $"{imageURLInput.Text}", $"{colorInput.Text}", $"{sizeInput.Text}");
+                    imageURLInput.Text = "";
+                    colorInput.Text = "";
+                    sizeInput.Text = "";
+                }
             };
 
             deleteButton.Clicked += () =>
             {
                 // khi nút Delete được bấm
-                MessageBox.Query("Delete", $"Row: {tableView.SelectedRow}", "OK");
+                // MessageBox.Query("Delete", $"Row: {tableView.SelectedRow}", "OK");
+
+                tableView.Table = EditProductLogic.DeleteProductVariant(tableView.Table, tableView.SelectedRow);
             };
 
             tableView.CellActivated += args =>
@@ -275,12 +249,33 @@ namespace WarehouseManager.UI.Menu
                 Application.Run(editDialog);
             };
 
+            returnButton.Clicked += () =>
+            {
+                ProductList.Display();
+            };
 
             saveButton.Clicked += () =>
             {
-                // khi nút Save được bấm
-                string save = $"Product Name: {productNameInput.Text},\n Price: {priceInput.Text}, \nCategory: {categoryDropDown.Text}, \nDescription: {descriptionInput.Text}\n";
-                MessageBox.Query("Save", save, "OK");
+                try
+                {
+                    EditProductLogic.Save(
+                        productID: productID,
+                        productName: $"{productNameInput.Text}",
+                        productDescription: $"{descriptionInput.Text}",
+                        productPrice: int.Parse($"{priceInput.Text}"),
+                        categoryName: $"{categoryDropDown.Text}",
+                        variantDataTable: tableView.Table
+                    );
+
+                    tableView.Table = EditProductLogic.GetProductVariantData(productID);
+
+                    MessageBox.Query("Success", $"Product saved successfully.", "OK");
+                    errorLabel.Text = "";
+                }
+                catch (Exception ex)
+                {
+                    errorLabel.Text = $"Error: {ex.Message}";
+                }
             };
 
             variantInputContainer.Add(imageURLInput, colorInput, sizeInput, imageURLLabel, colorLabel, sizeLabel);
@@ -288,7 +283,7 @@ namespace WarehouseManager.UI.Menu
             rightContainer.Add(tableView, deleteButton, variantInputContainer, addVariantButton);
             middleContainer.Add(leftContainer, rightContainer, saveButton);
 
-            mainWindow.Add(middleContainer, errorLabel, userPermissionLabel, separatorLine);
+            mainWindow.Add(returnButton, middleContainer, errorLabel, userPermissionLabel, separatorLine);
         }
 
 
