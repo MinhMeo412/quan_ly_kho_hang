@@ -14,7 +14,7 @@ namespace WarehouseManager.UI.Menu
             var mainWindow = UIComponent.LoggedInMainWindow("Categories");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
+            var errorLabel = UIComponent.ErrorMessageLabel();
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
@@ -40,29 +40,23 @@ namespace WarehouseManager.UI.Menu
             };
 
             // Create a TableView and set its data source
-            var tableView = UIComponent.Table(CategoryListLogic.GetSortedCategoryList());
+            var tableView = UIComponent.Table(CategoryListLogic.GetData());
+
+            // Khi bam vao nut refresh
+            refreshButton.Clicked += () =>
+            {
+                Display();
+            };
+
+            // Khi người dùng search
+            searchInput.TextChanged += args =>
+            {
+                tableView.Table = CategoryListLogic.SortCategoryBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
+            };
 
             int columnCurrentlySortBy = -1;
             bool sortColumnInDescendingOrder = false;
-            
-            refreshButton.Clicked += () =>
-            {
-
-            };
-
-            searchInput.TextChanged += args =>
-            {
-                if (searchInput.Text == "")
-                {
-                    tableView.Table = CategoryListLogic.GetSortedCategoryList(columnCurrentlySortBy, sortColumnInDescendingOrder);
-                }
-                else
-                {
-                    tableView.Table = CategoryListLogic.GetSearchedCategory($"{searchInput.Text}");
-                }
-            };
-
-            // khi bấm vào cột
+            // khi sort cột
             tableView.MouseClick += e =>
             {
                 tableView.ScreenToCell(e.MouseEvent.X, e.MouseEvent.Y, out DataColumn clickedCol);
@@ -77,18 +71,7 @@ namespace WarehouseManager.UI.Menu
                     columnCurrentlySortBy = columnClicked;
                     searchInput.Text = "";
 
-                    tableView.Table = CategoryListLogic.GetSortedCategoryList(columnCurrentlySortBy, sortColumnInDescendingOrder);
-
-                    int direction = 0;
-                    if (!sortColumnInDescendingOrder)
-                    {
-                        direction = 1;
-                    }
-                    else
-                    {
-                        direction = 2;
-                    }
-                    tableView.Table.Columns[columnClicked].ColumnName = CategoryListLogic.ShowCurrentSortingDirection(tableView.Table.Columns[columnClicked].ColumnName, direction);
+                    tableView.Table = CategoryListLogic.SortCategoryByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
                 }
             };
 
@@ -134,7 +117,16 @@ namespace WarehouseManager.UI.Menu
                     int categoryID = (int)tableView.Table.Rows[row][0];
                     string categoryName = $"{tableView.Table.Rows[row][1]}";
                     string categoryDescription = $"{tableView.Table.Rows[row][2]}";
-                    CategoryListLogic.UpdateCategory(categoryID, categoryName, categoryDescription);
+                    try
+                    {
+                        CategoryListLogic.UpdateCategory(categoryID, categoryName, categoryDescription);
+                    }
+                    catch (Exception ex)
+                    {
+                        tableView.Table.Rows[row][column] = currentValue;
+                        errorLabel.Text = $"Error: {ex.Message}";
+                    }
+
 
                     Application.RequestStop();
                 };
@@ -152,22 +144,13 @@ namespace WarehouseManager.UI.Menu
             deleteButton.Clicked += () =>
             {
                 // khi nút Delete được bấm
-
                 DataRow selectedRow = tableView.Table.Rows[tableView.SelectedRow];
                 int categoryID = (int)selectedRow[0];
 
                 int result = MessageBox.Query("Delete", "Are you sure you want to delete this item?", "No", "Yes");
                 if (result == 1) // "Yes" button was pressed
                 {
-                    CategoryListLogic.DeleteCategory(categoryID);
-                    if (searchInput.Text == "")
-                    {
-                        tableView.Table = CategoryListLogic.GetSortedCategoryList(columnCurrentlySortBy, sortColumnInDescendingOrder);
-                    }
-                    else
-                    {
-                        tableView.Table = CategoryListLogic.GetSearchedCategory($"{searchInput.Text}");
-                    }
+                    tableView.Table = CategoryListLogic.DeleteCategory(tableView.Table, categoryID);
                 }
             };
 

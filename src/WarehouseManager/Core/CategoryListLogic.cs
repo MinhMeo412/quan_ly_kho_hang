@@ -6,76 +6,13 @@ namespace WarehouseManager.Core
 {
     public static class CategoryListLogic
     {
-        public static DataTable GetSortedCategoryList(int columnToSortBy = -1, bool sortColumnInDescendingOrder = false)
+        public static DataTable GetData()
         {
             List<Category>? categories = Program.Warehouse.CategoryTable.Categories ?? new List<Category>();
-            List<Category> sortedCategories = new List<Category>();
-
-
-            switch (columnToSortBy)
-            {
-                case 0:
-                    sortedCategories = categories.OrderBy(c => c.CategoryID).ToList();
-                    break;
-                case 1:
-                    sortedCategories = categories.OrderBy(c => c.CategoryName).ToList();
-                    break;
-                case 2:
-                    sortedCategories = categories.OrderBy(c => c.CategoryDescription).ToList();
-                    break;
-                default:
-                    sortedCategories = categories;
-                    break;
-            }
-
-            if (sortColumnInDescendingOrder)
-            {
-                sortedCategories.Reverse();
-            }
-
-            return ConvertCategoryListToDataTable(sortedCategories);
+            return ConvertCategoryListToDataTable(categories);
         }
 
-        public static DataTable GetSearchedCategory(string searchTerm)
-        {
-            List<Category> categories = Program.Warehouse.CategoryTable.Categories ?? new List<Category>();
-            List<(Category, double)> categorySimilarities = new List<(Category, double)>();
-
-            foreach (var category in categories)
-            {
-                double maxSimilarity = Misc.MaxDouble(
-                    Misc.JaccardSimilarity($"{category.CategoryID}", searchTerm),
-                    Misc.JaccardSimilarity(category.CategoryName, searchTerm),
-                    Misc.JaccardSimilarity(category.CategoryDescription ?? "", searchTerm)
-                );
-
-                categorySimilarities.Add((category, maxSimilarity));
-            }
-
-            var filteredCategories = categorySimilarities
-                    .Where(cs => cs.Item2 >= 0.5)
-                    .OrderByDescending(cs => cs.Item2)
-                    .ToList();
-
-            if (filteredCategories.Count < 10)
-            {
-                var additionalCategories = categorySimilarities
-                    .OrderByDescending(cs => cs.Item2)
-                    .Take(10)
-                    .ToList();
-
-                filteredCategories = additionalCategories;
-            }
-
-            var sortedCategories = filteredCategories
-                .OrderByDescending(cs => cs.Item2)
-                .Select(cs => cs.Item1)
-                .ToList();
-
-            return ConvertCategoryListToDataTable(sortedCategories);
-        }
-
-        private static DataTable ConvertCategoryListToDataTable(List<Category>? categories)
+        private static DataTable ConvertCategoryListToDataTable(List<Category> categories)
         {
             var dataTable = new DataTable();
 
@@ -92,54 +29,70 @@ namespace WarehouseManager.Core
             return dataTable;
         }
 
-        public static string ShowCurrentSortingDirection(string currentText, int direction)
+        private static List<Category> ConvertDataTableToCategoryList(DataTable dataTable)
         {
-            string newText = currentText;
+            List<Category> categories = new List<Category>();
+            foreach (DataRow row in dataTable.Rows)
+            {
+                Category category = new Category((int)row[0], (string)row[1], (string?)row[2]);
+                categories.Add(category);
+            }
+            return categories;
+        }
 
-            string upwardsArrow = "\u25B2";
-            string downwardsArrow = "\u25BC";
+        public static DataTable SortCategoryBySearchTerm(DataTable dataTable, string searchTerm)
+        {
+            List<Category> categories = ConvertDataTableToCategoryList(dataTable);
+            List<(Category, double)> categorySimilarities = new List<(Category, double)>();
 
-            switch (direction)
+            foreach (Category category in categories)
+            {
+                double maxSimilarity = Misc.MaxDouble(
+                    Misc.JaccardSimilarity($"{category.CategoryID}", searchTerm),
+                    Misc.JaccardSimilarity(category.CategoryName, searchTerm),
+                    Misc.JaccardSimilarity(category.CategoryDescription ?? "", searchTerm)
+                );
+
+                categorySimilarities.Add((category, maxSimilarity));
+            }
+
+            List<Category> sortedCategories = categorySimilarities
+                .OrderByDescending(cs => cs.Item2)
+                .Select(cs => cs.Item1)
+                .ToList();
+
+            return ConvertCategoryListToDataTable(sortedCategories);
+        }
+
+        public static DataTable SortCategoryByColumn(DataTable dataTable, int columnToSortBy, bool sortColumnInDescendingOrder)
+        {
+            List<Category> categories = ConvertDataTableToCategoryList(dataTable);
+
+            switch (columnToSortBy)
             {
                 case 0:
-                    // not sorting by anything
-                    if (currentText.Contains(upwardsArrow) || currentText.Contains(downwardsArrow))
-                    {
-                        newText = newText.Replace(upwardsArrow, "");
-                        newText = newText.Replace(downwardsArrow, "");
-                        newText = newText.Trim();
-                    }
+                    categories = categories.OrderBy(c => c.CategoryID).ToList();
                     break;
                 case 1:
-                    // sort in ascending order
-                    if (currentText.Contains(downwardsArrow))
-                    {
-                        newText = newText.Replace(downwardsArrow, upwardsArrow);
-                    }
-
-                    if (!currentText.Contains(upwardsArrow))
-                    {
-                        newText = $"{newText} {upwardsArrow}";
-                    }
+                    categories = categories.OrderBy(c => c.CategoryName).ToList();
                     break;
                 case 2:
-                    // sort in descending order
-                    if (currentText.Contains(upwardsArrow))
-                    {
-                        newText = newText.Replace(upwardsArrow, downwardsArrow);
-                    }
-
-                    if (!currentText.Contains(downwardsArrow))
-                    {
-                        newText = $"{newText} {downwardsArrow}";
-                    }
-
+                    categories = categories.OrderBy(c => c.CategoryDescription).ToList();
                     break;
                 default:
                     break;
             }
 
-            return newText;
+            if (sortColumnInDescendingOrder)
+            {
+                categories.Reverse();
+            }
+
+            DataTable sortedDataTable = ConvertCategoryListToDataTable(categories);
+
+            sortedDataTable.Columns[columnToSortBy].ColumnName = Misc.ShowCurrentSortingDirection(sortedDataTable.Columns[columnToSortBy].ColumnName, sortColumnInDescendingOrder);
+
+            return sortedDataTable;
         }
 
         public static void UpdateCategory(int categoryID, string categoryName, string? categoryDescription)
@@ -147,9 +100,13 @@ namespace WarehouseManager.Core
             Program.Warehouse.CategoryTable.Update(categoryID, categoryName, categoryDescription);
         }
 
-        public static void DeleteCategory(int categoryID)
+        public static DataTable DeleteCategory(DataTable dataTable, int categoryID)
         {
             Program.Warehouse.CategoryTable.Delete(categoryID);
+            List<Category> categories = ConvertDataTableToCategoryList(dataTable);
+            categories.RemoveAll(c => c.CategoryID == categoryID);
+
+            return ConvertCategoryListToDataTable(categories);
         }
 
     }
