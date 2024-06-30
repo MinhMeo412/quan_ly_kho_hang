@@ -42,13 +42,13 @@ namespace WarehouseManager.UI.Menu
             // Create a TableView and set its data source
             var tableView = UIComponent.Table(CategoryListLogic.GetData());
 
-            // Khi bam vao nut refresh
+            // Khi người dùng bấm nút refresh sẽ tải lại trang
             refreshButton.Clicked += () =>
             {
                 Display();
             };
 
-            // Khi người dùng search
+            // Khi người dùng search một chuỗi gì đó
             searchInput.TextChanged += args =>
             {
                 tableView.Table = CategoryListLogic.SortCategoryBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
@@ -117,6 +117,8 @@ namespace WarehouseManager.UI.Menu
                     int categoryID = (int)tableView.Table.Rows[row][0];
                     string categoryName = $"{tableView.Table.Rows[row][1]}";
                     string categoryDescription = $"{tableView.Table.Rows[row][2]}";
+
+                    // try catch để xử lý trường hợp nhập dữ liệu quá dài
                     try
                     {
                         CategoryListLogic.UpdateCategory(categoryID, categoryName, categoryDescription);
@@ -135,6 +137,7 @@ namespace WarehouseManager.UI.Menu
                 editDialog.AddButton(cancelButton);
                 editDialog.AddButton(okButton);
 
+                // Không cho sửa khi click vào cột category id
                 if (column != 0)
                 {
                     Application.Run(editDialog);

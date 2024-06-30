@@ -6,12 +6,14 @@ namespace WarehouseManager.Core
 {
     public static class CategoryListLogic
     {
+        // Lấy dữ liệu về và đổi kiểu dữ liệu sang dạng DataTable
         public static DataTable GetData()
         {
             List<Category>? categories = Program.Warehouse.CategoryTable.Categories ?? new List<Category>();
             return ConvertCategoryListToDataTable(categories);
         }
 
+        // Đổi kiểu dữ liệu từ List<Category> sang DataTable
         private static DataTable ConvertCategoryListToDataTable(List<Category> categories)
         {
             var dataTable = new DataTable();
@@ -29,6 +31,7 @@ namespace WarehouseManager.Core
             return dataTable;
         }
 
+        // Đổi kiểu dữ liệu từ DataTable sang List<Category> (để thực hiện LINQ)
         private static List<Category> ConvertDataTableToCategoryList(DataTable dataTable)
         {
             List<Category> categories = new List<Category>();
@@ -40,6 +43,12 @@ namespace WarehouseManager.Core
             return categories;
         }
 
+        /// <summary>
+        /// Sort theo từ mà người dùng nhập vào ô tìm kiếm
+        /// </summary>
+        /// <param name="dataTable"></param>
+        /// <param name="searchTerm"></param>
+        /// <returns>DataTable</returns>
         public static DataTable SortCategoryBySearchTerm(DataTable dataTable, string searchTerm)
         {
             List<Category> categories = ConvertDataTableToCategoryList(dataTable);
@@ -64,6 +73,13 @@ namespace WarehouseManager.Core
             return ConvertCategoryListToDataTable(sortedCategories);
         }
 
+        /// <summary>
+        /// sort theo cột mà người dùng bấm vào
+        /// </summary>
+        /// <param name="dataTable"></param>
+        /// <param name="columnToSortBy"></param>
+        /// <param name="sortColumnInDescendingOrder"></param>
+        /// <returns>DataTable</returns>
         public static DataTable SortCategoryByColumn(DataTable dataTable, int columnToSortBy, bool sortColumnInDescendingOrder)
         {
             List<Category> categories = ConvertDataTableToCategoryList(dataTable);

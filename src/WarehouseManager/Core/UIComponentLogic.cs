@@ -4,6 +4,7 @@ namespace WarehouseManager.Core
 {
     public static class UIComponentLogic
     {
+        // Lấy về tên quyền người dùng
         public static string PermissionName()
         {
             int? permissionLevel = Program.Warehouse.PermissionLevel;
