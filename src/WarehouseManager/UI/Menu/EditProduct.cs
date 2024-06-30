@@ -6,7 +6,7 @@ namespace WarehouseManager.UI.Menu
 {
     public static class EditProduct
     {
-        public static void Display()
+        public static void Display(int productID)
         {
             Application.Top.RemoveAll();
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Product");

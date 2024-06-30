@@ -59,5 +59,80 @@ namespace WarehouseManager.Core
 
             return productMenuRows;
         }
+
+        public static DataTable SortProductBySearchTerm(DataTable dataTable, string searchTerm)
+        {
+            List<(int, string, string?, int?, string?)> products = ConvertDataTableToProductMenuRows(dataTable);
+            List<((int, string, string?, int?, string?), double)> productSimilarities = new List<((int, string, string?, int?, string?), double)>();
+
+            foreach ((int, string, string?, int?, string?) product in products)
+            {
+                double maxSimilarity = Misc.MaxDouble(
+                    Misc.JaccardSimilarity($"{product.Item1}", searchTerm),
+                    Misc.JaccardSimilarity(product.Item2, searchTerm),
+                    Misc.JaccardSimilarity($"{product.Item3}", searchTerm),
+                    Misc.JaccardSimilarity($"{product.Item4}", searchTerm),
+                    Misc.JaccardSimilarity($"{product.Item5}", searchTerm)
+                );
+
+                productSimilarities.Add((product, maxSimilarity));
+            }
+
+            List<(int, string, string?, int?, string?)> sortedProducts = productSimilarities
+                .OrderByDescending(p => p.Item2)
+                .Select(p => p.Item1)
+                .ToList();
+
+            return ConvertProductMenuRowsToDataTable(sortedProducts);
+        }
+
+        public static DataTable SortProductByColumn(DataTable dataTable, int columnToSortBy, bool sortColumnInDescendingOrder)
+        {
+            List<(int, string, string?, int?, string?)> products = ConvertDataTableToProductMenuRows(dataTable);
+
+            switch (columnToSortBy)
+            {
+                case 0:
+                    products = products.OrderBy(p => p.Item1).ToList();
+                    break;
+                case 1:
+                    products = products.OrderBy(p => p.Item2).ToList();
+                    break;
+                case 2:
+                    products = products.OrderBy(p => p.Item3).ToList();
+                    break;
+                case 3:
+                    products = products.OrderBy(p => p.Item4).ToList();
+                    break;
+                case 4:
+                    products = products.OrderBy(p => p.Item5).ToList();
+                    break;
+                default:
+                    break;
+            }
+
+            if (sortColumnInDescendingOrder)
+            {
+                products.Reverse();
+            }
+
+            DataTable sortedDataTable = ConvertProductMenuRowsToDataTable(products);
+
+            sortedDataTable.Columns[columnToSortBy].ColumnName = Misc.ShowCurrentSortingDirection(sortedDataTable.Columns[columnToSortBy].ColumnName, sortColumnInDescendingOrder);
+
+            return sortedDataTable;
+        }
+
+        public static DataTable DeleteProduct(DataTable dataTable, int productID)
+        {
+            Program.Warehouse.ProductTable.Delete(productID);
+
+            List<(int, string, string?, int?, string?)> products = ConvertDataTableToProductMenuRows(dataTable);
+
+            products.RemoveAll(p => p.Item1 == productID);
+
+            return ConvertProductMenuRowsToDataTable(products);
+        }
+
     }
 }
