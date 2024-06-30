@@ -61,7 +61,6 @@ namespace WarehouseManager.Core
             return ConvertProductVariantDataToDataTable(currentProductsVariants);
         }
 
-
         private static DataTable ConvertProductVariantDataToDataTable(List<ProductVariant> productVariants)
         {
             var dataTable = new DataTable();
