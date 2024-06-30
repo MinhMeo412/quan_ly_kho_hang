@@ -1,6 +1,7 @@
 using System.Data;
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
+using WarehouseManager.Core;
 
 namespace WarehouseManager.UI.Menu
 {
@@ -8,113 +9,69 @@ namespace WarehouseManager.UI.Menu
     {
         public static void Display()
         {
+
             Application.Top.RemoveAll();
             var mainWindow = UIComponent.LoggedInMainWindow("Accounts");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
+            var errorLabel = UIComponent.ErrorMessageLabel();
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
             var separatorLine = UIComponent.SeparatorLine();
 
-            var searchContainer = new FrameView()
-            {
-                X = Pos.Center(),
-                Width = Dim.Percent(75),
-                Height = 3,
-                Border = new Border() { BorderStyle = BorderStyle.None }
-            };
+            var refreshButton = UIComponent.RefreshButton();
 
-            var searchLabel = new Label("Enter search term:")
-            {
-                X = 1,
-                Y = 1
-            };
+            var searchLabel = UIComponent.SearchLabel();
 
-            var searchInput = new TextField("")
-            {
-                X = Pos.Right(searchLabel) + 1,
-                Y = Pos.Top(searchLabel),
-                Width = Dim.Fill(12)
-            };
-
-            var searchButton = new Button("Search")
-            {
-                X = Pos.AnchorEnd(11),
-                Y = Pos.Top(searchLabel)
-            };
+            var searchInput = UIComponent.SearchInput();
 
             var deleteButton = UIComponent.DeleteButton();
 
-            var addButton = UIComponent.AddButton("Add Account");
+            var addButton = UIComponent.AddButton("Add New Account");
 
             var tableContainer = new FrameView()
             {
                 X = 1,
-                Y = Pos.Bottom(searchContainer),
+                Y = Pos.Bottom(searchLabel) + 1,
                 Width = Dim.Fill(1),
                 Height = Dim.Fill(4),
                 Border = new Border() { BorderStyle = BorderStyle.None }
             };
 
-            var dataTable = new DataTable();
-            dataTable.Columns.Add("ID", typeof(int));
-            dataTable.Columns.Add("Name", typeof(string));
-            dataTable.Columns.Add("Age", typeof(int));
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-
-
             // Create a TableView and set its data source
-            var tableView = UIComponent.Table(dataTable);
+            var tableView = UIComponent.Table(CategoryListLogic.GetData());
 
-            searchButton.Clicked += () =>
+            // Khi người dùng bấm nút refresh sẽ tải lại trang
+            refreshButton.Clicked += () =>
             {
-                // khi nút save được bấm
-                MessageBox.Query("Search", $"Query: {searchInput.Text}", "OK");
+                Display();
             };
 
-            // khi bấm vào cột
+            // Khi người dùng search một chuỗi gì đó
+            searchInput.TextChanged += args =>
+            {
+                tableView.Table = CategoryListLogic.SortCategoryBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
+            };
+
+            int columnCurrentlySortBy = -1;
+            bool sortColumnInDescendingOrder = false;
+            // khi sort cột
             tableView.MouseClick += e =>
             {
                 tableView.ScreenToCell(e.MouseEvent.X, e.MouseEvent.Y, out DataColumn clickedCol);
                 if (clickedCol != null)
                 {
-                    MessageBox.Query("Column Clicked", $"Column: {clickedCol}", "OK");
+                    int columnClicked = tableView.Table.Columns.IndexOf(clickedCol);
+                    if (columnClicked == columnCurrentlySortBy)
+                    {
+                        sortColumnInDescendingOrder = !sortColumnInDescendingOrder;
+                    }
+
+                    columnCurrentlySortBy = columnClicked;
+                    searchInput.Text = "";
+
+                    tableView.Table = CategoryListLogic.SortCategoryByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
                 }
             };
 
@@ -156,19 +113,48 @@ namespace WarehouseManager.UI.Menu
                 {
                     // Update the table with the new value
                     tableView.Table.Rows[row][column] = newValue.Text.ToString();
+
+                    int categoryID = (int)tableView.Table.Rows[row][0];
+                    string categoryName = $"{tableView.Table.Rows[row][1]}";
+                    string categoryDescription = $"{tableView.Table.Rows[row][2]}";
+
+                    // try catch để xử lý trường hợp nhập dữ liệu quá dài
+                    try
+                    {
+                        CategoryListLogic.UpdateCategory(categoryID, categoryName, categoryDescription);
+                    }
+                    catch (Exception ex)
+                    {
+                        tableView.Table.Rows[row][column] = currentValue;
+                        errorLabel.Text = $"Error: {ex.Message}";
+                    }
+
+
                     Application.RequestStop();
                 };
 
                 editDialog.Add(newValue);
                 editDialog.AddButton(cancelButton);
                 editDialog.AddButton(okButton);
-                Application.Run(editDialog);
+
+                // Không cho sửa khi click vào cột category id
+                if (column != 0)
+                {
+                    Application.Run(editDialog);
+                }
             };
 
             deleteButton.Clicked += () =>
             {
                 // khi nút Delete được bấm
-                MessageBox.Query("Delete", $"Row: {tableView.SelectedRow}", "OK");
+                DataRow selectedRow = tableView.Table.Rows[tableView.SelectedRow];
+                int categoryID = (int)selectedRow[0];
+
+                int result = MessageBox.Query("Delete", "Are you sure you want to delete this item?", "No", "Yes");
+                if (result == 1) // "Yes" button was pressed
+                {
+                    tableView.Table = CategoryListLogic.DeleteCategory(tableView.Table, categoryID);
+                }
             };
 
             addButton.Clicked += () =>
@@ -178,8 +164,7 @@ namespace WarehouseManager.UI.Menu
             };
 
             tableContainer.Add(tableView);
-            searchContainer.Add(searchLabel, searchInput, searchButton);
-            mainWindow.Add(searchContainer, tableContainer, addButton, deleteButton, errorLabel, userPermissionLabel, separatorLine);
+            mainWindow.Add(refreshButton, searchLabel, searchInput, tableContainer, addButton, deleteButton, errorLabel, userPermissionLabel, separatorLine);
         }
     }
 }

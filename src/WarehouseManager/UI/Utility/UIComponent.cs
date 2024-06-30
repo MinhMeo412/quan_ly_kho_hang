@@ -13,7 +13,6 @@ namespace WarehouseManager.UI.Utility
         */
         private static MenuBar WarehouseMenuBar()
         {
-
             var menuBar = new MenuBar(new MenuBarItem[] {
                 new MenuBarItem("_Menu", new MenuItem[] {
                     new MenuItem("_Home", "", Home.Display, () => canExecuteMenu(4)),
@@ -57,7 +56,7 @@ namespace WarehouseManager.UI.Utility
 
         private static bool canExecuteMenu(int requiredPermission)
         {
-            int permissionLevel = Program.warehouse.PermissionLevel ?? 4;
+            int permissionLevel = Program.Warehouse.PermissionLevel ?? 4;
 
             if (permissionLevel <= requiredPermission)
             {
@@ -70,8 +69,8 @@ namespace WarehouseManager.UI.Utility
         }
 
         /*
-            Cửa sổ chính nhưng ko có thanh menu
-            */
+        Cửa sổ chính nhưng ko có thanh menu
+        */
         public static Window MainWindow(string? title = null)
         {
             Window mainWindow = new Window(title)
@@ -82,11 +81,11 @@ namespace WarehouseManager.UI.Utility
 
             if (UI.DarkTheme)
             {
-                mainWindow.ColorScheme = Theme.SerikaDark;
+                mainWindow.ColorScheme = Theme.Dark;
             }
             else
             {
-                mainWindow.ColorScheme = Theme.GenericLight;
+                mainWindow.ColorScheme = Theme.Light;
             }
 
             return mainWindow;
@@ -127,7 +126,7 @@ namespace WarehouseManager.UI.Utility
         */
         public static Label UserPermissionLabel()
         {
-            string username = $"{Program.warehouse.Username}";
+            string username = $"{Program.Warehouse.Username}";
             string permission = UIComponentLogic.PermissionName();
 
             string text = $"{username} - {permission}";
@@ -152,6 +151,7 @@ namespace WarehouseManager.UI.Utility
 
             return separatorLine;
         }
+
         // Bảng để dùng trong các menu hiển thị
         public static TableView Table(DataTable dataTable)
         {
@@ -162,7 +162,7 @@ namespace WarehouseManager.UI.Utility
                 FullRowSelect = true
             };
             tableView.Style.AlwaysShowHeaders = true;
-            tableView.Style.ExpandLastColumn = false;
+            tableView.Style.ExpandLastColumn = true;
             tableView.Style.ShowHorizontalHeaderOverline = false;
             tableView.Table = dataTable;
 
@@ -189,6 +189,47 @@ namespace WarehouseManager.UI.Utility
                 Y = Pos.AnchorEnd(3)
             };
             return addButton;
+        }
+
+
+        // để dùng trong các menu hiện
+        public static Label SearchLabel()
+        {
+            string text = "Search:";
+            var searchLabel = new Label(text)
+            {
+                X = Pos.Percent(50),
+                Y = 1,
+            };
+
+            return searchLabel;
+        }
+
+        // để dùng trong các menu hiện
+        public static TextField SearchInput()
+        {
+            string text = "Search:";
+            var searchInput = new TextField()
+            {
+                X = Pos.Percent(50) + text.Length + 1,
+                Y = 1,
+                Width = Dim.Fill(2)
+            };
+
+            return searchInput;
+        }
+
+
+        // load lại dữ liệu trong menu hiện
+        public static Button RefreshButton()
+        {
+            var refreshButton = new Button("Refresh")
+            {
+                X = 2,
+                Y = 1
+            };
+
+            return refreshButton;
         }
     }
 }

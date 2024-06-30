@@ -6,76 +6,15 @@ namespace WarehouseManager.Core
 {
     public static class CategoryListLogic
     {
-        public static DataTable GetSortedCategoryList(int columnToSortBy = -1, bool sortColumnInDescendingOrder = false)
+        // Lấy dữ liệu về và đổi kiểu dữ liệu sang dạng DataTable
+        public static DataTable GetData()
         {
-            List<Category>? categories = Program.warehouse.CategoryTable.Categories ?? new List<Category>();
-            List<Category> sortedCategories = new List<Category>();
-
-
-            switch (columnToSortBy)
-            {
-                case 0:
-                    sortedCategories = categories.OrderBy(c => c.CategoryID).ToList();
-                    break;
-                case 1:
-                    sortedCategories = categories.OrderBy(c => c.CategoryName).ToList();
-                    break;
-                case 2:
-                    sortedCategories = categories.OrderBy(c => c.CategoryDescription).ToList();
-                    break;
-                default:
-                    sortedCategories = categories;
-                    break;
-            }
-
-            if (sortColumnInDescendingOrder)
-            {
-                sortedCategories.Reverse();
-            }
-
-            return ConvertCategoryListToDataTable(sortedCategories);
+            List<Category>? categories = Program.Warehouse.CategoryTable.Categories ?? new List<Category>();
+            return ConvertCategoryListToDataTable(categories);
         }
 
-        public static DataTable GetSearchedCategory(string searchTerm)
-        {
-            List<Category> categories = Program.warehouse.CategoryTable.Categories ?? new List<Category>();
-            List<(Category, double)> categorySimilarities = new List<(Category, double)>();
-
-            foreach (var category in categories)
-            {
-                double maxSimilarity = Common.Max(
-                    JaccardIndex.Similarity($"{category.CategoryID}", searchTerm),
-                    JaccardIndex.Similarity(category.CategoryName, searchTerm),
-                    JaccardIndex.Similarity(category.CategoryDescription ?? "", searchTerm)
-                );
-
-                categorySimilarities.Add((category, maxSimilarity));
-            }
-
-            var filteredCategories = categorySimilarities
-                    .Where(cs => cs.Item2 >= 0.5)
-                    .OrderByDescending(cs => cs.Item2)
-                    .ToList();
-
-            if (filteredCategories.Count < 10)
-            {
-                var additionalCategories = categorySimilarities
-                    .OrderByDescending(cs => cs.Item2)
-                    .Take(10)
-                    .ToList();
-
-                filteredCategories = additionalCategories;
-            }
-
-            var sortedCategories = filteredCategories
-                .OrderByDescending(cs => cs.Item2)
-                .Select(cs => cs.Item1)
-                .ToList();
-
-            return ConvertCategoryListToDataTable(sortedCategories);
-        }
-
-        private static DataTable ConvertCategoryListToDataTable(List<Category>? categories)
+        // Đổi kiểu dữ liệu từ List<Category> sang DataTable
+        private static DataTable ConvertCategoryListToDataTable(List<Category> categories)
         {
             var dataTable = new DataTable();
 
@@ -92,14 +31,98 @@ namespace WarehouseManager.Core
             return dataTable;
         }
 
-        public static void UpdateCategory(int categoryID, string categoryName, string? categoryDescription)
+        // Đổi kiểu dữ liệu từ DataTable sang List<Category> (để thực hiện LINQ)
+        private static List<Category> ConvertDataTableToCategoryList(DataTable dataTable)
         {
-            
+            List<Category> categories = new List<Category>();
+            foreach (DataRow row in dataTable.Rows)
+            {
+                Category category = new Category((int)row[0], (string)row[1], (string?)row[2]);
+                categories.Add(category);
+            }
+            return categories;
         }
 
-        public static void DeleteCategory(int categoryID)
+        /// <summary>
+        /// Sort theo từ mà người dùng nhập vào ô tìm kiếm
+        /// </summary>
+        /// <param name="dataTable"></param>
+        /// <param name="searchTerm"></param>
+        /// <returns>DataTable</returns>
+        public static DataTable SortCategoryBySearchTerm(DataTable dataTable, string searchTerm)
         {
-            Program.warehouse.CategoryTable.Delete(categoryID);
+            List<Category> categories = ConvertDataTableToCategoryList(dataTable);
+            List<(Category, double)> categorySimilarities = new List<(Category, double)>();
+
+            foreach (Category category in categories)
+            {
+                double maxSimilarity = Misc.MaxDouble(
+                    Misc.JaccardSimilarity($"{category.CategoryID}", searchTerm),
+                    Misc.JaccardSimilarity(category.CategoryName, searchTerm),
+                    Misc.JaccardSimilarity(category.CategoryDescription ?? "", searchTerm)
+                );
+
+                categorySimilarities.Add((category, maxSimilarity));
+            }
+
+            List<Category> sortedCategories = categorySimilarities
+                .OrderByDescending(cs => cs.Item2)
+                .Select(cs => cs.Item1)
+                .ToList();
+
+            return ConvertCategoryListToDataTable(sortedCategories);
+        }
+
+        /// <summary>
+        /// sort theo cột mà người dùng bấm vào
+        /// </summary>
+        /// <param name="dataTable"></param>
+        /// <param name="columnToSortBy"></param>
+        /// <param name="sortColumnInDescendingOrder"></param>
+        /// <returns>DataTable</returns>
+        public static DataTable SortCategoryByColumn(DataTable dataTable, int columnToSortBy, bool sortColumnInDescendingOrder)
+        {
+            List<Category> categories = ConvertDataTableToCategoryList(dataTable);
+
+            switch (columnToSortBy)
+            {
+                case 0:
+                    categories = categories.OrderBy(c => c.CategoryID).ToList();
+                    break;
+                case 1:
+                    categories = categories.OrderBy(c => c.CategoryName).ToList();
+                    break;
+                case 2:
+                    categories = categories.OrderBy(c => c.CategoryDescription).ToList();
+                    break;
+                default:
+                    break;
+            }
+
+            if (sortColumnInDescendingOrder)
+            {
+                categories.Reverse();
+            }
+
+            DataTable sortedDataTable = ConvertCategoryListToDataTable(categories);
+
+            sortedDataTable.Columns[columnToSortBy].ColumnName = Misc.ShowCurrentSortingDirection(sortedDataTable.Columns[columnToSortBy].ColumnName, sortColumnInDescendingOrder);
+
+            return sortedDataTable;
+        }
+
+        public static void UpdateCategory(int categoryID, string categoryName, string? categoryDescription)
+        {
+            Program.Warehouse.CategoryTable.Update(categoryID, categoryName, categoryDescription);
+        }
+
+        public static DataTable DeleteCategory(DataTable dataTable, int categoryID)
+        {
+            Program.Warehouse.CategoryTable.Delete(categoryID);
+            List<Category> categories = ConvertDataTableToCategoryList(dataTable);
+            categories.RemoveAll(c => c.CategoryID == categoryID);
+
+            return ConvertCategoryListToDataTable(categories);
         }
 
     }

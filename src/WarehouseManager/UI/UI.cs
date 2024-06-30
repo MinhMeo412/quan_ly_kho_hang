@@ -5,7 +5,7 @@ namespace WarehouseManager.UI
 {
     public static class UI
     {
-        public static bool DarkTheme { get; set; } = true;
+        public static bool DarkTheme { get; private set; } = true;
 
         /*
         Call this to start the interface.
@@ -36,6 +36,5 @@ namespace WarehouseManager.UI
                 Home.Display();
             }
         }
-
     }
 }

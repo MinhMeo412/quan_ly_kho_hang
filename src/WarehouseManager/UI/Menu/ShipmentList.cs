@@ -1,8 +1,7 @@
 using System.Data;
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
-using WarehouseManager.Data.Table;
-using WarehouseManager.Data;
+using WarehouseManager.Core;
 
 namespace WarehouseManager.UI.Menu
 {
@@ -10,42 +9,22 @@ namespace WarehouseManager.UI.Menu
     {
         public static void Display()
         {
+
             Application.Top.RemoveAll();
             var mainWindow = UIComponent.LoggedInMainWindow("Shipments");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
+            var errorLabel = UIComponent.ErrorMessageLabel();
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
             var separatorLine = UIComponent.SeparatorLine();
 
-            var searchContainer = new FrameView()
-            {
-                X = Pos.Center(),
-                Width = Dim.Percent(75),
-                Height = 3,
-                Border = new Border() { BorderStyle = BorderStyle.None }
-            };
+            var refreshButton = UIComponent.RefreshButton();
 
-            var searchLabel = new Label("Enter search term:")
-            {
-                X = 1,
-                Y = 1
-            };
+            var searchLabel = UIComponent.SearchLabel();
 
-            var searchInput = new TextField("")
-            {
-                X = Pos.Right(searchLabel) + 1,
-                Y = Pos.Top(searchLabel),
-                Width = Dim.Fill(12)
-            };
-
-            var searchButton = new Button("Search")
-            {
-                X = Pos.AnchorEnd(11),
-                Y = Pos.Top(searchLabel)
-            };
+            var searchInput = UIComponent.SearchInput();
 
             var deleteButton = UIComponent.DeleteButton();
 
@@ -57,44 +36,48 @@ namespace WarehouseManager.UI.Menu
             var addButtonLeft2 = UIComponent.AddButton("Add New Transfer Shipment");
             addButtonLeft2.X = Pos.Left(addButtonLeft) - addButtonLeft2.Text.Length - 5;
 
-
             var tableContainer = new FrameView()
             {
                 X = 1,
-                Y = Pos.Bottom(searchContainer),
+                Y = Pos.Bottom(searchLabel) + 1,
                 Width = Dim.Fill(1),
                 Height = Dim.Fill(4),
                 Border = new Border() { BorderStyle = BorderStyle.None }
             };
 
-            var dataTable = new DataTable();
-            dataTable.Columns.Add("Shipment ID", typeof(int));
-            dataTable.Columns.Add("Warehouse", typeof(string));
-            dataTable.Columns.Add("Date", typeof(string));
-            dataTable.Columns.Add("User", typeof(string));
-            dataTable.Columns.Add("Status", typeof(string));
-            dataTable.Columns.Add("Shipment Type", typeof(string));
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-
-
             // Create a TableView and set its data source
-            var tableView = UIComponent.Table(dataTable);
+            var tableView = UIComponent.Table(CategoryListLogic.GetData());
 
-            searchButton.Clicked += () =>
+            // Khi người dùng bấm nút refresh sẽ tải lại trang
+            refreshButton.Clicked += () =>
             {
-                // khi nút save được bấm
-                MessageBox.Query("Search", $"Query: {searchInput.Text}", "OK");
+                Display();
             };
 
-            // khi bấm vào cột
+            // Khi người dùng search một chuỗi gì đó
+            searchInput.TextChanged += args =>
+            {
+                tableView.Table = CategoryListLogic.SortCategoryBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
+            };
+
+            int columnCurrentlySortBy = -1;
+            bool sortColumnInDescendingOrder = false;
+            // khi sort cột
             tableView.MouseClick += e =>
             {
                 tableView.ScreenToCell(e.MouseEvent.X, e.MouseEvent.Y, out DataColumn clickedCol);
                 if (clickedCol != null)
                 {
-                    MessageBox.Query("Column Clicked", $"Column: {clickedCol}", "OK");
+                    int columnClicked = tableView.Table.Columns.IndexOf(clickedCol);
+                    if (columnClicked == columnCurrentlySortBy)
+                    {
+                        sortColumnInDescendingOrder = !sortColumnInDescendingOrder;
+                    }
+
+                    columnCurrentlySortBy = columnClicked;
+                    searchInput.Text = "";
+
+                    tableView.Table = CategoryListLogic.SortCategoryByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
                 }
             };
 
@@ -104,51 +87,20 @@ namespace WarehouseManager.UI.Menu
                 int column = args.Col;
                 int row = args.Row;
 
-                // Retrieve the current value of the cell
-                var currentValue = tableView.Table.Rows[row][column].ToString();
-
-                // Create a dialog box with an input field for editing the cell value
-                var editDialog = new Dialog("Edit Cell")
-                {
-                    X = Pos.Center(),
-                    Y = Pos.Center(),
-                    Width = Dim.Percent(50),
-                    Height = Dim.Percent(50)
-                };
-
-                var newValue = new TextView()
-                {
-                    X = Pos.Center(),
-                    Y = Pos.Center(),
-                    Width = Dim.Fill(),
-                    Height = Dim.Fill(),
-                    Text = currentValue
-                };
-
-                var cancelButton = new Button("Cancel");
-                cancelButton.Clicked += () =>
-                {
-                    Application.RequestStop();
-                };
-
-                var okButton = new Button("OK", is_default: true);
-                okButton.Clicked += () =>
-                {
-                    // Update the table with the new value
-                    tableView.Table.Rows[row][column] = newValue.Text.ToString();
-                    Application.RequestStop();
-                };
-
-                editDialog.Add(newValue);
-                editDialog.AddButton(cancelButton);
-                editDialog.AddButton(okButton);
-                Application.Run(editDialog);
+                MessageBox.Query("faee", $"{column} {row}", "ok");
             };
 
             deleteButton.Clicked += () =>
             {
                 // khi nút Delete được bấm
-                MessageBox.Query("Delete", $"Row: {tableView.SelectedRow}", "OK");
+                DataRow selectedRow = tableView.Table.Rows[tableView.SelectedRow];
+                int categoryID = (int)selectedRow[0];
+
+                int result = MessageBox.Query("Delete", "Are you sure you want to delete this item?", "No", "Yes");
+                if (result == 1) // "Yes" button was pressed
+                {
+                    tableView.Table = CategoryListLogic.DeleteCategory(tableView.Table, categoryID);
+                }
             };
 
             addButtonRight.Clicked += () =>
@@ -170,8 +122,8 @@ namespace WarehouseManager.UI.Menu
             };
 
             tableContainer.Add(tableView);
-            searchContainer.Add(searchLabel, searchInput, searchButton);
-            mainWindow.Add(separatorLine, searchContainer, tableContainer, addButtonRight, addButtonLeft, addButtonLeft2, deleteButton, errorLabel, userPermissionLabel);
+            mainWindow.Add(refreshButton, searchLabel, searchInput, tableContainer, addButtonRight, addButtonLeft, addButtonLeft2, deleteButton, errorLabel, userPermissionLabel, separatorLine);
         }
+
     }
 }
