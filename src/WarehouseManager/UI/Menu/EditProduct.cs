@@ -1,6 +1,7 @@
 using System.Data;
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
+using WarehouseManager.Core;
 
 namespace WarehouseManager.UI.Menu
 {
@@ -18,7 +19,7 @@ namespace WarehouseManager.UI.Menu
 
             var separatorLine = UIComponent.SeparatorLine();
 
-           var middleContainer = new FrameView()
+            var middleContainer = new FrameView()
             {
                 X = 1,
                 Y = 2,
@@ -60,14 +61,14 @@ namespace WarehouseManager.UI.Menu
                 Y = Pos.Bottom(priceLabel) + 1
             };
 
-            var productNameInput = new TextField("")
+            var productNameInput = new TextField(EditProductLogic.GetProductName(productID))
             {
                 X = Pos.Right(productNameLabel) + 1,
                 Y = Pos.Top(productNameLabel),
                 Width = Dim.Fill(1)
             };
 
-            var priceInput = new TextField("")
+            var priceInput = new TextField($"{EditProductLogic.GetProductPrice(productID)}")
             {
                 X = Pos.Right(productNameLabel) + 1,
                 Y = Pos.Top(priceLabel),
@@ -82,9 +83,9 @@ namespace WarehouseManager.UI.Menu
                 Height = Dim.Fill(1),
                 ReadOnly = true
             };
-            var items = new List<string> { "Option 1", "Option 2", "Option 3", "Option 4" };
-            categoryDropDown.SetSource(items);
-            categoryDropDown.SelectedItem = 0;
+            var categories = EditProductLogic.GetCategoryList();
+            categoryDropDown.SetSource(categories);
+            categoryDropDown.SelectedItem = EditProductLogic.GetProductCategory(productID);
 
 
             var descriptionLabel = new Label("Description:")
@@ -99,7 +100,7 @@ namespace WarehouseManager.UI.Menu
                 Y = Pos.Bottom(descriptionLabel) + 1,
                 Width = Dim.Fill(1),
                 Height = Dim.Fill(1),
-                Text = ""
+                Text = EditProductLogic.GetProductDescription(productID)
             };
 
             var saveButton = new Button("Save")
