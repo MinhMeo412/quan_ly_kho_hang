@@ -1,7 +1,5 @@
 using System.Data;
 using WarehouseManager.Data.Entity;
-using WarehouseManager.Core.Utility;
-using System.CodeDom;
 
 namespace WarehouseManager.Core
 {
@@ -54,7 +52,6 @@ namespace WarehouseManager.Core
         {
             return $"{GetProduct(productID).ProductDescription}";
         }
-
 
         public static DataTable GetProductVariantData(int productID)
         {
@@ -130,22 +127,61 @@ namespace WarehouseManager.Core
 
         private static void SaveVariants(int productID, DataTable variantDataTable)
         {
+            List<ProductVariant> allProductVariants = Program.Warehouse.ProductVariantTable.ProductVariants ?? new List<ProductVariant>();
+            List<ProductVariant> currentProductsVariants = allProductVariants.Where(pv => pv.ProductID == productID).ToList();
+            List<int> undeletedVariantIDs = new List<int>();
 
+            // Add new variants
+            foreach (DataRow row in variantDataTable.Rows)
+            {
+                bool newVariant = row[0] == (object)"Unsaved Variant";
+                bool modifiedVariant = !newVariant;
+
+                if (newVariant)
+                {
+                    AddVariant(productID, (string?)row[1], (string?)row[2], (string?)row[3]);
+                }
+
+                if (modifiedVariant)
+                {
+                    UpdateVariant(
+                        (int)row[0],
+                        productID,
+                        (string?)row[1],
+                        (string?)row[2],
+                        (string?)row[3]
+                    );
+                    undeletedVariantIDs.Add((int)row[0]);
+                }
+            }
+
+            foreach (ProductVariant currentProductsVariant in currentProductsVariants)
+            {
+                bool deletedVariant = !undeletedVariantIDs.Contains(currentProductsVariant.ProductVariantID);
+
+                if (deletedVariant)
+                {
+                    DeleteVariant(currentProductsVariant.ProductVariantID);
+                }
+            }
         }
 
-        private static void AddVariant()
+        private static void AddVariant(int productID, string? productVariantImageURL, string? productVariantColor, string? productVariantSize)
         {
+            List<ProductVariant> allProductVariants = Program.Warehouse.ProductVariantTable.ProductVariants ?? new List<ProductVariant>();
+            int highestProductVariantID = allProductVariants.Max(v => v.ProductVariantID);
 
+            Program.Warehouse.ProductVariantTable.Add(highestProductVariantID + 1, productID, productVariantImageURL, productVariantColor, productVariantSize);
         }
 
-        private static void UpdateVariant()
+        private static void UpdateVariant(int productVariantID, int productID, string? productVariantImageURL, string? productVariantColor, string? productVariantSize)
         {
-
+            Program.Warehouse.ProductVariantTable.Update(productVariantID, productID, productVariantImageURL, productVariantColor, productVariantSize);
         }
 
-        private static void DeleteVariant()
+        private static void DeleteVariant(int productVariantID)
         {
-
+            Program.Warehouse.ProductVariantTable.Delete(productVariantID);
         }
     }
 }

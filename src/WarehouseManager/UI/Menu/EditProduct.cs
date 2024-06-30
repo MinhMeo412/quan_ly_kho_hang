@@ -275,6 +275,7 @@ namespace WarehouseManager.UI.Menu
                 catch (Exception ex)
                 {
                     errorLabel.Text = $"Error: {ex.Message}";
+                    tableView.Table = EditProductLogic.GetProductVariantData(productID);
                 }
             };
 
