@@ -92,13 +92,13 @@ namespace WarehouseManager.UI.Menu
 
             if (UI.DarkTheme)
             {
-                speechBubbleLabel.ColorScheme = Theme.GenericLight;
-                tf2HeavyLabel.ColorScheme = Theme.GenericLight;
+                speechBubbleLabel.ColorScheme = Theme.Light;
+                tf2HeavyLabel.ColorScheme = Theme.Light;
             }
             else
             {
-                speechBubbleLabel.ColorScheme = Theme.SerikaDark;
-                tf2HeavyLabel.ColorScheme = Theme.SerikaDark;
+                speechBubbleLabel.ColorScheme = Theme.Dark;
+                tf2HeavyLabel.ColorScheme = Theme.Dark;
             }
 
             mainWindow.Add(speechBubbleLabel, tf2HeavyLabel, errorLabel, userPermissionLabel);

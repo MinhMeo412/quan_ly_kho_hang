@@ -20,32 +20,11 @@ namespace WarehouseManager.UI.Menu
 
             var separatorLine = UIComponent.SeparatorLine();
 
-            var searchContainer = new FrameView()
-            {
-                X = Pos.Center(),
-                Width = Dim.Percent(75),
-                Height = 3,
-                Border = new Border() { BorderStyle = BorderStyle.None }
-            };
+            var refreshButton = UIComponent.RefreshButton();
 
-            var searchLabel = new Label("Enter search term:")
-            {
-                X = 1,
-                Y = 1
-            };
+            var searchLabel = UIComponent.SearchLabel();
 
-            var searchInput = new TextField("")
-            {
-                X = Pos.Right(searchLabel) + 1,
-                Y = Pos.Top(searchLabel),
-                Width = Dim.Fill(12)
-            };
-
-            var clearButton = new Button("Clear")
-            {
-                X = Pos.AnchorEnd(11),
-                Y = Pos.Top(searchLabel)
-            };
+            var searchInput = UIComponent.SearchInput();
 
             var deleteButton = UIComponent.DeleteButton();
 
@@ -54,7 +33,7 @@ namespace WarehouseManager.UI.Menu
             var tableContainer = new FrameView()
             {
                 X = 1,
-                Y = Pos.Bottom(searchContainer),
+                Y = Pos.Bottom(searchLabel) + 1,
                 Width = Dim.Fill(1),
                 Height = Dim.Fill(4),
                 Border = new Border() { BorderStyle = BorderStyle.None }
@@ -62,8 +41,14 @@ namespace WarehouseManager.UI.Menu
 
             // Create a TableView and set its data source
             var tableView = UIComponent.Table(CategoryListLogic.GetSortedCategoryList());
+
             int columnCurrentlySortBy = -1;
             bool sortColumnInDescendingOrder = false;
+            
+            refreshButton.Clicked += () =>
+            {
+
+            };
 
             searchInput.TextChanged += args =>
             {
@@ -75,12 +60,6 @@ namespace WarehouseManager.UI.Menu
                 {
                     tableView.Table = CategoryListLogic.GetSearchedCategory($"{searchInput.Text}");
                 }
-            };
-
-            clearButton.Clicked += () =>
-            {
-                // khi nút category đc click
-                searchInput.Text = "";
             };
 
             // khi bấm vào cột
@@ -97,7 +76,19 @@ namespace WarehouseManager.UI.Menu
 
                     columnCurrentlySortBy = columnClicked;
                     searchInput.Text = "";
+
                     tableView.Table = CategoryListLogic.GetSortedCategoryList(columnCurrentlySortBy, sortColumnInDescendingOrder);
+
+                    int direction = 0;
+                    if (!sortColumnInDescendingOrder)
+                    {
+                        direction = 1;
+                    }
+                    else
+                    {
+                        direction = 2;
+                    }
+                    tableView.Table.Columns[columnClicked].ColumnName = CategoryListLogic.ShowCurrentSortingDirection(tableView.Table.Columns[columnClicked].ColumnName, direction);
                 }
             };
 
@@ -139,15 +130,24 @@ namespace WarehouseManager.UI.Menu
                 {
                     // Update the table with the new value
                     tableView.Table.Rows[row][column] = newValue.Text.ToString();
+
+                    int categoryID = (int)tableView.Table.Rows[row][0];
+                    string categoryName = $"{tableView.Table.Rows[row][1]}";
+                    string categoryDescription = $"{tableView.Table.Rows[row][2]}";
+                    CategoryListLogic.UpdateCategory(categoryID, categoryName, categoryDescription);
+
                     Application.RequestStop();
                 };
 
                 editDialog.Add(newValue);
                 editDialog.AddButton(cancelButton);
                 editDialog.AddButton(okButton);
-                Application.Run(editDialog);
-            };
 
+                if (column != 0)
+                {
+                    Application.Run(editDialog);
+                }
+            };
 
             deleteButton.Clicked += () =>
             {
@@ -178,8 +178,7 @@ namespace WarehouseManager.UI.Menu
             };
 
             tableContainer.Add(tableView);
-            searchContainer.Add(searchLabel, searchInput, clearButton);
-            mainWindow.Add(searchContainer, tableContainer, addButton, deleteButton, errorLabel, userPermissionLabel, separatorLine);
+            mainWindow.Add(refreshButton, searchLabel, searchInput, tableContainer, addButton, deleteButton, errorLabel, userPermissionLabel, separatorLine);
         }
     }
 }

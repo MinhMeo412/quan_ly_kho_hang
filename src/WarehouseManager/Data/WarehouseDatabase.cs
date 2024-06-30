@@ -127,6 +127,5 @@ namespace WarehouseManager.Data
             this.StockTransferTable = new StockTransferTable(this.ConnectionString, this.Token);
             this.StockTransferDetailTable = new StockTransferDetailTable(this.ConnectionString, this.Token);
         }
-
     }
 }

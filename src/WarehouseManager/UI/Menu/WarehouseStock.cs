@@ -36,31 +36,16 @@ namespace WarehouseManager.UI.Menu
                 Border = new Border() { BorderStyle = BorderStyle.None }
             };
 
-            var searchLabel = new Label("Enter search term:")
-            {
-                X = Pos.Percent(50),
-                Y = 1
-            };
+            var searchLabel = UIComponent.SearchLabel();
 
-            var searchInput = new TextField("")
-            {
-                X = Pos.Right(searchLabel) + 1,
-                Y = Pos.Top(searchLabel),
-                Width = Dim.Fill(12)
-            };
-
-            var searchButton = new Button("Search")
-            {
-                X = Pos.AnchorEnd(11),
-                Y = Pos.Top(searchLabel)
-            };
+            var searchInput = UIComponent.SearchInput();
 
             var excelButton = UIComponent.AddButton("Export to Excel");
 
             var tableContainer = new FrameView()
             {
                 X = 1,
-                Y = Pos.Bottom(searchContainer),
+                Y = Pos.Bottom(searchInput) + 1,
                 Width = Dim.Fill(1),
                 Height = Dim.Fill(4),
                 Border = new Border() { BorderStyle = BorderStyle.None }
@@ -149,12 +134,6 @@ namespace WarehouseManager.UI.Menu
                 Application.Run(dialog);
             };
 
-            searchButton.Clicked += () =>
-            {
-                // khi nút save được bấm
-                MessageBox.Query("Search", $"Query: {searchInput.Text}", "OK");
-            };
-
             // khi bấm vào cột
             tableView.MouseClick += e =>
             {
@@ -180,8 +159,8 @@ namespace WarehouseManager.UI.Menu
             };
 
             tableContainer.Add(tableView);
-            searchContainer.Add(searchLabel, searchInput, searchButton);
-            mainWindow.Add(warehouseCheckList, searchContainer, tableContainer, excelButton, separatorLine, errorLabel, userPermissionLabel);
+            searchContainer.Add(searchLabel, searchInput);
+            mainWindow.Add(warehouseCheckList, searchLabel,searchInput, tableContainer, excelButton, separatorLine, errorLabel, userPermissionLabel);
         }
     }
 }

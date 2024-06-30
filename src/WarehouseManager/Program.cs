@@ -3,9 +3,9 @@ using WarehouseManager.Data;
 
 class Program
 {
-    public static WarehouseDatabase warehouse = new WarehouseDatabase("localhost", "warehouse_app_user", "1234", "warehouse");
+    public static WarehouseDatabase Warehouse = new WarehouseDatabase("localhost", "warehouse_app_user", "1234", "warehouse");
 
-    public static void Main(String[] args)
+    public static void Main()
     {
         UI.Start();
     }

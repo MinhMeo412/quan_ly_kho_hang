@@ -6,14 +6,10 @@ namespace WarehouseManager.Core
     {
         public static string PermissionName()
         {
-            int? permissionLevel = Program.warehouse.PermissionLevel;
+            int? permissionLevel = Program.Warehouse.PermissionLevel;
             string permissionName = "Unknown Permission";
-            if (permissionLevel == null)
-            {
-                return permissionName;
-            }
 
-            List<Permission>? permissions = Program.warehouse.PermissionTable.Permissions;
+            List<Permission>? permissions = Program.Warehouse.PermissionTable.Permissions;
             if (permissions != null)
             {
                 foreach (Permission permission in permissions)

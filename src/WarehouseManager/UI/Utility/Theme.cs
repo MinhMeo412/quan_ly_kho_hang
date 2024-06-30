@@ -5,9 +5,9 @@ namespace WarehouseManager.UI.Utility
     public static class Theme
     {
         /*
-        Standard dark theme. Nhìn cho đẹp. Cách dùng: ColorScheme = Theme.SerikaDark
+        Standard dark theme. Nhìn cho đẹp. Cách dùng: ColorScheme = Theme.Dark
         */
-        public static ColorScheme SerikaDark { get; } = new ColorScheme()
+        public static ColorScheme Dark { get; } = new ColorScheme()
         {
             Normal = Application.Driver.MakeAttribute(Color.White, Color.Black),
             Focus = Application.Driver.MakeAttribute(Color.Black, Color.White),
@@ -18,7 +18,7 @@ namespace WarehouseManager.UI.Utility
         /*
         Light theme 🤢
         */
-        public static ColorScheme GenericLight { get; } = new ColorScheme()
+        public static ColorScheme Light { get; } = new ColorScheme()
         {
             Normal = Application.Driver.MakeAttribute(Color.Black, Color.White),
             Focus = Application.Driver.MakeAttribute(Color.White, Color.Black),
