@@ -1,6 +1,7 @@
 using System.Data;
 using WarehouseManager.Data.Entity;
 using Terminal.Gui;
+using WarehouseManager.Core.Utility;
 
 namespace WarehouseManager.Core
 {
@@ -102,7 +103,19 @@ namespace WarehouseManager.Core
             return relevantProducts;
         }
 
-        private static DataTable ConvertWarehouseStockProductVariantsToDataTable(List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants)
+        private static List<Warehouse> GetRelevantWarehouses(List<int> selectedWarehouseIDs)
+        {
+            List<WarehouseStock> warehouseStocks = Program.Warehouse.WarehouseStockTable.WarehouseStocks ?? new List<WarehouseStock>();
+
+            List<WarehouseStock> relevantWarehousesStocks = warehouseStocks
+                .Where(ws => selectedWarehousesID.Contains(ws.WarehouseID))
+                .ToList();
+
+            return relevantWarehousesStocks;
+
+            List<Warehouse> warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
+        }
+        private static DataTable ConvertWarehouseStockProductVariantsToDataTable(List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants, List<Warehouse>? relevantWarehouses = null)
         {
             var dataTable = new DataTable();
 
@@ -113,7 +126,7 @@ namespace WarehouseManager.Core
             {
                 warehouseStockProductVariants[0].Item4
                     .ToList()
-                    .ForEach(warehousesQuantity => dataTable.Columns.Add($"{GetWarehouseName(warehousesQuantity.Key)}", typeof(int)));
+                    .ForEach(warehousesQuantity => dataTable.Columns.Add($"{GetWarehouseName(warehousesQuantity.Key, relevantWarehouses)}", typeof(int)));
             }
 
             foreach ((int, string, string, Dictionary<int, int>) row in warehouseStockProductVariants)
@@ -133,11 +146,6 @@ namespace WarehouseManager.Core
             }
 
             return dataTable;
-        }
-
-        private static List<(int, string, string, Dictionary<int, int>)> ConvertDataTableToWarehouseStockProductVariants(DataTable dataTable)
-        {
-            
         }
 
         private static string GetProductName(int productID, List<Product>? relevantProducts = null)
@@ -162,6 +170,97 @@ namespace WarehouseManager.Core
             return warehouseName;
         }
 
+        private static List<(int, string, string, Dictionary<int, int>)> ConvertDataTableToWarehouseStockProductVariants(DataTable dataTable)
+        {
+            List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants = new List<(int, string, string, Dictionary<int, int>)>();
 
+            foreach (DataRow row in dataTable.Rows)
+            {
+                int variantID = (int)row[0];
+                string name = (string)row[1];
+                string imageURL = (string)row[2];
+
+                Dictionary<int, int> warehousesQuantity = new Dictionary<int, int>();
+                for (int i = 3; i < dataTable.Columns.Count; i++)
+                {
+                    warehousesQuantity.Add(GetWarehouseID(dataTable.Columns[i].ColumnName), (int)row[i]);
+                }
+
+                warehouseStockProductVariants.Add((variantID, name, imageURL, warehousesQuantity));
+            }
+
+            return warehouseStockProductVariants;
+        }
+
+        private static int GetWarehouseID(string warehouseName)
+        {
+            List<Warehouse> warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
+
+            Warehouse? warehouse = warehouses.FirstOrDefault(w => w.WarehouseName == warehouseName);
+
+            int warehouseID = 0;
+            if (warehouse != null)
+            {
+                warehouseID = warehouse.WarehouseID;
+            }
+            return warehouseID;
+        }
+
+        public static DataTable SortWarehouseStockBySearchTerm(DataTable dataTable, string searchTerm)
+        {
+            List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants = ConvertDataTableToWarehouseStockProductVariants(dataTable);
+            List<((int, string, string, Dictionary<int, int>), double)> warehouseStockSimilarities = new List<((int, string, string, Dictionary<int, int>), double)>();
+
+
+            foreach ((int, string, string, Dictionary<int, int>) warehouseStockProductVariant in warehouseStockProductVariants)
+            {
+                double maxSimilarity = Misc.MaxDouble(
+                    Misc.JaccardSimilarity($"{warehouseStockProductVariant.Item1}", searchTerm),
+                    Misc.JaccardSimilarity(warehouseStockProductVariant.Item2, searchTerm),
+                    Misc.JaccardSimilarity($"{warehouseStockProductVariant.Item3}", searchTerm)
+                );
+
+                warehouseStockSimilarities.Add((warehouseStockProductVariant, maxSimilarity));
+            }
+
+            List<(int, string, string, Dictionary<int, int>)> sortedWarehouseStockProductVariants = warehouseStockSimilarities
+                .OrderByDescending(w => w.Item2)
+                .Select(w => w.Item1)
+                .ToList();
+
+            return ConvertWarehouseStockProductVariantsToDataTable(sortedWarehouseStockProductVariants);
+
+        }
+
+        public static DataTable SortWarehouseStockByColumn(DataTable dataTable, int columnToSortBy, bool sortColumnInDescendingOrder)
+        {
+            List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants = ConvertDataTableToWarehouseStockProductVariants(dataTable);
+
+            switch (columnToSortBy)
+            {
+                case 0:
+                    warehouseStockProductVariants = warehouseStockProductVariants.OrderBy(w => w.Item1).ToList();
+                    break;
+                case 1:
+                    warehouseStockProductVariants = warehouseStockProductVariants.OrderBy(w => w.Item2).ToList();
+                    break;
+                case 2:
+                    warehouseStockProductVariants = warehouseStockProductVariants.OrderBy(w => w.Item3).ToList();
+                    break;
+                default:
+                    break;
+            }
+
+            if (sortColumnInDescendingOrder)
+            {
+                warehouseStockProductVariants.Reverse();
+            }
+
+            DataTable sortedDataTable = ConvertWarehouseStockProductVariantsToDataTable(warehouseStockProductVariants);
+
+            sortedDataTable.Columns[columnToSortBy].ColumnName = Misc.ShowCurrentSortingDirection(sortedDataTable.Columns[columnToSortBy].ColumnName, sortColumnInDescendingOrder);
+
+            return sortedDataTable;
+        }
     }
 }
