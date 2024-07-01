@@ -256,29 +256,22 @@ namespace WarehouseManager.Core
 
         public static DataTable SortWarehouseStockByColumn(DataTable dataTable, int columnToSortBy, bool sortColumnInDescendingOrder)
         {
-            List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants = ConvertDataTableToWarehouseStockProductVariants(dataTable);
 
-            switch (columnToSortBy)
-            {
-                case 0:
-                    warehouseStockProductVariants = warehouseStockProductVariants.OrderBy(w => w.Item1).ToList();
-                    break;
-                case 1:
-                    warehouseStockProductVariants = warehouseStockProductVariants.OrderBy(w => w.Item2).ToList();
-                    break;
-                case 2:
-                    warehouseStockProductVariants = warehouseStockProductVariants.OrderBy(w => w.Item3).ToList();
-                    break;
-                default:
-                    break;
-            }
+            // Làm cái này để xóa mũi tên khỏi tên cột :)))
+            dataTable = ConvertWarehouseStockProductVariantsToDataTable(ConvertDataTableToWarehouseStockProductVariants(dataTable));
 
+            DataView dataView = new DataView(dataTable);
+
+            // Sort by "Name" column in ascending order
+            string direction = "ASC";
             if (sortColumnInDescendingOrder)
             {
-                warehouseStockProductVariants.Reverse();
+                direction = "DESC";
             }
+            dataView.Sort = $"{dataTable.Columns[columnToSortBy].ColumnName} {direction}";
 
-            DataTable sortedDataTable = ConvertWarehouseStockProductVariantsToDataTable(warehouseStockProductVariants);
+            // Optional: If you need to get back the sorted DataTable
+            DataTable sortedDataTable = dataView.ToTable();
 
             sortedDataTable.Columns[columnToSortBy].ColumnName = Misc.ShowCurrentSortingDirection(sortedDataTable.Columns[columnToSortBy].ColumnName, sortColumnInDescendingOrder);
 
