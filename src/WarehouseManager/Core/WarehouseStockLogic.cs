@@ -22,10 +22,9 @@ namespace WarehouseManager.Core
 
         public static DataTable GetData(Dictionary<CheckBox, int> warehouseChecklistDict)
         {
-            List<WarehouseStock> warehouseStocks = Program.Warehouse.WarehouseStockTable.WarehouseStocks ?? new List<WarehouseStock>();
-            List<Product>? products = Program.Warehouse.ProductTable.Products ?? new List<Product>();
-            List<ProductVariant> productVariants = GetProductVariants(warehouseChecklistDict);
-
+            List<WarehouseStock> selectedWarehouseStocks = GetSelectedWarehousesStocks(warehouseChecklistDict);
+            List<ProductVariant> relevantProductVariants = GetRelevantProductVariants(warehouseStocks);
+            List<Product> roducts = GetRelevantProducts(productVariants);
 
 
 
@@ -45,35 +44,56 @@ namespace WarehouseManager.Core
             return dataTable;
         }
 
-        private static List<ProductVariant> GetProductVariants(Dictionary<CheckBox, int> warehouseChecklistDict)
+        private static List<WarehouseStock> GetSelectedWarehousesStocks(Dictionary<CheckBox, int> warehouseChecklistDict)
         {
             List<WarehouseStock> warehouseStocks = Program.Warehouse.WarehouseStockTable.WarehouseStocks ?? new List<WarehouseStock>();
+
+            List<int> selectedWarehousesID = warehouseChecklistDict.Values.ToList();
+
+            List<WarehouseStock> relevantWarehousesStocks = warehouseStocks
+                .Where(ws => selectedWarehousesID.Contains(ws.WarehouseID))
+                .ToList();
+
+            return relevantWarehousesStocks;
+        }
+
+        private static List<ProductVariant> GetRelevantProductVariants(List<WarehouseStock> selectedWarehouseStocks)
+        {
+            // Get all product variants from the program's warehouse
             List<ProductVariant> allProductVariants = Program.Warehouse.ProductVariantTable.ProductVariants ?? new List<ProductVariant>();
 
+            // Use LINQ to get distinct product variant IDs associated with selected warehouse stocks
+            List<int> relevantProductVariantIDs = selectedWarehouseStocks
+                .Select(ws => ws.ProductVariantID)
+                .Distinct()
+                .ToList();
 
-            List<ProductVariant> relevantProductVariants = new List<ProductVariant>();
-            foreach (KeyValuePair<CheckBox, int> warehouseChecklist in warehouseChecklistDict)
+            // Use LINQ to filter allProductVariants based on relevantProductVariantIDs
+            List<ProductVariant> relevantProductVariants = allProductVariants
+                .Where(pv => relevantProductVariantIDs.Contains(pv.ProductVariantID))
+                .ToList();
+
+            return relevantProductVariants;
+        }
+
+        private static List<Product> GetRelevantProducts(List<ProductVariant> relevantProductVariants)
+        {
+            List<Product> allProducts = Program.Warehouse.ProductTable.Products ?? new List<Product>();
+
+            List<Product> relevantProducts = new List<Product>();
+
+            foreach (ProductVariant relevantProductVariant in relevantProductVariants)
             {
-                int warehouseID = warehouseChecklist.Value;
+                int productID = relevantProductVariant.ProductID;
+                Product? product = allProducts.FirstOrDefault(p => p.ProductID == productID);
 
-                List<int> productVariantIDs = warehouseStocks
-                    .Where(ws => ws.WarehouseID == warehouseID)
-                    .Select(ws => ws.ProductVariantID)
-                    .ToList();
-
-
-                
-                foreach (ProductVariant productVariant in allProductVariants)
+                if (product != null && !relevantProducts.Contains(product))
                 {
-                    if (productVariantIDs.Contains(productVariant.ProductID) && !relevantProductVariants.Contains(productVariant))
-                    {
-                        relevantProductVariants.Add(productVariant);
-                    }
+                    relevantProducts.Add(product);
                 }
             }
 
-
-            return relevantProductVariants;
+            return relevantProducts;
         }
     }
 }
