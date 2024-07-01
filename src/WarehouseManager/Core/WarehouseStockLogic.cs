@@ -256,9 +256,7 @@ namespace WarehouseManager.Core
 
         public static DataTable SortWarehouseStockByColumn(DataTable dataTable, int columnToSortBy, bool sortColumnInDescendingOrder)
         {
-
-            // Làm cái này để xóa mũi tên khỏi tên cột :)))
-            dataTable = ConvertWarehouseStockProductVariantsToDataTable(ConvertDataTableToWarehouseStockProductVariants(dataTable));
+            dataTable = ClearSortDirectionArrow(dataTable);
 
             DataView dataView = new DataView(dataTable);
 
@@ -287,6 +285,14 @@ namespace WarehouseManager.Core
             sortedDataTable.Columns[columnToSortBy].ColumnName = Misc.ShowCurrentSortingDirection(sortedDataTable.Columns[columnToSortBy].ColumnName, sortColumnInDescendingOrder);
 
             return sortedDataTable;
+        }
+
+        // Làm cái này để xóa mũi tên khỏi tên cột :)))
+        // nếu không clear lúc export ra excel mũi tên sẽ vẫn còn trong bảng
+        public static DataTable ClearSortDirectionArrow(DataTable dataTable)
+        {
+            dataTable = ConvertWarehouseStockProductVariantsToDataTable(ConvertDataTableToWarehouseStockProductVariants(dataTable));
+            return dataTable;
         }
     }
 }

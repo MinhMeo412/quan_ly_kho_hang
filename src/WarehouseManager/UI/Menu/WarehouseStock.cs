@@ -163,8 +163,15 @@ namespace WarehouseManager.UI.Menu
 
             exportButton.Clicked += () =>
             {
-                // khi nút category đc click
-                Display();
+                try
+                {
+                    tableView.Table = WarehouseStockLogic.ClearSortDirectionArrow(tableView.Table);
+                    var saveDialog = UIComponent.ExportToExcelDialog(tableView.Table);
+                }
+                catch (Exception ex)
+                {
+                    errorLabel.Text = ex.Message;
+                }
             };
 
             tableContainer.Add(tableView);

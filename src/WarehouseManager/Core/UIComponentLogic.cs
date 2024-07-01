@@ -1,4 +1,6 @@
 using WarehouseManager.Data.Entity;
+using System.Data;
+using WarehouseManager.Core.Utility;
 
 namespace WarehouseManager.Core
 {
@@ -23,6 +25,15 @@ namespace WarehouseManager.Core
             }
 
             return permissionName;
+        }
+
+        public static void ExportToExcel(DataTable dataTable, string selectedPath)
+        {
+            if (!selectedPath.Contains(".xlsx"))
+            {
+                selectedPath = $"{selectedPath}.xlsx";
+            }
+            Excel.Export(dataTable, selectedPath);
         }
     }
 }
