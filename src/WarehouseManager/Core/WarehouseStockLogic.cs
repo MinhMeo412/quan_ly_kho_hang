@@ -103,18 +103,19 @@ namespace WarehouseManager.Core
             return relevantProducts;
         }
 
-        private static List<Warehouse> GetRelevantWarehouses(List<int> selectedWarehouseIDs)
-        {
-            List<WarehouseStock> warehouseStocks = Program.Warehouse.WarehouseStockTable.WarehouseStocks ?? new List<WarehouseStock>();
+        // private static List<Warehouse> GetRelevantWarehouses(List<int> selectedWarehouseIDs)
+        // {
+        //     List<WarehouseStock> warehouseStocks = Program.Warehouse.WarehouseStockTable.WarehouseStocks ?? new List<WarehouseStock>();
 
-            List<WarehouseStock> relevantWarehousesStocks = warehouseStocks
-                .Where(ws => selectedWarehousesID.Contains(ws.WarehouseID))
-                .ToList();
+        //     List<WarehouseStock> relevantWarehousesStocks = warehouseStocks
+        //         .Where(ws => selectedWarehousesID.Contains(ws.WarehouseID))
+        //         .ToList();
 
-            return relevantWarehousesStocks;
+        //     return relevantWarehousesStocks;
 
-            List<Warehouse> warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
-        }
+        //     List<Warehouse> warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
+        // }
+
         private static DataTable ConvertWarehouseStockProductVariantsToDataTable(List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants, List<Warehouse>? relevantWarehouses = null)
         {
             var dataTable = new DataTable();
