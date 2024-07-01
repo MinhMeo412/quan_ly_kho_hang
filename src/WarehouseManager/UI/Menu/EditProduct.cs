@@ -246,7 +246,11 @@ namespace WarehouseManager.UI.Menu
                 editDialog.Add(newValue);
                 editDialog.AddButton(cancelButton);
                 editDialog.AddButton(okButton);
-                Application.Run(editDialog);
+
+                if (column != 0)
+                {
+                    Application.Run(editDialog);
+                }
             };
 
             returnButton.Clicked += () =>

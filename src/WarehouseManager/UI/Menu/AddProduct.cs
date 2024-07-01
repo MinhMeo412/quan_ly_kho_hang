@@ -1,6 +1,7 @@
 using System.Data;
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
+using WarehouseManager.Core;
 
 namespace WarehouseManager.UI.Menu
 {
@@ -82,8 +83,8 @@ namespace WarehouseManager.UI.Menu
                 Height = Dim.Fill(1),
                 ReadOnly = true
             };
-            var items = new List<string> { "Option 1", "Option 2", "Option 3", "Option 4" };
-            categoryDropDown.SetSource(items);
+            var categories = AddProductLogic.GetCategoryList();
+            categoryDropDown.SetSource(categories);
             categoryDropDown.SelectedItem = 0;
 
 
@@ -108,49 +109,8 @@ namespace WarehouseManager.UI.Menu
                 Y = Pos.Bottom(rightContainer) + 1
             };
 
-            var dataTable = new DataTable();
-            dataTable.Columns.Add("Image URL", typeof(string));
-            dataTable.Columns.Add("Color", typeof(string));
-            dataTable.Columns.Add("Size", typeof(string));
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
-
-
             // Create a TableView and set its data source
-            var tableView = UIComponent.Table(dataTable);
+            var tableView = UIComponent.Table(AddProductLogic.GetDataTable());
             tableView.Height = Dim.Fill(5);
             tableView.Width = Dim.Fill(2);
             tableView.X = 1;
@@ -218,14 +178,18 @@ namespace WarehouseManager.UI.Menu
 
             addVariantButton.Clicked += () =>
             {
-                // khi nút add variant được bấm
-                MessageBox.Query("Add Variant", $"Image URL: {imageURLInput.Text}, Color: {colorInput.Text}, Size: {sizeInput.Text}", "OK");
+                if (imageURLInput.Text != "" || colorInput.Text != "" || sizeInput.Text != "")
+                {
+                    tableView.Table = AddProductLogic.AddVariantToDataTable(tableView.Table, $"{imageURLInput.Text}", $"{colorInput.Text}", $"{sizeInput.Text}");
+                    imageURLInput.Text = "";
+                    colorInput.Text = "";
+                    sizeInput.Text = "";
+                }
             };
 
             deleteButton.Clicked += () =>
             {
-                // khi nút Delete được bấm
-                MessageBox.Query("Delete", $"Row: {tableView.SelectedRow}", "OK");
+                tableView.Table = AddProductLogic.DeleteVariantFromDataTable(tableView.Table, tableView.SelectedRow);
             };
 
             tableView.CellActivated += args =>
@@ -277,8 +241,23 @@ namespace WarehouseManager.UI.Menu
             saveButton.Clicked += () =>
             {
                 // khi nút Save được bấm
-                string save = $"Product Name: {productNameInput.Text},\n Price: {priceInput.Text}, \nCategory: {categoryDropDown.Text}, \nDescription: {descriptionInput.Text}\n";
-                MessageBox.Query("Save", save, "OK");
+                try
+                {
+                    AddProductLogic.Save(
+                        productName: $"{productNameInput.Text}",
+                        productDescription: $"{descriptionInput.Text}",
+                        productPrice: int.Parse($"{priceInput.Text}"),
+                        categoryName: $"{categoryDropDown.Text}",
+                        variantDataTable: tableView.Table
+                    );
+
+                    MessageBox.Query("Success", $"Product created successfully.", "OK");
+                    Display();
+                }
+                catch (Exception ex)
+                {
+                    errorLabel.Text = $"Error: {ex.Message}";
+                }
             };
 
             variantInputContainer.Add(imageURLInput, colorInput, sizeInput, imageURLLabel, colorLabel, sizeLabel);
