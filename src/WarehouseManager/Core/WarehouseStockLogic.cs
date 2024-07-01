@@ -9,7 +9,7 @@ namespace WarehouseManager.Core
     {
         // Phải lưu luôn ra ngoài nếu không sort và search của menu này sẽ cực kì chậm.
         // (do phải tìm lại tên và id warehouse trong danh sách dài cực kì nhiều lần.)
-        private static List<Warehouse>? RelevantWarehouses { get; set; }
+        private static List<Warehouse> RelevantWarehouses { get; set; } = new List<Warehouse>();
 
         public static Dictionary<CheckBox, int> GetWarehouseChecklistDict()
         {
@@ -121,7 +121,6 @@ namespace WarehouseManager.Core
             return relevantWarehouses;
         }
 
-
         private static DataTable ConvertWarehouseStockProductVariantsToDataTable(List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants)
         {
             var dataTable = new DataTable();
@@ -165,7 +164,7 @@ namespace WarehouseManager.Core
         private static string GetWarehouseName(int warehouseID)
         {
             // to make it cleaner, do the same thing as the GetProductName method above.
-            List<Warehouse> relevantWarehouses = RelevantWarehouses ?? new List<Warehouse>();
+            List<Warehouse> relevantWarehouses = new List<Warehouse>(RelevantWarehouses);
 
             Warehouse? warehouse = relevantWarehouses.FirstOrDefault(w => w.WarehouseID == warehouseID);
             string warehouseName = "";
@@ -179,6 +178,22 @@ namespace WarehouseManager.Core
 
         private static List<(int, string, string, Dictionary<int, int>)> ConvertDataTableToWarehouseStockProductVariants(DataTable dataTable)
         {
+            // this method gets the warehouse id by using the warehouse name
+            // if the arrows is still present it will break the program
+            // this is a very hacky way of preventing that. it removes the up/down sorting arrows from datatable column names:
+            for (int i = 3; i < dataTable.Columns.Count; i++)
+            {
+                string upwardsArrow = "\u25B2";
+                string downwardsArrow = "\u25BC";
+
+                if (dataTable.Columns[i].ColumnName.Contains(upwardsArrow) || dataTable.Columns[i].ColumnName.Contains(downwardsArrow))
+                {
+                    dataTable.Columns[i].ColumnName = dataTable.Columns[i].ColumnName.Replace(upwardsArrow, "");
+                    dataTable.Columns[i].ColumnName = dataTable.Columns[i].ColumnName.Replace(downwardsArrow, "");
+                    dataTable.Columns[i].ColumnName = dataTable.Columns[i].ColumnName.Substring(0, dataTable.Columns[i].ColumnName.Length - 1);
+                }
+            }
+
             List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants = new List<(int, string, string, Dictionary<int, int>)>();
 
             foreach (DataRow row in dataTable.Rows)
@@ -201,7 +216,7 @@ namespace WarehouseManager.Core
 
         private static int GetWarehouseID(string warehouseName)
         {
-            List<Warehouse> warehouses = RelevantWarehouses ?? new List<Warehouse>();
+            List<Warehouse> warehouses = new List<Warehouse>(RelevantWarehouses);
 
             Warehouse? warehouse = warehouses.FirstOrDefault(w => w.WarehouseName == warehouseName);
 
