@@ -22,33 +22,45 @@ namespace WarehouseManager.Core
 
         public static DataTable GetData(Dictionary<CheckBox, int> warehouseChecklistDict)
         {
-            List<WarehouseStock> selectedWarehouseStocks = GetSelectedWarehousesStocks(warehouseChecklistDict);
-            List<ProductVariant> relevantProductVariants = GetRelevantProductVariants(warehouseStocks);
-            List<Product> roducts = GetRelevantProducts(productVariants);
+            List<int> selectedWarehouseIDs = GetSelectedWarehouseIDs(warehouseChecklistDict);
+            List<WarehouseStock> selectedWarehouseStocks = GetSelectedWarehousesStocks(selectedWarehouseIDs);
+            List<ProductVariant> relevantProductVariants = GetRelevantProductVariants(selectedWarehouseStocks);
+            List<Product> relevantProducts = GetRelevantProducts(relevantProductVariants);
 
+            List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants = new List<(int, string, string, Dictionary<int, int>)>();
 
-
-
-            var dataTable = new DataTable();
-
-            dataTable.Columns.Add("ID", typeof(int));
-            dataTable.Columns.Add("Product", typeof(string));
-            dataTable.Columns.Add("Image", typeof(string));
-
-            foreach (KeyValuePair<CheckBox, int> warehouseChecklist in warehouseChecklistDict)
+            foreach (ProductVariant relevantProductVariant in relevantProductVariants)
             {
-                dataTable.Columns.Add($"{warehouseChecklist.Key.Text}", typeof(string));
+                int variantID = relevantProductVariant.ProductVariantID;
+                string name = $"{GetProductName(relevantProductVariant.ProductID, relevantProducts)} {relevantProductVariant.ProductVariantColor} {relevantProductVariant.ProductVariantSize}";
+                string imageURL = $"{relevantProductVariant.ProductVariantImageURL}";
+                Dictionary<int, int> warehouseVariantQuantity = selectedWarehouseIDs
+                    .ToDictionary(
+                        selectedWarehouseID => selectedWarehouseID,
+                        selectedWarehouseID => selectedWarehouseStocks
+                            .Where(ws => ws.WarehouseID == selectedWarehouseID && ws.ProductVariantID == variantID)
+                            .Select(ws => ws.WarehouseStockQuantity)
+                            .FirstOrDefault()
+                    );
+
+                warehouseStockProductVariants.Add((variantID, name, imageURL, warehouseVariantQuantity));
             }
 
-
-            return dataTable;
+            return ConvertWarehouseStockProductVariantsToDataTable(warehouseStockProductVariants);
         }
 
-        private static List<WarehouseStock> GetSelectedWarehousesStocks(Dictionary<CheckBox, int> warehouseChecklistDict)
+        private static List<int> GetSelectedWarehouseIDs(Dictionary<CheckBox, int> warehouseChecklistDict)
+        {
+            List<int> selectedWarehousesID = warehouseChecklistDict
+                .Where(warehouseCheckboxPair => warehouseCheckboxPair.Key.Checked)
+                .Select(warehouseCheckboxPair => warehouseCheckboxPair.Value)
+                .ToList();
+            return selectedWarehousesID;
+        }
+
+        private static List<WarehouseStock> GetSelectedWarehousesStocks(List<int> selectedWarehousesID)
         {
             List<WarehouseStock> warehouseStocks = Program.Warehouse.WarehouseStockTable.WarehouseStocks ?? new List<WarehouseStock>();
-
-            List<int> selectedWarehousesID = warehouseChecklistDict.Values.ToList();
 
             List<WarehouseStock> relevantWarehousesStocks = warehouseStocks
                 .Where(ws => selectedWarehousesID.Contains(ws.WarehouseID))
@@ -78,22 +90,78 @@ namespace WarehouseManager.Core
 
         private static List<Product> GetRelevantProducts(List<ProductVariant> relevantProductVariants)
         {
+            // Get all products from the program's warehouse
             List<Product> allProducts = Program.Warehouse.ProductTable.Products ?? new List<Product>();
 
-            List<Product> relevantProducts = new List<Product>();
+            // Use LINQ to get distinct relevant product IDs from relevantProductVariants
+            List<int> relevantProductIDs = relevantProductVariants.Select(rv => rv.ProductID).Distinct().ToList();
 
-            foreach (ProductVariant relevantProductVariant in relevantProductVariants)
-            {
-                int productID = relevantProductVariant.ProductID;
-                Product? product = allProducts.FirstOrDefault(p => p.ProductID == productID);
-
-                if (product != null && !relevantProducts.Contains(product))
-                {
-                    relevantProducts.Add(product);
-                }
-            }
+            // Use LINQ to filter allProducts based on relevantProductIDs
+            List<Product> relevantProducts = allProducts.Where(p => relevantProductIDs.Contains(p.ProductID)).ToList();
 
             return relevantProducts;
         }
+
+        private static DataTable ConvertWarehouseStockProductVariantsToDataTable(List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants)
+        {
+            var dataTable = new DataTable();
+
+            dataTable.Columns.Add("ID", typeof(int));
+            dataTable.Columns.Add("Product", typeof(string));
+            dataTable.Columns.Add("Image", typeof(string));
+            if (warehouseStockProductVariants.Count > 0)
+            {
+                warehouseStockProductVariants[0].Item4
+                    .ToList()
+                    .ForEach(warehousesQuantity => dataTable.Columns.Add($"{GetWarehouseName(warehousesQuantity.Key)}", typeof(int)));
+            }
+
+            foreach ((int, string, string, Dictionary<int, int>) row in warehouseStockProductVariants)
+            {
+                List<object> values = new List<object> {
+                    row.Item1,
+                    row.Item2,
+                    row.Item3
+                };
+
+                foreach (KeyValuePair<int, int> warehouseQuantities in row.Item4)
+                {
+                    values.Add(warehouseQuantities.Value);
+                }
+
+                dataTable.Rows.Add(values.ToArray());
+            }
+
+            return dataTable;
+        }
+
+        private static List<(int, string, string, Dictionary<int, int>)> ConvertDataTableToWarehouseStockProductVariants(DataTable dataTable)
+        {
+            
+        }
+
+        private static string GetProductName(int productID, List<Product>? relevantProducts = null)
+        {
+            relevantProducts ??= Program.Warehouse.ProductTable.Products ?? new List<Product>();
+            string productName = relevantProducts.FirstOrDefault(p => p.ProductID == productID)?.ProductName ?? "";
+            return productName;
+        }
+
+        private static string GetWarehouseName(int warehouseID, List<Warehouse>? relevantWarehouses = null)
+        {
+            // to make it cleaner, do the same thing as the GetProductName method above.
+            relevantWarehouses ??= Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
+
+            Warehouse? warehouse = relevantWarehouses.FirstOrDefault(w => w.WarehouseID == warehouseID);
+            string warehouseName = "";
+            if (warehouse != null)
+            {
+                warehouseName = warehouse.WarehouseName;
+            }
+
+            return warehouseName;
+        }
+
+
     }
 }

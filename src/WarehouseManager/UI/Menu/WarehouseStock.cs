@@ -42,11 +42,9 @@ namespace WarehouseManager.UI.Menu
                 Border = new Border() { BorderStyle = BorderStyle.None }
             };
 
-            // Create a TableView and set its data source
-            var tableView = UIComponent.Table(CategoryListLogic.GetData());
-
 
             Dictionary<CheckBox, int> warehouseChecklistDict = WarehouseStockLogic.GetWarehouseChecklistDict();
+            var tableView = UIComponent.Table(WarehouseStockLogic.GetData(warehouseChecklistDict));
 
             // Khi người dùng bấm nút select warehouse 
             warehouseCheckList.Clicked += () =>
@@ -88,17 +86,7 @@ namespace WarehouseManager.UI.Menu
                 };
                 ok.Clicked += () =>
                 {
-                    List<string> selectedWarehouses = new List<string>();
-                    foreach (var checkBox in warehouseChecklistDict.Keys)
-                    {
-                        if (checkBox.Checked)
-                        {
-                            selectedWarehouses.Add($"{checkBox.Text}");
-
-                        }
-                    }
-                    // Print the selected warehouses or do something with the list
-                    MessageBox.Query("Selected Warehouses", string.Join("\n", selectedWarehouses), "Ok");
+                    tableView.Table = WarehouseStockLogic.GetData(warehouseChecklistDict);
                     Application.RequestStop();
                 };
 

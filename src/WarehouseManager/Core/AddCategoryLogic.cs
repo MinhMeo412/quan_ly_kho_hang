@@ -6,6 +6,12 @@ namespace WarehouseManager.Core
     {
         public static void AddCategory(string categoryName, string categoryDescription)
         {
+            // Workaround for a bug in terminal.gui that will crash the program if a row in a dropdown has a completely blank name.
+            if (categoryName == "")
+            {
+                categoryName = " ";
+            }
+
             List<Category>? categories = Program.Warehouse.CategoryTable.Categories ?? new List<Category>();
             int highestCategoryID = categories.Max(c => c.CategoryID);
 
