@@ -268,7 +268,18 @@ namespace WarehouseManager.Core
             {
                 direction = "DESC";
             }
-            dataView.Sort = $"{dataTable.Columns[columnToSortBy].ColumnName} {direction}";
+
+
+            // cái dataView.Sort sẽ bị hỏng nếu như tên cột có dấu phẩy
+            // nên trước khi dùng cái sort đấy phải đổi tên cột sang một tên tạm để chắc chắn không có dấu phẩy
+            string temporaryColumnName = "hgu81hf39ulag3aha9g3u7";
+            string realColumnName = dataTable.Columns[columnToSortBy].ColumnName;
+            dataTable.Columns[columnToSortBy].ColumnName = temporaryColumnName;
+
+            dataView.Sort = $"{temporaryColumnName} {direction}";
+
+            // sort xong rồi thì đổi về tên cũ
+            dataTable.Columns[columnToSortBy].ColumnName = realColumnName;
 
             // Optional: If you need to get back the sorted DataTable
             DataTable sortedDataTable = dataView.ToTable();
