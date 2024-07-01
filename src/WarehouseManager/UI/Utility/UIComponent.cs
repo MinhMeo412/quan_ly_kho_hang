@@ -2,6 +2,7 @@ using System.Data;
 using Terminal.Gui;
 using WarehouseManager.UI.Menu;
 using WarehouseManager.Core;
+using WarehouseManager.Core.Utility;
 
 namespace WarehouseManager.UI.Utility
 {
@@ -230,6 +231,19 @@ namespace WarehouseManager.UI.Utility
             };
 
             return refreshButton;
+        }
+
+        public static SaveDialog ExportToExcelDialog(DataTable dataTable)
+        {
+            var saveDialog = new SaveDialog("Export to Excel", "Choose export location");
+            Application.Run(saveDialog);
+            if (!saveDialog.Canceled && saveDialog.DirectoryPath != null)
+            {
+                string selectedPath = $"{saveDialog.FilePath}";
+                UIComponentLogic.ExportToExcel(dataTable, selectedPath);
+                MessageBox.Query("Export",$" Successfully exported {saveDialog.FileName} to {saveDialog.DirectoryPath} ", "OK");
+            }
+            return saveDialog;
         }
     }
 }
