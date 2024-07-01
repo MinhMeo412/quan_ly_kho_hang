@@ -85,7 +85,13 @@ namespace WarehouseManager.Core
 
         public static DataTable DeleteProductVariant(DataTable currentDataTable, int row)
         {
+
             DataTable dataTable = currentDataTable.Copy();
+
+            if (row < 0)
+            {
+                return dataTable;
+            }
 
             DataRow rowToDelete = dataTable.Rows[row];
 
@@ -165,12 +171,19 @@ namespace WarehouseManager.Core
             }
         }
 
-        private static void AddVariant(int productID, string? productVariantImageURL, string? productVariantColor, string? productVariantSize)
+        internal static int GetCurrentHighestProductVariantID()
         {
             List<ProductVariant> allProductVariants = Program.Warehouse.ProductVariantTable.ProductVariants ?? new List<ProductVariant>();
             int highestProductVariantID = allProductVariants.Max(v => v.ProductVariantID);
+            return highestProductVariantID;
+        }
 
-            Program.Warehouse.ProductVariantTable.Add(highestProductVariantID + 1, productID, productVariantImageURL, productVariantColor, productVariantSize);
+        private static void AddVariant(int productID, string? productVariantImageURL, string? productVariantColor, string? productVariantSize)
+        {
+
+            int productVariantID = GetCurrentHighestProductVariantID() + 1;
+
+            Program.Warehouse.ProductVariantTable.Add(productVariantID, productID, productVariantImageURL, productVariantColor, productVariantSize);
         }
 
         private static void UpdateVariant(int productVariantID, int productID, string? productVariantImageURL, string? productVariantColor, string? productVariantSize)

@@ -113,6 +113,12 @@ namespace WarehouseManager.Core
 
         public static void UpdateCategory(int categoryID, string categoryName, string? categoryDescription)
         {
+
+            // Workaround for a bug in terminal.gui that will crash the program if a row in a dropdown has a completely blank name.
+            if (categoryName == "")
+            {
+                categoryName = " ";
+            }
             Program.Warehouse.CategoryTable.Update(categoryID, categoryName, categoryDescription);
         }
 
