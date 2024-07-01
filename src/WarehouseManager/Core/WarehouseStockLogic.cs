@@ -7,6 +7,9 @@ namespace WarehouseManager.Core
 {
     public static class WarehouseStockLogic
     {
+        // Phải lưu luôn ra ngoài nếu không sort và search của menu này sẽ cực kì chậm.
+        // (do phải tìm lại tên và id warehouse trong danh sách dài cực kì nhiều lần.)
+        private static List<Warehouse>? RelevantWarehouses { get; set; }
 
         public static Dictionary<CheckBox, int> GetWarehouseChecklistDict()
         {
@@ -46,6 +49,8 @@ namespace WarehouseManager.Core
 
                 warehouseStockProductVariants.Add((variantID, name, imageURL, warehouseVariantQuantity));
             }
+
+            RelevantWarehouses = GetRelevantWarehouses(selectedWarehouseIDs);
 
             return ConvertWarehouseStockProductVariantsToDataTable(warehouseStockProductVariants);
         }
@@ -103,20 +108,21 @@ namespace WarehouseManager.Core
             return relevantProducts;
         }
 
-        // private static List<Warehouse> GetRelevantWarehouses(List<int> selectedWarehouseIDs)
-        // {
-        //     List<WarehouseStock> warehouseStocks = Program.Warehouse.WarehouseStockTable.WarehouseStocks ?? new List<WarehouseStock>();
+        private static List<Warehouse> GetRelevantWarehouses(List<int> selectedWarehouseIDs)
+        {
+            // Assuming Program.Warehouse contains the list of all warehouses
+            List<Warehouse> allWarehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
 
-        //     List<WarehouseStock> relevantWarehousesStocks = warehouseStocks
-        //         .Where(ws => selectedWarehousesID.Contains(ws.WarehouseID))
-        //         .ToList();
+            // Filter warehouses based on selected IDs
+            List<Warehouse> relevantWarehouses = allWarehouses
+                .Where(warehouse => selectedWarehouseIDs.Contains(warehouse.WarehouseID))
+                .ToList();
 
-        //     return relevantWarehousesStocks;
+            return relevantWarehouses;
+        }
 
-        //     List<Warehouse> warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
-        // }
 
-        private static DataTable ConvertWarehouseStockProductVariantsToDataTable(List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants, List<Warehouse>? relevantWarehouses = null)
+        private static DataTable ConvertWarehouseStockProductVariantsToDataTable(List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants)
         {
             var dataTable = new DataTable();
 
@@ -127,7 +133,7 @@ namespace WarehouseManager.Core
             {
                 warehouseStockProductVariants[0].Item4
                     .ToList()
-                    .ForEach(warehousesQuantity => dataTable.Columns.Add($"{GetWarehouseName(warehousesQuantity.Key, relevantWarehouses)}", typeof(int)));
+                    .ForEach(warehousesQuantity => dataTable.Columns.Add($"{GetWarehouseName(warehousesQuantity.Key)}", typeof(int)));
             }
 
             foreach ((int, string, string, Dictionary<int, int>) row in warehouseStockProductVariants)
@@ -156,10 +162,10 @@ namespace WarehouseManager.Core
             return productName;
         }
 
-        private static string GetWarehouseName(int warehouseID, List<Warehouse>? relevantWarehouses = null)
+        private static string GetWarehouseName(int warehouseID)
         {
             // to make it cleaner, do the same thing as the GetProductName method above.
-            relevantWarehouses ??= Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
+            List<Warehouse> relevantWarehouses = RelevantWarehouses ?? new List<Warehouse>();
 
             Warehouse? warehouse = relevantWarehouses.FirstOrDefault(w => w.WarehouseID == warehouseID);
             string warehouseName = "";
@@ -195,7 +201,7 @@ namespace WarehouseManager.Core
 
         private static int GetWarehouseID(string warehouseName)
         {
-            List<Warehouse> warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
+            List<Warehouse> warehouses = RelevantWarehouses ?? new List<Warehouse>();
 
             Warehouse? warehouse = warehouses.FirstOrDefault(w => w.WarehouseName == warehouseName);
 
