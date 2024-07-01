@@ -7,6 +7,9 @@ namespace WarehouseManager.Core
 {
     public static class WarehouseStockLogic
     {
+        // Phải lưu luôn ra ngoài nếu không sort và search của menu này sẽ cực kì chậm.
+        // (do phải tìm lại tên và id warehouse trong danh sách dài cực kì nhiều lần.)
+        private static List<Warehouse> RelevantWarehouses { get; set; } = new List<Warehouse>();
 
         public static Dictionary<CheckBox, int> GetWarehouseChecklistDict()
         {
@@ -46,6 +49,8 @@ namespace WarehouseManager.Core
 
                 warehouseStockProductVariants.Add((variantID, name, imageURL, warehouseVariantQuantity));
             }
+
+            RelevantWarehouses = GetRelevantWarehouses(selectedWarehouseIDs);
 
             return ConvertWarehouseStockProductVariantsToDataTable(warehouseStockProductVariants);
         }
@@ -103,20 +108,20 @@ namespace WarehouseManager.Core
             return relevantProducts;
         }
 
-        // private static List<Warehouse> GetRelevantWarehouses(List<int> selectedWarehouseIDs)
-        // {
-        //     List<WarehouseStock> warehouseStocks = Program.Warehouse.WarehouseStockTable.WarehouseStocks ?? new List<WarehouseStock>();
+        private static List<Warehouse> GetRelevantWarehouses(List<int> selectedWarehouseIDs)
+        {
+            // Assuming Program.Warehouse contains the list of all warehouses
+            List<Warehouse> allWarehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
 
-        //     List<WarehouseStock> relevantWarehousesStocks = warehouseStocks
-        //         .Where(ws => selectedWarehousesID.Contains(ws.WarehouseID))
-        //         .ToList();
+            // Filter warehouses based on selected IDs
+            List<Warehouse> relevantWarehouses = allWarehouses
+                .Where(warehouse => selectedWarehouseIDs.Contains(warehouse.WarehouseID))
+                .ToList();
 
-        //     return relevantWarehousesStocks;
+            return relevantWarehouses;
+        }
 
-        //     List<Warehouse> warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
-        // }
-
-        private static DataTable ConvertWarehouseStockProductVariantsToDataTable(List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants, List<Warehouse>? relevantWarehouses = null)
+        private static DataTable ConvertWarehouseStockProductVariantsToDataTable(List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants)
         {
             var dataTable = new DataTable();
 
@@ -127,7 +132,7 @@ namespace WarehouseManager.Core
             {
                 warehouseStockProductVariants[0].Item4
                     .ToList()
-                    .ForEach(warehousesQuantity => dataTable.Columns.Add($"{GetWarehouseName(warehousesQuantity.Key, relevantWarehouses)}", typeof(int)));
+                    .ForEach(warehousesQuantity => dataTable.Columns.Add($"{GetWarehouseName(warehousesQuantity.Key)}", typeof(int)));
             }
 
             foreach ((int, string, string, Dictionary<int, int>) row in warehouseStockProductVariants)
@@ -156,10 +161,10 @@ namespace WarehouseManager.Core
             return productName;
         }
 
-        private static string GetWarehouseName(int warehouseID, List<Warehouse>? relevantWarehouses = null)
+        private static string GetWarehouseName(int warehouseID)
         {
             // to make it cleaner, do the same thing as the GetProductName method above.
-            relevantWarehouses ??= Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
+            List<Warehouse> relevantWarehouses = new List<Warehouse>(RelevantWarehouses);
 
             Warehouse? warehouse = relevantWarehouses.FirstOrDefault(w => w.WarehouseID == warehouseID);
             string warehouseName = "";
@@ -173,6 +178,22 @@ namespace WarehouseManager.Core
 
         private static List<(int, string, string, Dictionary<int, int>)> ConvertDataTableToWarehouseStockProductVariants(DataTable dataTable)
         {
+            // this method gets the warehouse id by using the warehouse name
+            // if the arrows is still present it will break the program
+            // this is a very hacky way of preventing that. it removes the up/down sorting arrows from datatable column names:
+            for (int i = 3; i < dataTable.Columns.Count; i++)
+            {
+                string upwardsArrow = "\u25B2";
+                string downwardsArrow = "\u25BC";
+
+                if (dataTable.Columns[i].ColumnName.Contains(upwardsArrow) || dataTable.Columns[i].ColumnName.Contains(downwardsArrow))
+                {
+                    dataTable.Columns[i].ColumnName = dataTable.Columns[i].ColumnName.Replace(upwardsArrow, "");
+                    dataTable.Columns[i].ColumnName = dataTable.Columns[i].ColumnName.Replace(downwardsArrow, "");
+                    dataTable.Columns[i].ColumnName = dataTable.Columns[i].ColumnName.Substring(0, dataTable.Columns[i].ColumnName.Length - 1);
+                }
+            }
+
             List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants = new List<(int, string, string, Dictionary<int, int>)>();
 
             foreach (DataRow row in dataTable.Rows)
@@ -195,7 +216,7 @@ namespace WarehouseManager.Core
 
         private static int GetWarehouseID(string warehouseName)
         {
-            List<Warehouse> warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
+            List<Warehouse> warehouses = new List<Warehouse>(RelevantWarehouses);
 
             Warehouse? warehouse = warehouses.FirstOrDefault(w => w.WarehouseName == warehouseName);
 
@@ -235,29 +256,33 @@ namespace WarehouseManager.Core
 
         public static DataTable SortWarehouseStockByColumn(DataTable dataTable, int columnToSortBy, bool sortColumnInDescendingOrder)
         {
-            List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants = ConvertDataTableToWarehouseStockProductVariants(dataTable);
 
-            switch (columnToSortBy)
-            {
-                case 0:
-                    warehouseStockProductVariants = warehouseStockProductVariants.OrderBy(w => w.Item1).ToList();
-                    break;
-                case 1:
-                    warehouseStockProductVariants = warehouseStockProductVariants.OrderBy(w => w.Item2).ToList();
-                    break;
-                case 2:
-                    warehouseStockProductVariants = warehouseStockProductVariants.OrderBy(w => w.Item3).ToList();
-                    break;
-                default:
-                    break;
-            }
+            // Làm cái này để xóa mũi tên khỏi tên cột :)))
+            dataTable = ConvertWarehouseStockProductVariantsToDataTable(ConvertDataTableToWarehouseStockProductVariants(dataTable));
 
+            DataView dataView = new DataView(dataTable);
+
+            // Sort by "Name" column in ascending order
+            string direction = "ASC";
             if (sortColumnInDescendingOrder)
             {
-                warehouseStockProductVariants.Reverse();
+                direction = "DESC";
             }
 
-            DataTable sortedDataTable = ConvertWarehouseStockProductVariantsToDataTable(warehouseStockProductVariants);
+
+            // cái dataView.Sort sẽ bị hỏng nếu như tên cột có dấu phẩy
+            // nên trước khi dùng cái sort đấy phải đổi tên cột sang một tên tạm để chắc chắn không có dấu phẩy
+            string temporaryColumnName = "hgu81hf39ulag3aha9g3u7";
+            string realColumnName = dataTable.Columns[columnToSortBy].ColumnName;
+            dataTable.Columns[columnToSortBy].ColumnName = temporaryColumnName;
+
+            dataView.Sort = $"{temporaryColumnName} {direction}";
+
+            // sort xong rồi thì đổi về tên cũ
+            dataTable.Columns[columnToSortBy].ColumnName = realColumnName;
+
+            // Optional: If you need to get back the sorted DataTable
+            DataTable sortedDataTable = dataView.ToTable();
 
             sortedDataTable.Columns[columnToSortBy].ColumnName = Misc.ShowCurrentSortingDirection(sortedDataTable.Columns[columnToSortBy].ColumnName, sortColumnInDescendingOrder);
 
