@@ -1,13 +1,26 @@
 namespace WarehouseManager.Data.Entity
 {
-    class StockTransfer(int stockTransferID, int fromWarehouseID, int toWarehouseID, DateTime? stockTransferStartingDate, string stockTransferStatus, string? stockTransferDescription, int? userID)
+    class StockTransfer
     {
-        public int StockTransferID { get; set; } = stockTransferID;
-        public int FromWarehouseID { get; set; } = fromWarehouseID;
-        public int ToWarehouseID { get; set; } = toWarehouseID;
-        public DateTime? StockTransferStartingDate { get; set; } = stockTransferStartingDate;
-        public string StockTransferStatus { get; set; } = stockTransferStatus;
-        public string? StockTransferDescription { get; set; } = stockTransferDescription;
-        public int? UserID { get; set; } = userID;
+        public int StockTransferID { get; set; }
+        public int FromWarehouseID { get; set; }
+        public int ToWarehouseID { get; set; }
+        public DateTime? StockTransferStartingDate { get; set; }
+        public string StockTransferStatus { get; set; }
+        public string? StockTransferDescription { get; set; }
+        public int UserID { get; set; }
+
+        public StockTransfer(int stockTransferID, int fromWarehouseID, int toWarehouseID, DateTime? stockTransferStartingDate, string stockTransferStatus, string? stockTransferDescription, int userID)
+        {
+            StockTransferID = stockTransferID;
+            FromWarehouseID = fromWarehouseID;
+            ToWarehouseID = toWarehouseID;
+            StockTransferStartingDate = stockTransferStartingDate;
+            StockTransferStatus = stockTransferStatus;
+            StockTransferDescription = stockTransferDescription;
+            UserID = userID;
+        }
+
+        //public StockTransfer() { } // Constructor không tham số (nếu cần)
     }
 }

@@ -124,6 +124,5 @@ namespace WarehouseManager.Core
 
             return ConvertCategoryListToDataTable(categories);
         }
-
     }
 }

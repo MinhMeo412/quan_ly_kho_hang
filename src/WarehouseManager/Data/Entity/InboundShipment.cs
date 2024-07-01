@@ -1,13 +1,26 @@
 namespace WarehouseManager.Data.Entity
 {
-    class InboundShipment(int inboundShipmentID, int? supplierID, int warehouseID, DateTime? inboundShipmentStartingDate, string inboundShipmentStatus, string? inboundShipmentDescription, int? userID)
+    public class InboundShipment
     {
-        public int InboundShipmentID { get; set; } = inboundShipmentID;
-        public int? SupplierID { get; set; } = supplierID;
-        public int WarehouseID { get; set; } = warehouseID;
-        public DateTime? InboundShipmentStartingDate { get; set; } = inboundShipmentStartingDate;
-        public string InboundShipmentStatus { get; set; } = inboundShipmentStatus;
-        public string? InboundShipmentDescription { get; set; } = inboundShipmentDescription;
-        public int? UserID { get; set; } = userID;
+        public int InboundShipmentID { get; set; }
+        public int SupplierID { get; set; }
+        public int WarehouseID { get; set; }
+        public DateTime? InboundShipmentStartingDate { get; set; }
+        public string InboundShipmentStatus { get; set; }
+        public string? InboundShipmentDescription { get; set; }
+        public int UserID { get; set; }
+
+        public InboundShipment(int inboundShipmentID, int supplierID, int warehouseID, DateTime? inboundShipmentStartingDate, string inboundShipmentStatus, string? inboundShipmentDescription, int userID)
+        {
+            InboundShipmentID = inboundShipmentID;
+            SupplierID = supplierID;
+            WarehouseID = warehouseID;
+            InboundShipmentStartingDate = inboundShipmentStartingDate;
+            InboundShipmentStatus = inboundShipmentStatus;
+            InboundShipmentDescription = inboundShipmentDescription;
+            UserID = userID;
+        }
+
+        //public InboundShipment() { } // Constructor không tham số (nếu cần)
     }
 }
