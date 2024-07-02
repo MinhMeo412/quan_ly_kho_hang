@@ -40,7 +40,7 @@ namespace WarehouseManager.Data.Table
                     (DateTime?)rawShipment[3],
                     (string)(rawShipment[4] ?? ""),
                     (string?)rawShipment[5],
-                    rawShipment[6] is DBNull ? null : (int?)rawShipment[6]
+                    (int)(rawShipment[6] ?? 0)
                 );
                 outboundShipments.Add(shipment);
             }

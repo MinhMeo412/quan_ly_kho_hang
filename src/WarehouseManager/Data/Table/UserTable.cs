@@ -37,7 +37,7 @@ namespace WarehouseManager.Data.Table
                     (int)(rawUser[0] ?? 0),
                     (string)(rawUser[1] ?? ""),
                     (string)(rawUser[2] ?? ""),
-                    (string?)rawUser[3],
+                    (string)(rawUser[3] ?? ""),
                     (string?)rawUser[4],
                     (string?)rawUser[5],
                     (int)(rawUser[6] ?? 0)

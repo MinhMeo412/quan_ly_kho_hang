@@ -66,7 +66,7 @@ DELIMITER ;
  */
 Delimiter //
 create trigger update_warehouse_stock_after_outbound_shipment
-after update on outbound_shipment
+before update on outbound_shipment
 for each row
 begin
 	if new.outbound_shipment_status = 'Completed' and old.outbound_shipment_status <> 'Completed' then
@@ -119,7 +119,7 @@ DELIMITER ;
  */
 Delimiter //
 create trigger update_warehouse_stock_after_stock_transfer
-after update on stock_transfer
+before update on stock_transfer
 for each row
 begin
 	if new.stock_transfer_status = 'Completed' and old.stock_transfer_status <> 'Completed' then

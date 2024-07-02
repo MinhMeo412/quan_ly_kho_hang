@@ -9,7 +9,7 @@ CREATE TABLE user(
 	user_id INT AUTO_INCREMENT,
 	user_name VARCHAR(32) NOT NULL,
 	user_password VARCHAR(128) NOT NULL,
-	user_full_name VARCHAR(64),
+	user_full_name VARCHAR(64) NOT NULL,
 	user_email VARCHAR(320),
 	user_phone_number VARCHAR(24),
 	permission_level INT NOT NULL,
@@ -117,16 +117,16 @@ CREATE TABLE inventory_audit_detail(
 
 CREATE TABLE inbound_shipment(
 	inbound_shipment_id INT AUTO_INCREMENT,
-	supplier_id INT,
+	supplier_id INT NOT NULL,
 	warehouse_id INT NOT NULL,
 	inbound_shipment_starting_date DATETIME DEFAULT CURRENT_TIMESTAMP(),
 	inbound_shipment_status ENUM('Processing','Completed') NOT NULL DEFAULT 'Processing',
 	inbound_shipment_description TEXT,
-	user_id INT,
+	user_id INT NOT NULL,
 	PRIMARY KEY (inbound_shipment_id),
-	FOREIGN KEY (supplier_id) REFERENCES supplier(supplier_id) ON DELETE SET NULL,
+	FOREIGN KEY (supplier_id) REFERENCES supplier(supplier_id),
 	FOREIGN KEY (warehouse_id) REFERENCES warehouse(warehouse_id) ON DELETE CASCADE,
-	FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE SET NULL
+	FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 CREATE TABLE inbound_shipment_detail(
@@ -146,10 +146,10 @@ CREATE TABLE outbound_shipment(
 	outbound_shipment_starting_date DATETIME DEFAULT CURRENT_TIMESTAMP(),
 	outbound_shipment_status ENUM('Processing','Completed') NOT NULL DEFAULT 'Processing',
 	outbound_shipment_description TEXT,
-	user_id INT,
+	user_id INT NOT NULL,
 	PRIMARY KEY (outbound_shipment_id),
 	FOREIGN KEY (warehouse_id) REFERENCES warehouse(warehouse_id) ON DELETE CASCADE,
-	FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE SET NULL
+	FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 CREATE TABLE outbound_shipment_detail(
@@ -169,11 +169,11 @@ CREATE TABLE stock_transfer(
 	stock_transfer_starting_date DATETIME DEFAULT CURRENT_TIMESTAMP(),
 	stock_transfer_status ENUM('Processing','Completed') NOT NULL DEFAULT 'Processing',
 	stock_transfer_description TEXT,
-	user_id INT,
+	user_id INT NOT NULL,
 	PRIMARY KEY (stock_transfer_id),
 	FOREIGN KEY (from_warehouse_id) REFERENCES warehouse(warehouse_id) ON DELETE CASCADE,
 	FOREIGN KEY (to_warehouse_id) REFERENCES warehouse(warehouse_id) ON DELETE CASCADE,
-	FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE SET NULL
+	FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 CREATE TABLE stock_transfer_detail(
