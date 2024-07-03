@@ -181,18 +181,7 @@ namespace WarehouseManager.Core
             // this method gets the warehouse id by using the warehouse name
             // if the arrows is still present it will break the program
             // this is a very hacky way of preventing that. it removes the up/down sorting arrows from datatable column names:
-            for (int i = 3; i < dataTable.Columns.Count; i++)
-            {
-                string upwardsArrow = "\u25B2";
-                string downwardsArrow = "\u25BC";
-
-                if (dataTable.Columns[i].ColumnName.Contains(upwardsArrow) || dataTable.Columns[i].ColumnName.Contains(downwardsArrow))
-                {
-                    dataTable.Columns[i].ColumnName = dataTable.Columns[i].ColumnName.Replace(upwardsArrow, "");
-                    dataTable.Columns[i].ColumnName = dataTable.Columns[i].ColumnName.Replace(downwardsArrow, "");
-                    dataTable.Columns[i].ColumnName = dataTable.Columns[i].ColumnName.Substring(0, dataTable.Columns[i].ColumnName.Length - 1);
-                }
-            }
+            dataTable = ClearSortDirectionArrow(dataTable);
 
             List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants = new List<(int, string, string, Dictionary<int, int>)>();
 
@@ -291,7 +280,18 @@ namespace WarehouseManager.Core
         // nếu không clear lúc export ra excel mũi tên sẽ vẫn còn trong bảng
         public static DataTable ClearSortDirectionArrow(DataTable dataTable)
         {
-            dataTable = ConvertWarehouseStockProductVariantsToDataTable(ConvertDataTableToWarehouseStockProductVariants(dataTable));
+            for (int i = 3; i < dataTable.Columns.Count; i++)
+            {
+                string upwardsArrow = "\u25B2";
+                string downwardsArrow = "\u25BC";
+
+                if (dataTable.Columns[i].ColumnName.Contains(upwardsArrow) || dataTable.Columns[i].ColumnName.Contains(downwardsArrow))
+                {
+                    dataTable.Columns[i].ColumnName = dataTable.Columns[i].ColumnName.Replace(upwardsArrow, "");
+                    dataTable.Columns[i].ColumnName = dataTable.Columns[i].ColumnName.Replace(downwardsArrow, "");
+                    dataTable.Columns[i].ColumnName = dataTable.Columns[i].ColumnName.Substring(0, dataTable.Columns[i].ColumnName.Length - 1);
+                }
+            }
             return dataTable;
         }
     }
