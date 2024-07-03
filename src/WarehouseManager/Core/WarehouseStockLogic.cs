@@ -280,19 +280,20 @@ namespace WarehouseManager.Core
         // nếu không clear lúc export ra excel mũi tên sẽ vẫn còn trong bảng
         public static DataTable ClearSortDirectionArrow(DataTable dataTable)
         {
-            for (int i = 3; i < dataTable.Columns.Count; i++)
+            DataTable clearedDataTable = dataTable.Copy();
+            for (int i = 0; i < clearedDataTable.Columns.Count; i++)
             {
                 string upwardsArrow = "\u25B2";
                 string downwardsArrow = "\u25BC";
 
-                if (dataTable.Columns[i].ColumnName.Contains(upwardsArrow) || dataTable.Columns[i].ColumnName.Contains(downwardsArrow))
+                if (clearedDataTable.Columns[i].ColumnName.Contains(upwardsArrow) || clearedDataTable.Columns[i].ColumnName.Contains(downwardsArrow))
                 {
-                    dataTable.Columns[i].ColumnName = dataTable.Columns[i].ColumnName.Replace(upwardsArrow, "");
-                    dataTable.Columns[i].ColumnName = dataTable.Columns[i].ColumnName.Replace(downwardsArrow, "");
-                    dataTable.Columns[i].ColumnName = dataTable.Columns[i].ColumnName.Substring(0, dataTable.Columns[i].ColumnName.Length - 1);
+                    clearedDataTable.Columns[i].ColumnName = clearedDataTable.Columns[i].ColumnName.Replace(upwardsArrow, "");
+                    clearedDataTable.Columns[i].ColumnName = clearedDataTable.Columns[i].ColumnName.Replace(downwardsArrow, "");
+                    clearedDataTable.Columns[i].ColumnName = clearedDataTable.Columns[i].ColumnName.Substring(0, clearedDataTable.Columns[i].ColumnName.Length - 1);
                 }
             }
-            return dataTable;
+            return clearedDataTable;
         }
     }
 }
