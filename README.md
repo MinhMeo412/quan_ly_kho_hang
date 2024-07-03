@@ -26,7 +26,7 @@ Warehouse Manager is an application designed to streamline warehouse operations,
 - **Reporting:** Generate reports on inventory, sales, and order history.
 - **User Authentication:** Secure user login and role-based access control.
 - **Database Integration:** Seamless integration with MySQL for data storage and retrieval.
-- **Excel Export/Import:** Export inventory and order data to Excel files and import data from Excel files.
+- **Excel Export:** Export inventory and order data to Excel files.
 - **Console Interface:** Interactive and user-friendly console interface.
 - **Search Functionality:** Search capabilities to find items and orders by various criteria.
 
@@ -47,7 +47,7 @@ Warehouse Manager is an application designed to streamline warehouse operations,
     ```
 2. Navigate to the scripts directory:
     ```bash
-    cd quan_ly_kho_hang/db/scripts
+    cd quan_ly_kho_hang/db/scripts/
     ```
 3. Set up the MySQL database:
     - Start your MySQL server.
@@ -68,7 +68,7 @@ Warehouse Manager is an application designed to streamline warehouse operations,
 
 1. Navigate to the application directory:
     ```bash
-    cd quan_ly_kho_hang/src/WarehouseManager
+    cd quan_ly_kho_hang/src/WarehouseManager/
     ```
 2. Run the application:
     ```bash
