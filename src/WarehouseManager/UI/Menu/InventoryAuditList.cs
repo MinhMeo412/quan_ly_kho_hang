@@ -40,9 +40,9 @@ namespace WarehouseManager.UI.Menu
             };
 
             // Create a TableView and set its data source
-            var tableView = UIComponent.Table(CategoryListLogic.GetData());
+            var tableView = UIComponent.Table(InventoryAuditListLogic.GetData());
 
-            // Khi người dùng bấm nút refresh sẽ tải lại trang
+            // Refresh button for renew display
             refreshButton.Clicked += () =>
             {
                 Display();
@@ -51,11 +51,12 @@ namespace WarehouseManager.UI.Menu
             // Khi người dùng search một chuỗi gì đó
             searchInput.TextChanged += args =>
             {
-                tableView.Table = CategoryListLogic.SortCategoryBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
+                tableView.Table = InventoryAuditListLogic.SortInventoryAuditBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
             };
 
             int columnCurrentlySortBy = -1;
             bool sortColumnInDescendingOrder = false;
+
             // khi sort cột
             tableView.MouseClick += e =>
             {
@@ -71,35 +72,41 @@ namespace WarehouseManager.UI.Menu
                     columnCurrentlySortBy = columnClicked;
                     searchInput.Text = "";
 
-                    tableView.Table = CategoryListLogic.SortCategoryByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
+                    tableView.Table = InventoryAuditListLogic.SortInventoryAuditListByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
                 }
             };
 
             // khi bấm vào 1 ô trong bảng
             tableView.CellActivated += args =>
             {
-                int column = args.Col;
-                int row = args.Row;
-
+                int inventoryAuditID = (int)tableView.Table.Rows[args.Row][0];
                 EditInventoryAudit.Display();
             };
 
+            // khi nút Delete được bấm
             deleteButton.Clicked += () =>
             {
-                // khi nút Delete được bấm
                 DataRow selectedRow = tableView.Table.Rows[tableView.SelectedRow];
-                int categoryID = (int)selectedRow[0];
+                int inventoryAuditID = (int)selectedRow[0];
 
-                int result = MessageBox.Query("Delete", "Are you sure you want to delete this item?", "No", "Yes");
+                int result = MessageBox.Query("Delete", "Are you sure you want to delete this?", "No", "Yes");
                 if (result == 1) // "Yes" button was pressed
                 {
-                    tableView.Table = CategoryListLogic.DeleteCategory(tableView.Table, categoryID);
+                    try
+                    {
+                        tableView.Table = InventoryAuditListLogic.DeleteInventoryAudit(tableView.Table, inventoryAuditID);
+                        errorLabel.Text = "";
+                    }
+                    catch (Exception ex)
+                    {
+                        errorLabel.Text = $"Error: {ex.Message}";
+                    }
                 }
             };
 
+            // Add Inventory audit Button
             addButton.Clicked += () =>
             {
-                // khi nút category đc click
                 AddInventoryAudit.Display();
             };
 

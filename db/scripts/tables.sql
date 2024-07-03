@@ -98,11 +98,11 @@ CREATE TABLE warehouse_stock(
 CREATE TABLE inventory_audit(
 	inventory_audit_id INT AUTO_INCREMENT,
 	warehouse_id INT NOT NULL,
-	user_id INT,
+	user_id INT NOT NULL,
 	inventory_audit_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 	PRIMARY KEY (inventory_audit_id),
 	FOREIGN KEY (warehouse_id) REFERENCES warehouse(warehouse_id) ON DELETE CASCADE,
-	FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE SET NULL
+	FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 CREATE TABLE inventory_audit_detail(

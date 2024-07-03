@@ -10,7 +10,7 @@ namespace WarehouseManager.UI.Menu
              Todo.
              Sửa phiếu nhập.
          */
-        public static void Display()
+        public static void Display(int shipmentID)
         {
             Application.Top.RemoveAll();
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Inbound Shipment");
