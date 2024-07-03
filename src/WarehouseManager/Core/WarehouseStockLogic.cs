@@ -281,11 +281,11 @@ namespace WarehouseManager.Core
         public static DataTable ClearSortDirectionArrow(DataTable dataTable)
         {
             DataTable clearedDataTable = dataTable.Copy();
+
+            string upwardsArrow = "\u25B2";
+            string downwardsArrow = "\u25BC";
             for (int i = 0; i < clearedDataTable.Columns.Count; i++)
             {
-                string upwardsArrow = "\u25B2";
-                string downwardsArrow = "\u25BC";
-
                 if (clearedDataTable.Columns[i].ColumnName.Contains(upwardsArrow) || clearedDataTable.Columns[i].ColumnName.Contains(downwardsArrow))
                 {
                     clearedDataTable.Columns[i].ColumnName = clearedDataTable.Columns[i].ColumnName.Replace(upwardsArrow, "");
