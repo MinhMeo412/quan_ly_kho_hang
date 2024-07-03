@@ -13,7 +13,7 @@ namespace WarehouseManager.UI.Menu
             var mainWindow = UIComponent.LoggedInMainWindow("Add New Product");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
+            var errorLabel = UIComponent.ErrorMessageLabel();
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
