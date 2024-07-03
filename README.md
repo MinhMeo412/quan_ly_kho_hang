@@ -32,7 +32,7 @@ Warehouse Manager is an application designed to streamline warehouse operations,
 
 ### Demo
 
-![Demo GIF](https://i.imgur.com/DDj1tlY.gif)
+![Demo GIF](./docs/demo.gif)
 
 ## Installation
 
