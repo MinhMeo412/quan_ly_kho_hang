@@ -11,11 +11,13 @@ namespace WarehouseManager.UI.Menu
             var mainWindow = UIComponent.LoggedInMainWindow("Home");
             Application.Top.Add(mainWindow);
 
-            string errorMessage = "Error Message Here";
+            string errorMessage = "";
 
             var errorLabel = UIComponent.ErrorMessageLabel(errorMessage);
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
+
+            var separatorLine = UIComponent.SeparatorLine();
 
             string speechBubble =
             @"⠀⠀⠀⠀⠀⠀⠀⢀⣠⠤⠴⠒⠒⠒⠒⠒⠒⠒⠦⢤⣀⡀⠀⠀⠀⠀⠀⠀⠀" + "\n" +
@@ -101,7 +103,7 @@ namespace WarehouseManager.UI.Menu
                 tf2HeavyLabel.ColorScheme = Theme.Dark;
             }
 
-            mainWindow.Add(speechBubbleLabel, tf2HeavyLabel, errorLabel, userPermissionLabel);
+            mainWindow.Add(speechBubbleLabel, tf2HeavyLabel, separatorLine, errorLabel, userPermissionLabel);
 
             // 5% to get secret menu
             if (new Random().Next(100) > 95)
