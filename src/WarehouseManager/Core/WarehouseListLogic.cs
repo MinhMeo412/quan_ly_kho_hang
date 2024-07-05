@@ -70,26 +70,7 @@ namespace WarehouseManager.Core
         /// <returns>DataTable</returns>
         public static DataTable SortWarehouseBySearchTerm(DataTable dataTable, string searchTerm)
         {
-            List<(int, string, string)> warehouses = ConvertDataTableToWarehouseMenuRows(dataTable);
-            List<((int, string, string), double)> warehouseSimilarities = new List<((int, string, string), double)>();
-
-            foreach ((int, string, string) warehouse in warehouses)
-            {
-                double maxSimilarity = Misc.MaxDouble(
-                    Misc.JaccardSimilarity($"{warehouse.Item1}", searchTerm),
-                    Misc.JaccardSimilarity($"{warehouse.Item2}", searchTerm),
-                    Misc.JaccardSimilarity($"{warehouse.Item3}", searchTerm)
-                );
-
-                warehouseSimilarities.Add((warehouse, maxSimilarity));
-            }
-
-            List<(int, string, string)> sortedWarehouses = warehouseSimilarities
-                .OrderByDescending(w => w.Item2)
-                .Select(w => w.Item1)
-                .ToList();
-
-            return ConvertWarehouseMenuRowsToDataTable(sortedWarehouses);
+                return SortDataTable.BySearchTerm(dataTable, searchTerm);
         }
 
 
@@ -102,33 +83,7 @@ namespace WarehouseManager.Core
         /// <returns>DataTable</returns>
         public static DataTable SortWarehouseListByColumn(DataTable dataTable, int columnToSortBy, bool sortColumnInDescendingOrder)
         {
-            List<(int, string, string)> warehouses = ConvertDataTableToWarehouseMenuRows(dataTable);
-
-            switch (columnToSortBy)
-            {
-                case 0:
-                    warehouses = warehouses.OrderBy(i => i.Item1).ToList();
-                    break;
-                case 1:
-                    warehouses = warehouses.OrderBy(i => i.Item2).ToList();
-                    break;
-                case 2:
-                    warehouses = warehouses.OrderBy(i => i.Item3).ToList();
-                    break;
-                default:
-                    break;
-            }
-
-            if (sortColumnInDescendingOrder)
-            {
-                warehouses.Reverse();
-            }
-
-            DataTable sortedDataTable = ConvertWarehouseMenuRowsToDataTable(warehouses);
-
-            sortedDataTable.Columns[columnToSortBy].ColumnName = Misc.ShowCurrentSortingDirection(sortedDataTable.Columns[columnToSortBy].ColumnName, sortColumnInDescendingOrder);
-
-            return sortedDataTable;
+            return SortDataTable.ByColumn(dataTable, columnToSortBy, sortColumnInDescendingOrder);
         }
 
         //Update

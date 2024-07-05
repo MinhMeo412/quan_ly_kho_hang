@@ -218,9 +218,7 @@ namespace WarehouseManager.Core
 
         public static DataTable SortWarehouseStockBySearchTerm(DataTable dataTable, string searchTerm)
         {
-            DataTable sorted = SortDataTable.BySearchTerm(dataTable, searchTerm);
-
-            return sorted;
+            return SortDataTable.BySearchTerm(dataTable, searchTerm);
         }
 
         public static DataTable SortWarehouseStockByColumn(DataTable dataTable, int columnToSortBy, bool sortColumnInDescendingOrder)

@@ -51,26 +51,7 @@ namespace WarehouseManager.Core
         /// <returns>DataTable</returns>
         public static DataTable SortCategoryBySearchTerm(DataTable dataTable, string searchTerm)
         {
-            List<Category> categories = ConvertDataTableToCategoryList(dataTable);
-            List<(Category, double)> categorySimilarities = new List<(Category, double)>();
-
-            foreach (Category category in categories)
-            {
-                double maxSimilarity = Misc.MaxDouble(
-                    Misc.JaccardSimilarity($"{category.CategoryID}", searchTerm),
-                    Misc.JaccardSimilarity(category.CategoryName, searchTerm),
-                    Misc.JaccardSimilarity(category.CategoryDescription ?? "", searchTerm)
-                );
-
-                categorySimilarities.Add((category, maxSimilarity));
-            }
-
-            List<Category> sortedCategories = categorySimilarities
-                .OrderByDescending(cs => cs.Item2)
-                .Select(cs => cs.Item1)
-                .ToList();
-
-            return ConvertCategoryListToDataTable(sortedCategories);
+            return SortDataTable.BySearchTerm(dataTable, searchTerm);
         }
 
         /// <summary>
@@ -82,33 +63,7 @@ namespace WarehouseManager.Core
         /// <returns>DataTable</returns>
         public static DataTable SortCategoryByColumn(DataTable dataTable, int columnToSortBy, bool sortColumnInDescendingOrder)
         {
-            List<Category> categories = ConvertDataTableToCategoryList(dataTable);
-
-            switch (columnToSortBy)
-            {
-                case 0:
-                    categories = categories.OrderBy(c => c.CategoryID).ToList();
-                    break;
-                case 1:
-                    categories = categories.OrderBy(c => c.CategoryName).ToList();
-                    break;
-                case 2:
-                    categories = categories.OrderBy(c => c.CategoryDescription).ToList();
-                    break;
-                default:
-                    break;
-            }
-
-            if (sortColumnInDescendingOrder)
-            {
-                categories.Reverse();
-            }
-
-            DataTable sortedDataTable = ConvertCategoryListToDataTable(categories);
-
-            sortedDataTable.Columns[columnToSortBy].ColumnName = Misc.ShowCurrentSortingDirection(sortedDataTable.Columns[columnToSortBy].ColumnName, sortColumnInDescendingOrder);
-
-            return sortedDataTable;
+            return SortDataTable.ByColumn(dataTable, columnToSortBy, sortColumnInDescendingOrder);
         }
 
         public static void UpdateCategory(int categoryID, string categoryName, string? categoryDescription)

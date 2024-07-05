@@ -115,15 +115,7 @@ namespace WarehouseManager.UI.Menu
                 _sortingTask = Task.Run(() =>
                 {
                     // Perform the sorting operation
-                    var sortedTable = tableView.Table.Copy();
-                    try
-                    {
-                        sortedTable = WarehouseStockLogic.SortWarehouseStockBySearchTerm(tableView.Table, searchTerm);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Query("", $"{ex.Message}", "OK");
-                    }
+                    var sortedTable = WarehouseStockLogic.SortWarehouseStockBySearchTerm(tableView.Table, searchTerm);
 
                     // If the task is not canceled, update the table on the UI thread
                     if (!token.IsCancellationRequested)

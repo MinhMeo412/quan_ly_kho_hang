@@ -132,31 +132,7 @@ namespace WarehouseManager.Core
         /// <returns>DataTable</returns>
         public static DataTable SortShipmentListBySearchTerm(DataTable dataTable, string searchTerm)
         {
-            List<(string, int, string, string, string, string, DateTime?, string?)> shipments = ConvertDataTableToShipmentMenuRows(dataTable);
-            List<((string, int, string, string, string, string, DateTime?, string?), double)> shipmentSimilarities = new List<((string, int, string, string, string, string, DateTime?, string?), double)>();
-
-            foreach ((string, int, string, string, string, string, DateTime?, string?) shipment in shipments)
-            {
-                double maxSimilarity = Misc.MaxDouble(
-                    Misc.JaccardSimilarity($"{shipment.Item1}", searchTerm),
-                    Misc.JaccardSimilarity($"{shipment.Item2}", searchTerm),
-                    Misc.JaccardSimilarity($"{shipment.Item3}", searchTerm),
-                    Misc.JaccardSimilarity($"{shipment.Item4}", searchTerm),
-                    Misc.JaccardSimilarity($"{shipment.Item5}", searchTerm),
-                    Misc.JaccardSimilarity($"{shipment.Item6}", searchTerm),
-                    Misc.JaccardSimilarity($"{shipment.Item7}", searchTerm),
-                    Misc.JaccardSimilarity($"{shipment.Item8}", searchTerm)
-                );
-
-                shipmentSimilarities.Add((shipment, maxSimilarity));
-            }
-
-            List<(string, int, string, string, string, string, DateTime?, string?)> sortedShipments = shipmentSimilarities
-                .OrderByDescending(ss => ss.Item2)
-                .Select(ss => ss.Item1)
-                .ToList();
-
-            return ConvertShipmentMenuRowsToDataTable(sortedShipments);
+            return SortDataTable.BySearchTerm(dataTable, searchTerm);
         }
 
 
@@ -169,48 +145,7 @@ namespace WarehouseManager.Core
         /// <returns>DataTable</returns>
         public static DataTable SortShipmentListByColumn(DataTable dataTable, int columnToSortBy, bool sortColumnInDescendingOrder)
         {
-            List<(string, int, string, string, string, string, DateTime?, string?)> shipments = ConvertDataTableToShipmentMenuRows(dataTable);
-
-            switch (columnToSortBy)
-            {
-                case 0:
-                    shipments = shipments.OrderBy(s => s.Item1).ToList();
-                    break;
-                case 1:
-                    shipments = shipments.OrderBy(s => s.Item2).ToList();
-                    break;
-                case 2:
-                    shipments = shipments.OrderBy(s => s.Item3).ToList();
-                    break;
-                case 3:
-                    shipments = shipments.OrderBy(s => s.Item4).ToList();
-                    break;
-                case 4:
-                    shipments = shipments.OrderBy(s => s.Item5).ToList();
-                    break;
-                case 5:
-                    shipments = shipments.OrderBy(s => s.Item6).ToList();
-                    break;
-                case 6:
-                    shipments = shipments.OrderBy(s => s.Item7).ToList();
-                    break;
-                case 7:
-                    shipments = shipments.OrderBy(s => s.Item8).ToList();
-                    break;
-                default:
-                    break;
-            }
-
-            if (sortColumnInDescendingOrder)
-            {
-                shipments.Reverse();
-            }
-
-            DataTable sortedDataTable = ConvertShipmentMenuRowsToDataTable(shipments);
-
-            sortedDataTable.Columns[columnToSortBy].ColumnName = Misc.ShowCurrentSortingDirection(sortedDataTable.Columns[columnToSortBy].ColumnName, sortColumnInDescendingOrder);
-
-            return sortedDataTable;
+            return SortDataTable.ByColumn(dataTable, columnToSortBy, sortColumnInDescendingOrder);
         }
 
         //Delete shipment 
