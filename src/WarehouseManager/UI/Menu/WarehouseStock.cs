@@ -2,6 +2,7 @@ using System.Data;
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
 using WarehouseManager.Core;
+using WarehouseManager.Core.Utility;
 
 namespace WarehouseManager.UI.Menu
 {
@@ -165,7 +166,7 @@ namespace WarehouseManager.UI.Menu
             {
                 try
                 {
-                    tableView.Table = WarehouseStockLogic.ClearSortDirectionArrow(tableView.Table);
+                    tableView.Table = SortDataTable.ClearDirectionArrow(tableView.Table);
                     var saveDialog = UIComponent.ExportToExcelDialog(tableView.Table);
                 }
                 catch (Exception ex)
