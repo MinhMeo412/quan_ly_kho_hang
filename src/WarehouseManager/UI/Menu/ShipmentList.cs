@@ -9,7 +9,6 @@ namespace WarehouseManager.UI.Menu
     {
         public static void Display()
         {
-
             Application.Top.RemoveAll();
             var mainWindow = UIComponent.LoggedInMainWindow("Shipments");
             Application.Top.Add(mainWindow);
@@ -48,17 +47,19 @@ namespace WarehouseManager.UI.Menu
             // Create a TableView and set its data source
             var tableView = UIComponent.Table(ShipmentListLogic.GetData());
 
-            // Khi người dùng bấm nút refresh sẽ tải lại trang
+            // Refresh button
             refreshButton.Clicked += () =>
             {
                 Display();
             };
 
+
             // Khi người dùng search một chuỗi gì đó
             searchInput.TextChanged += args =>
             {
-                tableView.Table = CategoryListLogic.SortCategoryBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
+                tableView.Table = ShipmentListLogic.SortShipmentListBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
             };
+
 
             int columnCurrentlySortBy = -1;
             bool sortColumnInDescendingOrder = false;
@@ -77,47 +78,63 @@ namespace WarehouseManager.UI.Menu
                     columnCurrentlySortBy = columnClicked;
                     searchInput.Text = "";
 
-                    tableView.Table = CategoryListLogic.SortCategoryByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
+                    tableView.Table = ShipmentListLogic.SortShipmentListByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
                 }
             };
 
-            // khi bấm vào 1 ô trong bảng
+            //Row clicked
             tableView.CellActivated += args =>
             {
-                int column = args.Col;
-                int row = args.Row;
-
-                MessageBox.Query("faee", $"{column} {row}", "ok");
+                int shipmentID = (int)tableView.Table.Rows[args.Row][1];
+                string shipmentType = (string)tableView.Table.Rows[args.Row][0];
+                switch (shipmentType)
+                {
+                    case "Inbound":
+                        EditInboundShipment.Display(shipmentID);
+                        break;
+                    case "Outbound":
+                        EditOutboundShipment.Display(shipmentID);
+                        break;
+                    case "Transfer":
+                        EditStockTransfer.Display(shipmentID);
+                        break;
+                }
             };
 
+            //Delete button
             deleteButton.Clicked += () =>
             {
-                // khi nút Delete được bấm
                 DataRow selectedRow = tableView.Table.Rows[tableView.SelectedRow];
-                int categoryID = (int)selectedRow[0];
+                int shipmentID = (int)selectedRow[1];
+                string shipmentType = (string)selectedRow[0];
 
-                int result = MessageBox.Query("Delete", "Are you sure you want to delete this item?", "No", "Yes");
+                int result = MessageBox.Query("Delete", "Are you sure you want to delete this?", "No", "Yes");
                 if (result == 1) // "Yes" button was pressed
                 {
-                    tableView.Table = CategoryListLogic.DeleteCategory(tableView.Table, categoryID);
+                    try
+                    {
+                        tableView.Table = ShipmentListLogic.DeleteShipment(tableView.Table, shipmentType, shipmentID);
+                        errorLabel.Text = "";
+                    }
+                    catch (Exception ex)
+                    {
+                        errorLabel.Text = $"Error: {ex.Message}";
+                    }
                 }
             };
 
             addButtonRight.Clicked += () =>
             {
-                // khi nút category đc click
                 AddInboundShipment.Display();
             };
 
             addButtonLeft.Clicked += () =>
             {
-                // khi nút category đc click
                 AddOutboundShipment.Display();
             };
 
             addButtonLeft2.Clicked += () =>
             {
-                // khi nút category đc click
                 AddTransferShipment.Display();
             };
 

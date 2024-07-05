@@ -46,7 +46,6 @@ namespace WarehouseManager.Core
                             .Select(ws => ws.WarehouseStockQuantity)
                             .FirstOrDefault()
                     );
-
                 warehouseStockProductVariants.Add((variantID, name, imageURL, warehouseVariantQuantity));
             }
 

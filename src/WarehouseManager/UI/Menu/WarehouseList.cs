@@ -9,7 +9,6 @@ namespace WarehouseManager.UI.Menu
     {
         public static void Display()
         {
-
             Application.Top.RemoveAll();
             var mainWindow = UIComponent.LoggedInMainWindow("Warehouses");
             Application.Top.Add(mainWindow);
@@ -40,7 +39,7 @@ namespace WarehouseManager.UI.Menu
             };
 
             // Create a TableView and set its data source
-            var tableView = UIComponent.Table(CategoryListLogic.GetData());
+            var tableView = UIComponent.Table(WarehouseListLogic.GetData());
 
             // Khi người dùng bấm nút refresh sẽ tải lại trang
             refreshButton.Clicked += () =>
@@ -51,11 +50,12 @@ namespace WarehouseManager.UI.Menu
             // Khi người dùng search một chuỗi gì đó
             searchInput.TextChanged += args =>
             {
-                tableView.Table = CategoryListLogic.SortCategoryBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
+                tableView.Table = WarehouseListLogic.SortWarehouseBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
             };
 
             int columnCurrentlySortBy = -1;
             bool sortColumnInDescendingOrder = false;
+
             // khi sort cột
             tableView.MouseClick += e =>
             {
@@ -71,7 +71,7 @@ namespace WarehouseManager.UI.Menu
                     columnCurrentlySortBy = columnClicked;
                     searchInput.Text = "";
 
-                    tableView.Table = CategoryListLogic.SortCategoryByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
+                    tableView.Table = WarehouseListLogic.SortWarehouseListByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
                 }
             };
 
@@ -114,14 +114,15 @@ namespace WarehouseManager.UI.Menu
                     // Update the table with the new value
                     tableView.Table.Rows[row][column] = newValue.Text.ToString();
 
-                    int categoryID = (int)tableView.Table.Rows[row][0];
-                    string categoryName = $"{tableView.Table.Rows[row][1]}";
-                    string categoryDescription = $"{tableView.Table.Rows[row][2]}";
+                    int warehouseID = (int)tableView.Table.Rows[row][0];
+                    string warehouseName = $"{tableView.Table.Rows[row][1]}";
+                    int? warehouseAddressID = (int?)tableView.Table.Rows[row][2];
+
 
                     // try catch để xử lý trường hợp nhập dữ liệu quá dài
                     try
                     {
-                        CategoryListLogic.UpdateCategory(categoryID, categoryName, categoryDescription);
+                        WarehouseListLogic.UpdateWarehouse(warehouseID, warehouseName, warehouseAddressID);
                     }
                     catch (Exception ex)
                     {
@@ -137,7 +138,7 @@ namespace WarehouseManager.UI.Menu
                 editDialog.AddButton(cancelButton);
                 editDialog.AddButton(okButton);
 
-                // Không cho sửa khi click vào cột category id
+                // Không cho sửa khi click vào id
                 if (column != 0)
                 {
                     Application.Run(editDialog);
@@ -148,18 +149,28 @@ namespace WarehouseManager.UI.Menu
             {
                 // khi nút Delete được bấm
                 DataRow selectedRow = tableView.Table.Rows[tableView.SelectedRow];
-                int categoryID = (int)selectedRow[0];
+                int warehouseID = (int)selectedRow[0];
 
-                int result = MessageBox.Query("Delete", "Are you sure you want to delete this item?", "No", "Yes");
+                int result = MessageBox.Query("Delete", "Are you sure you want to delete this?", "No", "Yes");
                 if (result == 1) // "Yes" button was pressed
                 {
-                    tableView.Table = CategoryListLogic.DeleteCategory(tableView.Table, categoryID);
+                    try
+                    {
+                        tableView.Table = WarehouseListLogic.DeleteWarehouse(tableView.Table, warehouseID);
+                        errorLabel.Text = "";
+                    }
+                    catch (Exception ex)
+                    {
+
+                        errorLabel.Text = $"Error: {ex.Message}";
+                    }
+
                 }
             };
 
+            // Add Warehouse Button
             addButton.Clicked += () =>
             {
-                // khi nút category đc click
                 AddWarehouse.Display();
             };
 

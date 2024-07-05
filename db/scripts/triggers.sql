@@ -2,7 +2,7 @@
  * Trigger to auto update warehouse stock when inbound shipment status is set to Completed
  */
 DELIMITER //
-Create trigger update_warehouse_stock_after_inbound_shipment
+Create trigger prevent_update_warehouse_stock_after_inbound_shipment
 After update on inbound_shipment
 for each row
 Begin
@@ -65,7 +65,7 @@ DELIMITER ;
  * Trigger to auto update warehouse stock when outbound shipment status is set to Completed
  */
 Delimiter //
-create trigger update_warehouse_stock_after_outbound_shipment
+create trigger prevent_update_warehouse_stock_after_outbound_shipment
 before update on outbound_shipment
 for each row
 begin
@@ -118,7 +118,7 @@ DELIMITER ;
  * Trigger to auto update warehouse stock when stock transfer status is set to Completed
  */
 Delimiter //
-create trigger update_warehouse_stock_after_stock_transfer
+create trigger prevent_update_warehouse_stock_after_stock_transfer
 before update on stock_transfer
 for each row
 begin

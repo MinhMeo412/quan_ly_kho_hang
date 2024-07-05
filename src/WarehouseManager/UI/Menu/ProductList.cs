@@ -98,16 +98,15 @@ namespace WarehouseManager.UI.Menu
                     }
                     catch (Exception ex)
                     {
-                        
+
                         errorLabel.Text = $"Error: {ex.Message}";
                     }
-                    
+
                 }
             };
 
             addButton.Clicked += () =>
             {
-                // khi nút category đc click
                 AddProduct.Display();
             };
 

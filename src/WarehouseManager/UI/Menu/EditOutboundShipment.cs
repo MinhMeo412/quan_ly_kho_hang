@@ -6,12 +6,11 @@ namespace WarehouseManager.UI.Menu
 {
     public static class EditOutboundShipment
     {
-
         /*
              Todo.
              Sửa phiếu xuất.
          */
-        public static void Display()
+        public static void Display(int shipmentID)
         {
             Application.Top.RemoveAll();
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Outbound Shipment");
