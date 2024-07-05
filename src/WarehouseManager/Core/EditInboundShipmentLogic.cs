@@ -6,7 +6,6 @@ namespace WarehouseManager.Core
     public static class EditInboundShipmentLogic
     {
         //Lấy các thông tin của InboundShipment được chọn
-
         private static InboundShipment GetInboundshipment(int inboundShipmentID)
         {
             List<InboundShipment> inboundShipments = Program.Warehouse.InboundShipmentTable.InboundShipments ?? new List<InboundShipment>();
@@ -133,8 +132,6 @@ namespace WarehouseManager.Core
         {
             List<InboundShipmentDetail> inboundShipmentDetails = Program.Warehouse.InboundShipmentDetailTable.InboundShipmentDetails ?? new List<InboundShipmentDetail>();
             List<InboundShipmentDetail> currentInboundShipmentDetails = inboundShipmentDetails.Where(iSD => iSD.InboundShipmentID == inboundShipmentID).ToList();
-            //List<ProductVariant> productVariants = Program.Warehouse.ProductVariantTable.ProductVariants ?? new List<ProductVariant>();
-            //List<Product> products = Program.Warehouse.ProductTable.Products ?? new List<Product>();
 
             List<(int, string, int)> inboundShipmentDetailRows = new List<(int, string, int)>();
 
