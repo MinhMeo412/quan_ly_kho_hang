@@ -76,27 +76,7 @@ namespace WarehouseManager.Core
         /// <returns>DataTable</returns>
         public static DataTable SortInventoryAuditBySearchTerm(DataTable dataTable, string searchTerm)
         {
-            List<(int, string, string, DateTime?)> inventoryAudits = ConvertDataTableToInventoryAuditMenuRows(dataTable);
-            List<((int, string, string, DateTime?), double)> inventoryAuditSimilarities = new List<((int, string, string, DateTime?), double)>();
-
-            foreach ((int, string, string, DateTime?) inventoryAudit in inventoryAudits)
-            {
-                double maxSimilarity = Misc.MaxDouble(
-                    Misc.JaccardSimilarity($"{inventoryAudit.Item1}", searchTerm),
-                    Misc.JaccardSimilarity($"{inventoryAudit.Item2}", searchTerm),
-                    Misc.JaccardSimilarity($"{inventoryAudit.Item3}", searchTerm),
-                    Misc.JaccardSimilarity($"{inventoryAudit.Item4}", searchTerm)
-                );
-
-                inventoryAuditSimilarities.Add((inventoryAudit, maxSimilarity));
-            }
-
-            List<(int, string, string, DateTime?)> sortedInventoryAudits = inventoryAuditSimilarities
-                .OrderByDescending(si => si.Item2)
-                .Select(si => si.Item1)
-                .ToList();
-
-            return ConvertInventoryAuditMenuRowsToDataTable(sortedInventoryAudits);
+            return SortDataTable.BySearchTerm(dataTable, searchTerm);
         }
 
 
@@ -109,36 +89,7 @@ namespace WarehouseManager.Core
         /// <returns>DataTable</returns>
         public static DataTable SortInventoryAuditListByColumn(DataTable dataTable, int columnToSortBy, bool sortColumnInDescendingOrder)
         {
-            List<(int, string, string, DateTime?)> inventoryAudits = ConvertDataTableToInventoryAuditMenuRows(dataTable);
-
-            switch (columnToSortBy)
-            {
-                case 0:
-                    inventoryAudits = inventoryAudits.OrderBy(i => i.Item1).ToList();
-                    break;
-                case 1:
-                    inventoryAudits = inventoryAudits.OrderBy(i => i.Item2).ToList();
-                    break;
-                case 2:
-                    inventoryAudits = inventoryAudits.OrderBy(i => i.Item3).ToList();
-                    break;
-                case 3:
-                    inventoryAudits = inventoryAudits.OrderBy(i => i.Item4).ToList();
-                    break;
-                default:
-                    break;
-            }
-
-            if (sortColumnInDescendingOrder)
-            {
-                inventoryAudits.Reverse();
-            }
-
-            DataTable sortedDataTable = ConvertInventoryAuditMenuRowsToDataTable(inventoryAudits);
-
-            sortedDataTable.Columns[columnToSortBy].ColumnName = Misc.ShowCurrentSortingDirection(sortedDataTable.Columns[columnToSortBy].ColumnName, sortColumnInDescendingOrder);
-
-            return sortedDataTable;
+            return SortDataTable.ByColumn(dataTable, columnToSortBy, sortColumnInDescendingOrder);
         }
 
         //Delete
