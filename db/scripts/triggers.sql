@@ -2,7 +2,7 @@
  * Trigger to auto update warehouse stock when inbound shipment status is set to Completed
  */
 DELIMITER //
-Create trigger prevent_update_warehouse_stock_after_inbound_shipment
+Create trigger update_warehouse_stock_after_inbound_shipment
 After update on inbound_shipment
 for each row
 Begin
@@ -10,7 +10,7 @@ Begin
 	-- Update stock for each variant
     update warehouse_stock ws
     join inbound_shipment_detail isd on ws.product_variant_id = isd.product_variant_id
-    Set ws.warehouse_stock_quatity = ws.warehouse_stock_quantity + isd.inbound_shipment_detail_amount
+    Set ws.warehouse_stock_quantity = ws.warehouse_stock_quantity + isd.inbound_shipment_detail_amount
 	where isd.inbound_shipment_id = new.inbound_shipment_id
     and ws.warehouse_id = new.warehouse_id;
     
@@ -65,14 +65,14 @@ DELIMITER ;
  * Trigger to auto update warehouse stock when outbound shipment status is set to Completed
  */
 Delimiter //
-create trigger prevent_update_warehouse_stock_after_outbound_shipment
+create trigger update_warehouse_stock_after_outbound_shipment
 before update on outbound_shipment
 for each row
 begin
 	if new.outbound_shipment_status = 'Completed' and old.outbound_shipment_status <> 'Completed' then
 		update warehouse_stock ws
         join outbound_shipment_detail osd on ws.warehouse_id = new.warehouse_id and ws.product_variand_id = osd.product_variant_id
-        set ws.warehouse_stock_quatity = ws.warehouse_stock_quatity - osd.outbound_shipment_detail_amount
+        set ws.warehouse_stock_quantity = ws.warehouse_stock_quatity - osd.outbound_shipment_detail_amount
         where osd.outbound_shipment_id = new.outbound_shipment_id;
 	end if;
 end//
@@ -118,7 +118,7 @@ DELIMITER ;
  * Trigger to auto update warehouse stock when stock transfer status is set to Completed
  */
 Delimiter //
-create trigger prevent_update_warehouse_stock_after_stock_transfer
+create trigger update_warehouse_stock_after_stock_transfer
 before update on stock_transfer
 for each row
 begin
