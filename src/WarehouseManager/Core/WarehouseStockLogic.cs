@@ -218,61 +218,14 @@ namespace WarehouseManager.Core
 
         public static DataTable SortWarehouseStockBySearchTerm(DataTable dataTable, string searchTerm)
         {
-            List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants = ConvertDataTableToWarehouseStockProductVariants(dataTable);
-            List<((int, string, string, Dictionary<int, int>), double)> warehouseStockSimilarities = new List<((int, string, string, Dictionary<int, int>), double)>();
+            DataTable sorted = SortDataTable.BySearchTerm(dataTable, searchTerm);
 
-
-            foreach ((int, string, string, Dictionary<int, int>) warehouseStockProductVariant in warehouseStockProductVariants)
-            {
-                double maxSimilarity = Misc.MaxDouble(
-                    Misc.JaccardSimilarity($"{warehouseStockProductVariant.Item1}", searchTerm),
-                    Misc.JaccardSimilarity(warehouseStockProductVariant.Item2, searchTerm),
-                    Misc.JaccardSimilarity($"{warehouseStockProductVariant.Item3}", searchTerm)
-                );
-
-                warehouseStockSimilarities.Add((warehouseStockProductVariant, maxSimilarity));
-            }
-
-            List<(int, string, string, Dictionary<int, int>)> sortedWarehouseStockProductVariants = warehouseStockSimilarities
-                .OrderByDescending(w => w.Item2)
-                .Select(w => w.Item1)
-                .ToList();
-
-            return ConvertWarehouseStockProductVariantsToDataTable(sortedWarehouseStockProductVariants);
-
+            return sorted;
         }
 
         public static DataTable SortWarehouseStockByColumn(DataTable dataTable, int columnToSortBy, bool sortColumnInDescendingOrder)
         {
-            dataTable = ClearSortDirectionArrow(dataTable);
-
-            DataView dataView = new DataView(dataTable);
-
-            // Sort by "Name" column in ascending order
-            string direction = "ASC";
-            if (sortColumnInDescendingOrder)
-            {
-                direction = "DESC";
-            }
-
-
-            // cái dataView.Sort sẽ bị hỏng nếu như tên cột có dấu phẩy
-            // nên trước khi dùng cái sort đấy phải đổi tên cột sang một tên tạm để chắc chắn không có dấu phẩy
-            string temporaryColumnName = "hgu81hf39ulag3aha9g3u7";
-            string realColumnName = dataTable.Columns[columnToSortBy].ColumnName;
-            dataTable.Columns[columnToSortBy].ColumnName = temporaryColumnName;
-
-            dataView.Sort = $"{temporaryColumnName} {direction}";
-
-            // sort xong rồi thì đổi về tên cũ
-            dataTable.Columns[columnToSortBy].ColumnName = realColumnName;
-
-            // Optional: If you need to get back the sorted DataTable
-            DataTable sortedDataTable = dataView.ToTable();
-
-            sortedDataTable.Columns[columnToSortBy].ColumnName = Misc.ShowCurrentSortingDirection(sortedDataTable.Columns[columnToSortBy].ColumnName, sortColumnInDescendingOrder);
-
-            return sortedDataTable;
+            return SortDataTable.ByColumn(dataTable, columnToSortBy, sortColumnInDescendingOrder);
         }
 
         // Làm cái này để xóa mũi tên khỏi tên cột :)))
