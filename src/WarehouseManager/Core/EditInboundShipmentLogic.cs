@@ -171,31 +171,6 @@ namespace WarehouseManager.Core
         }
 
 
-        public static DataTable DeleteInboundShipmentDetail(DataTable currentDataTable, int row, int productVariantID)
-        {
-            DataTable dataTable = currentDataTable.Copy();
-
-            if (row < 0 || row >= dataTable.Rows.Count)
-            {
-                return dataTable;
-            }
-
-            DataRow rowToDelete = dataTable.Rows[row];
-
-            if (rowToDelete != null)
-            {
-                // Mark the row for deletion
-                rowToDelete.Delete();
-
-                // Commit the deletion
-                dataTable.AcceptChanges();
-            }
-            Program.Warehouse.ProductVariantTable.Delete(productVariantID);
-            return dataTable;
-        }
-
-
-
         // Save Button
         public static void Save(int inboundShipmentID, string supplierName, string warehouseName, DateTime inboundShipmentStartingDate, string inboundShipmentStatus, string inboundShipmentDescription, string userName)
         {
@@ -233,7 +208,31 @@ namespace WarehouseManager.Core
             return dataTable;
         }
 
+        // Delete InboundShipmentDetail to Table and Database
+        public static DataTable DeleteInboundShipmentDetail(DataTable currentDataTable, int row, int productVariantID)
+        {
+            DataTable dataTable = currentDataTable.Copy();
 
+            if (row < 0 || row >= dataTable.Rows.Count)
+            {
+                return dataTable;
+            }
+
+            DataRow rowToDelete = dataTable.Rows[row];
+
+            if (rowToDelete != null)
+            {
+                // Mark the row for deletion
+                rowToDelete.Delete();
+
+                // Commit the deletion
+                dataTable.AcceptChanges();
+            }
+            Program.Warehouse.ProductVariantTable.Delete(productVariantID);
+            return dataTable;
+        }
+
+        // Update InboundShipmentDetail to Table and Database
         public static DataTable UpdateInboundShipmentDetail(DataTable currentDataTable, int productVariantID, int quantity, int inboundShipmentID)
         {
             DataTable dataTable = currentDataTable.Copy();

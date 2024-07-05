@@ -239,7 +239,7 @@ namespace WarehouseManager.UI.Menu
                 ShipmentList.Display();
             };
 
-            //Khi nhấn vào 1 ô trong bảng để sửa (chưa xong)
+            //Khi nhấn vào 1 ô trong bảng để sửa
             tableView.CellActivated += args =>
             {
                 int column = args.Col;
@@ -343,10 +343,8 @@ namespace WarehouseManager.UI.Menu
                     // Chuyển đổi giá trị TextField từ chuỗi sang số nguyên
                     if (int.TryParse(productVariantIDText, out int productVariantID) && int.TryParse(quantityText, out int quantity))
                     {
-                        // Gọi phương thức AddInboundShipmentDetail với giá trị số nguyên
                         tableView.Table = EditInboundShipmentLogic.AddInboundShipmentDetail(tableView.Table, productVariantID, quantity, shipmentID);
 
-                        // Xóa giá trị trong các TextField
                         productVariantIDInput.Text = "";
                         quantityInput.Text = "";
                     }

@@ -5,79 +5,140 @@ namespace WarehouseManager.Core
 {
     public static class AddInboundShipmentLogic
     {
-        public static List<string> GetCategoryList()
+        //Get Warehouse List
+        public static List<string> GetWarehouseList()
         {
-            return EditProductLogic.GetCategoryList();
+            return EditInboundShipmentLogic.GetWarehouseList();
         }
 
+        //Get Supplier List
+        public static List<string> GetSupplierList()
+        {
+            return EditInboundShipmentLogic.GetSupplierList();
+        }
+
+        //Get Current Account User Full Name
+        public static string GetUserFullName()
+        {
+            string userName = $"{Program.Warehouse.Username}";
+            List<User>? users = Program.Warehouse.UserTable.Users ?? new List<User>();
+            User? user = users.FirstOrDefault(u => u.UserName == userName);
+
+            string userFullName = "";
+            if (user != null)
+            {
+                userFullName = user.UserFullName;
+            }
+
+            return userFullName;
+        }
+
+        //Create DataTable
         public static DataTable GetDataTable()
         {
             var dataTable = new DataTable();
 
-            dataTable.Columns.Add("Image Url", typeof(string));
-            dataTable.Columns.Add("Color", typeof(string));
-            dataTable.Columns.Add("Size", typeof(string));
+            dataTable.Columns.Add("Variant ID", typeof(int));
+            dataTable.Columns.Add("Variant Name", typeof(string));
+            dataTable.Columns.Add("Amount", typeof(int));
 
             return dataTable;
         }
 
-        public static DataTable AddVariantToDataTable(DataTable currentDataTable, string imageURL, string color, string size)
+        // Add InboundShipmentDetail only to DataTable (not include DataBase)
+        public static DataTable AddInboundShipmentDetail(DataTable currentDataTable, int productVariantID, int quantity)
         {
             DataTable dataTable = currentDataTable.Copy();
-            dataTable.Rows.Add(imageURL, color, size);
+            string productVariantName = EditInboundShipmentLogic.GetProductVariantName(productVariantID);
+            dataTable.Rows.Add(productVariantID, productVariantName, quantity);
             return dataTable;
         }
 
-        public static DataTable DeleteVariantFromDataTable(DataTable currentDataTable, int row)
+        // Delete InboundShipmentDetail only to DataTable (not include DataBase)
+        public static DataTable DeleteInboundShipmentDetail(DataTable currentDataTable, int row)
         {
-            return EditProductLogic.DeleteProductVariant(currentDataTable, row);
-        }
+            DataTable dataTable = currentDataTable.Copy();
 
-        public static void Save(string productName, string productDescription, int productPrice, string categoryName, DataTable variantDataTable)
-        {
-            int productID = GetCurrentHighestProductID() + 1;
-            AddProduct(productID, productName, productDescription, productPrice, categoryName);
-            AddVariants(productID, variantDataTable);
-        }
-
-        private static int GetCurrentHighestProductID()
-        {
-            List<Product> products = Program.Warehouse.ProductTable.Products ?? new List<Product>();
-            int highestProductID = products.Max(p => p.ProductID);
-            return highestProductID;
-        }
-
-        private static void AddProduct(int productID, string productName, string productDescription, int productPrice, string categoryName)
-        {
-            List<Category>? categories = Program.Warehouse.CategoryTable.Categories ?? new List<Category>();
-            Category? category = categories.FirstOrDefault(c => c.CategoryName == categoryName);
-
-            int? categoryID = null;
-            if (category != null)
+            if (row < 0)
             {
-                categoryID = category.CategoryID;
+                return dataTable;
             }
 
-            Program.Warehouse.ProductTable.Add(productID, productName, productDescription, productPrice, categoryID);
+            DataRow rowToDelete = dataTable.Rows[row];
+
+            if (rowToDelete != null)
+            {
+                // Mark the row for deletion
+                rowToDelete.Delete();
+
+                // Commit the deletion
+                dataTable.AcceptChanges();
+            }
+
+            return dataTable;
         }
 
-        private static void AddVariants(int productID, DataTable dataTable)
+
+        //Save function
+        public static void Save(string supplierName, string warehouseName, DateTime inboundShipmentStartingDate, string inboundShipmentStatus, string? inboundShipmentDescription, string userName, DataTable dataTable)
+        {
+            int inboundShipmentID = GetCurrentHighestInboundShipmentID() + 1;
+            AddInboundShipment(inboundShipmentID, supplierName, warehouseName, inboundShipmentStartingDate, inboundShipmentStatus, inboundShipmentDescription, userName);
+            AddInboundShipmentDetail(inboundShipmentID, dataTable);
+        }
+
+        //Get highest ShipmentID
+        private static int GetCurrentHighestInboundShipmentID()
+        {
+            List<InboundShipment> inboundShipments = Program.Warehouse.InboundShipmentTable.InboundShipments ?? new List<InboundShipment>();
+            int highestInboundShipmentID = inboundShipments.Max(i => i.InboundShipmentID);
+            return highestInboundShipmentID;
+        }
+
+        // Add InboundShipment to DataBase
+        private static void AddInboundShipment(int inboundShipmentID, string supplierName, string warehouseName, DateTime inboundShipmentStartingDate, string inboundShipmentStatus, string? inboundShipmentDescription, string userName)
+        {
+            List<Supplier>? suppliers = Program.Warehouse.SupplierTable.Suppliers ?? new List<Supplier>();
+            Supplier? supplier = suppliers.FirstOrDefault(s => s.SupplierName == supplierName);
+
+            int? supplierID = null;
+            if (supplier != null)
+            {
+                supplierID = supplier.SupplierID;
+            }
+
+            List<Warehouse>? warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
+            Warehouse? warehouse = warehouses.FirstOrDefault(w => w.WarehouseName == warehouseName);
+
+            int warehouseID = 0;
+            if (warehouse != null)
+            {
+                warehouseID = warehouse.WarehouseID;
+            }
+
+            List<User>? users = Program.Warehouse.UserTable.Users ?? new List<User>();
+            User? user = users.FirstOrDefault(u => u.UserFullName == userName);
+
+            int userID = 0;
+            if (user != null)
+            {
+                userID = user.UserID;
+            }
+
+            Program.Warehouse.InboundShipmentTable.Add(inboundShipmentID, supplierID, warehouseID, inboundShipmentStartingDate, inboundShipmentStatus, inboundShipmentDescription, userID);
+        }
+
+        // Add InboundShipmentDetail to DataBase
+        private static void AddInboundShipmentDetail(int inboundShipmentID, DataTable dataTable)
         {
             foreach (DataRow row in dataTable.Rows)
             {
-                AddVariant(productID, (string?)row[0], (string?)row[1], (string?)row[2]);
+                AddInboundShipmentDetailToDataBase(inboundShipmentID, (int)row[0], (int)row[2]);
             }
         }
-
-        private static int GetCurrentHighestProductVariantID()
+        private static void AddInboundShipmentDetailToDataBase(int inboundShipmentID, int productVariantID, int quantity)
         {
-            return EditProductLogic.GetCurrentHighestProductVariantID();
-        }
-
-        private static void AddVariant(int productID, string? productVariantImageURL, string? productVariantColor, string? productVariantSize)
-        {
-            int productVariantID = GetCurrentHighestProductVariantID() + 1;
-            Program.Warehouse.ProductVariantTable.Add(productVariantID, productID, productVariantImageURL, productVariantColor, productVariantSize);
+            Program.Warehouse.InboundShipmentDetailTable.Add(inboundShipmentID, productVariantID, quantity);
         }
     }
 }
