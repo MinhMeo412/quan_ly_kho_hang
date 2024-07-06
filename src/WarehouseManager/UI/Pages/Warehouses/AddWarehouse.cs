@@ -1,5 +1,5 @@
 using Terminal.Gui;
-using WarehouseManager.Core;
+using WarehouseManager.Core.Pages;
 using WarehouseManager.UI.Utility;
 
 namespace WarehouseManager.UI.Pages

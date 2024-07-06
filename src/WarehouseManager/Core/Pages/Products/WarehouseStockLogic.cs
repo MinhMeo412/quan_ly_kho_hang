@@ -3,7 +3,7 @@ using WarehouseManager.Data.Entity;
 using Terminal.Gui;
 using WarehouseManager.Core.Utility;
 
-namespace WarehouseManager.Core
+namespace WarehouseManager.Core.Pages
 {
     public static class WarehouseStockLogic
     {

@@ -1,7 +1,7 @@
 using System.Data;
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
-using WarehouseManager.Core;
+using WarehouseManager.Core.Pages;
 using WarehouseManager.Core.Utility;
 
 namespace WarehouseManager.UI.Pages

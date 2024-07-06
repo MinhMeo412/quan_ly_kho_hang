@@ -2,7 +2,7 @@ using System.Data;
 using WarehouseManager.Data.Entity;
 using WarehouseManager.Core.Utility;
 
-namespace WarehouseManager.Core
+namespace WarehouseManager.Core.Pages
 {
     public static class ProductListLogic
     {
