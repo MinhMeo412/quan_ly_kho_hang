@@ -1,8 +1,6 @@
 using System.Data;
-using System.Security.Cryptography.X509Certificates;
 using Terminal.Gui;
-using WarehouseManager.Core;
-using WarehouseManager.Data.Entity;
+using WarehouseManager.Core.Pages;
 using WarehouseManager.UI.Utility;
 
 namespace WarehouseManager.UI.Pages

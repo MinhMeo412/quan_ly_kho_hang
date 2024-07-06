@@ -1,6 +1,6 @@
 using WarehouseManager.Data.Entity;
 
-namespace WarehouseManager.Core
+namespace WarehouseManager.Core.Pages
 {
     public static class AddCategoryLogic
     {

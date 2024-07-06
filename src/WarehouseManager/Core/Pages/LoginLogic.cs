@@ -1,4 +1,4 @@
-namespace WarehouseManager.Core
+namespace WarehouseManager.Core.Pages
 {
     public static class LoginLogic
     {

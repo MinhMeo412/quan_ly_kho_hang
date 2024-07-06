@@ -1,7 +1,7 @@
 using System.Data;
 using WarehouseManager.Data.Entity;
 
-namespace WarehouseManager.Core
+namespace WarehouseManager.Core.Pages
 {
     public static class AddProductLogic
     {

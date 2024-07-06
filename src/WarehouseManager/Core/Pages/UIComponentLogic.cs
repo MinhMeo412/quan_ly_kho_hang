@@ -2,7 +2,7 @@ using WarehouseManager.Data.Entity;
 using System.Data;
 using WarehouseManager.Core.Utility;
 
-namespace WarehouseManager.Core
+namespace WarehouseManager.Core.Pages
 {
     public static class UIComponentLogic
     {
