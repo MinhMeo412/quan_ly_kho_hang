@@ -224,7 +224,7 @@ namespace WarehouseManager.UI.Menu
                 if (int.TryParse(selectedRow[0].ToString(), out int firstColumnValue))
                 {
                     // Gọi phương thức DeleteInboundShipmentDetail với giá trị từ cột đầu tiên
-                    tableView.Table = EditInboundShipmentLogic.DeleteInboundShipmentDetail(tableView.Table, selectedRowIndex, firstColumnValue);
+                    tableView.Table = EditInboundShipmentLogic.DeleteInboundShipmentDetail(tableView.Table, selectedRowIndex, firstColumnValue, shipmentID);
                 }
                 else
                 {

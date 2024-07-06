@@ -1,4 +1,5 @@
 using Terminal.Gui;
+using WarehouseManager.Core;
 using WarehouseManager.UI.Utility;
 
 namespace WarehouseManager.UI.Menu
@@ -124,8 +125,28 @@ namespace WarehouseManager.UI.Menu
                     X = Pos.Center(),
                     Y = Pos.Bottom(messageLabel) + 3
                 };
-                okButton.Clicked += () => Application.RequestStop();
-
+                okButton.Clicked += () =>
+                {
+                    try
+                    {
+                        bool added = AddWarehouseLogic.AddWarehouse($"{warehouseNameInput.Text}");
+                        if (added)
+                        {
+                            errorLabel.Text = "";
+                            MessageBox.Query("Success", "Warehouse added successfully", "OK");
+                        }
+                        else
+                        {
+                            MessageBox.ErrorQuery("Error", "Cannot add more than 10 warehouses", "OK");
+                        }
+                        Application.RequestStop();
+                    }
+                    catch (Exception ex)
+                    {
+                        errorLabel.Text = $"Error: {ex.Message}";
+                        Application.RequestStop();
+                    }
+                };
                 dialog.Add(messageLabel, okButton);
                 Application.Run(dialog);
             };

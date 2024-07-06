@@ -6,7 +6,6 @@ namespace WarehouseManager.Core
     public static class EditInboundShipmentLogic
     {
         //Lấy các thông tin của InboundShipment được chọn
-
         private static InboundShipment GetInboundshipment(int inboundShipmentID)
         {
             List<InboundShipment> inboundShipments = Program.Warehouse.InboundShipmentTable.InboundShipments ?? new List<InboundShipment>();
@@ -81,32 +80,6 @@ namespace WarehouseManager.Core
             return warehouseNames;
         }
 
-        public static int GetInboundShipmentUser(int inboundShipmentID)
-        {
-            int userID = GetInboundshipment(inboundShipmentID).UserID;
-
-            List<User> users = Program.Warehouse.UserTable.Users ?? new List<User>();
-
-            User user = users.FirstOrDefault(u => u.UserID == userID) ?? new User(0, "", "", "", "", "", 0);
-            string userName = user.UserFullName;
-
-            List<string> userNames = GetUserList();
-            return userNames.IndexOf(userName);
-        }
-
-        public static List<string> GetUserList()
-        {
-            List<User> users = Program.Warehouse.UserTable.Users ?? new List<User>();
-            List<string> userNames = new List<string>();
-
-            foreach (User user in users)
-            {
-                userNames.Add(user.UserFullName);
-            }
-
-            return userNames;
-        }
-
         public static string GetInboundShipmentUserName(int inboundShipmentID)
         {
             int userID = GetInboundshipment(inboundShipmentID).UserID;
@@ -133,8 +106,6 @@ namespace WarehouseManager.Core
         {
             List<InboundShipmentDetail> inboundShipmentDetails = Program.Warehouse.InboundShipmentDetailTable.InboundShipmentDetails ?? new List<InboundShipmentDetail>();
             List<InboundShipmentDetail> currentInboundShipmentDetails = inboundShipmentDetails.Where(iSD => iSD.InboundShipmentID == inboundShipmentID).ToList();
-            //List<ProductVariant> productVariants = Program.Warehouse.ProductVariantTable.ProductVariants ?? new List<ProductVariant>();
-            //List<Product> products = Program.Warehouse.ProductTable.Products ?? new List<Product>();
 
             List<(int, string, int)> inboundShipmentDetailRows = new List<(int, string, int)>();
 
@@ -195,12 +166,11 @@ namespace WarehouseManager.Core
 
 
         // Add InboundShipmentDetail to Table and Database
-        public static DataTable AddInboundShipmentDetail(DataTable currentDataTable, int productVariantID, int quantity, int inboundShipment)
+        public static DataTable AddInboundShipmentDetail(DataTable currentDataTable, int productVariantID, int quantity, int inboundShipmentID)
         {
             DataTable dataTable = currentDataTable.Copy();
 
             string productVariantName = GetProductVariantName(productVariantID);
-            int inboundShipmentID = GetInboundshipment(inboundShipment).InboundShipmentID;
             dataTable.Rows.Add(productVariantID, productVariantName, quantity);
 
             Program.Warehouse.InboundShipmentDetailTable.Add(inboundShipmentID, productVariantID, quantity);
@@ -209,7 +179,7 @@ namespace WarehouseManager.Core
         }
 
         // Delete InboundShipmentDetail to Table and Database
-        public static DataTable DeleteInboundShipmentDetail(DataTable currentDataTable, int row, int productVariantID)
+        public static DataTable DeleteInboundShipmentDetail(DataTable currentDataTable, int row, int productVariantID, int inboundShipmentID)
         {
             DataTable dataTable = currentDataTable.Copy();
 
@@ -228,7 +198,7 @@ namespace WarehouseManager.Core
                 // Commit the deletion
                 dataTable.AcceptChanges();
             }
-            Program.Warehouse.ProductVariantTable.Delete(productVariantID);
+            Program.Warehouse.InboundShipmentDetailTable.Delete(inboundShipmentID, productVariantID);
             return dataTable;
         }
 
