@@ -135,7 +135,7 @@ namespace WarehouseManager.UI.Pages
 
             addButtonLeft2.Clicked += () =>
             {
-                AddTransferShipment.Display();
+                AddStockTransfer.Display();
             };
 
             tableContainer.Add(tableView);

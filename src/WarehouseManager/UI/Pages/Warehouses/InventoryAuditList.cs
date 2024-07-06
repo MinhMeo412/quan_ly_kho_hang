@@ -80,7 +80,7 @@ namespace WarehouseManager.UI.Pages
             tableView.CellActivated += args =>
             {
                 int inventoryAuditID = (int)tableView.Table.Rows[args.Row][0];
-                EditInventoryAudit.Display();
+                EditInventoryAudit.Display(inventoryAuditID);
             };
 
             // khi nút Delete được bấm
