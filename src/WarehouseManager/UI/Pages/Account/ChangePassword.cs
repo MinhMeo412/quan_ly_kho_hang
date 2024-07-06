@@ -1,7 +1,7 @@
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
 
-namespace WarehouseManager.UI.Menu
+namespace WarehouseManager.UI.Pages
 {
     public static class ChangePassword
     {

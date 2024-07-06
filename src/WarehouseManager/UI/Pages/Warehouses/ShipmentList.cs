@@ -3,15 +3,14 @@ using Terminal.Gui;
 using WarehouseManager.UI.Utility;
 using WarehouseManager.Core;
 
-namespace WarehouseManager.UI.Menu
+namespace WarehouseManager.UI.Pages
 {
-    public static class InventoryAuditList
+    public static class ShipmentList
     {
         public static void Display()
         {
-
             Application.Top.RemoveAll();
-            var mainWindow = UIComponent.LoggedInMainWindow("Inventory Audits");
+            var mainWindow = UIComponent.LoggedInMainWindow("Shipments");
             Application.Top.Add(mainWindow);
 
             var errorLabel = UIComponent.ErrorMessageLabel();
@@ -28,7 +27,13 @@ namespace WarehouseManager.UI.Menu
 
             var deleteButton = UIComponent.DeleteButton();
 
-            var addButton = UIComponent.AddButton("Add New Inventory Audit");
+            var addButtonRight = UIComponent.AddButton("Add New Inbound Shipment");
+
+            var addButtonLeft = UIComponent.AddButton("Add New Outbound Shipment");
+            addButtonLeft.X = Pos.Left(addButtonRight) - addButtonLeft.Text.Length - 5;
+
+            var addButtonLeft2 = UIComponent.AddButton("Add New Transfer Shipment");
+            addButtonLeft2.X = Pos.Left(addButtonLeft) - addButtonLeft2.Text.Length - 5;
 
             var tableContainer = new FrameView()
             {
@@ -40,23 +45,24 @@ namespace WarehouseManager.UI.Menu
             };
 
             // Create a TableView and set its data source
-            var tableView = UIComponent.Table(InventoryAuditListLogic.GetData());
+            var tableView = UIComponent.Table(ShipmentListLogic.GetData());
 
-            // Refresh button for renew display
+            // Refresh button
             refreshButton.Clicked += () =>
             {
                 Display();
             };
 
+
             // Khi người dùng search một chuỗi gì đó
             searchInput.TextChanged += args =>
             {
-                tableView.Table = InventoryAuditListLogic.SortInventoryAuditBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
+                tableView.Table = ShipmentListLogic.SortShipmentListBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
             };
+
 
             int columnCurrentlySortBy = -1;
             bool sortColumnInDescendingOrder = false;
-
             // khi sort cột
             tableView.MouseClick += e =>
             {
@@ -72,29 +78,42 @@ namespace WarehouseManager.UI.Menu
                     columnCurrentlySortBy = columnClicked;
                     searchInput.Text = "";
 
-                    tableView.Table = InventoryAuditListLogic.SortInventoryAuditListByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
+                    tableView.Table = ShipmentListLogic.SortShipmentListByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
                 }
             };
 
-            // khi bấm vào 1 ô trong bảng
+            //Row clicked
             tableView.CellActivated += args =>
             {
-                int inventoryAuditID = (int)tableView.Table.Rows[args.Row][0];
-                EditInventoryAudit.Display();
+                int shipmentID = (int)tableView.Table.Rows[args.Row][1];
+                string shipmentType = (string)tableView.Table.Rows[args.Row][0];
+                switch (shipmentType)
+                {
+                    case "Inbound":
+                        EditInboundShipment.Display(shipmentID);
+                        break;
+                    case "Outbound":
+                        EditOutboundShipment.Display(shipmentID);
+                        break;
+                    case "Transfer":
+                        EditStockTransfer.Display(shipmentID);
+                        break;
+                }
             };
 
-            // khi nút Delete được bấm
+            //Delete button
             deleteButton.Clicked += () =>
             {
                 DataRow selectedRow = tableView.Table.Rows[tableView.SelectedRow];
-                int inventoryAuditID = (int)selectedRow[0];
+                int shipmentID = (int)selectedRow[1];
+                string shipmentType = (string)selectedRow[0];
 
                 int result = MessageBox.Query("Delete", "Are you sure you want to delete this?", "No", "Yes");
                 if (result == 1) // "Yes" button was pressed
                 {
                     try
                     {
-                        tableView.Table = InventoryAuditListLogic.DeleteInventoryAudit(tableView.Table, inventoryAuditID);
+                        tableView.Table = ShipmentListLogic.DeleteShipment(tableView.Table, shipmentType, shipmentID);
                         errorLabel.Text = "";
                     }
                     catch (Exception ex)
@@ -104,14 +123,23 @@ namespace WarehouseManager.UI.Menu
                 }
             };
 
-            // Add Inventory audit Button
-            addButton.Clicked += () =>
+            addButtonRight.Clicked += () =>
             {
-                AddInventoryAudit.Display();
+                AddInboundShipment.Display();
+            };
+
+            addButtonLeft.Clicked += () =>
+            {
+                AddOutboundShipment.Display();
+            };
+
+            addButtonLeft2.Clicked += () =>
+            {
+                AddTransferShipment.Display();
             };
 
             tableContainer.Add(tableView);
-            mainWindow.Add(refreshButton, searchLabel, searchInput, tableContainer, addButton, deleteButton, errorLabel, userPermissionLabel, separatorLine);
+            mainWindow.Add(refreshButton, searchLabel, searchInput, tableContainer, addButtonRight, addButtonLeft, addButtonLeft2, deleteButton, errorLabel, userPermissionLabel, separatorLine);
         }
 
     }

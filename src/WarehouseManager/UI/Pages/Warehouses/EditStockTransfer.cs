@@ -2,18 +2,18 @@ using System.Data;
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
 
-namespace WarehouseManager.UI.Menu
+namespace WarehouseManager.UI.Pages
 {
-    public static class EditOutboundShipment
+    public static class EditStockTransfer
     {
         /*
              Todo.
-             Sửa phiếu xuất.
+             Sửa phiếu nhập.
          */
         public static void Display(int shipmentID)
         {
             Application.Top.RemoveAll();
-            var mainWindow = UIComponent.LoggedInMainWindow("Edit Outbound Shipment");
+            var mainWindow = UIComponent.LoggedInMainWindow("Edit Stock Transfer");
             Application.Top.Add(mainWindow);
 
             var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
@@ -59,23 +59,23 @@ namespace WarehouseManager.UI.Menu
                 Width = Dim.Percent(60),
             };
 
-            var toAddressLabel = new Label("To Address:")
+            var toWarehouseLabel = new Label("To Warehouse:")
             {
                 X = 3,
                 Y = Pos.Bottom(fromWarehouseLabel) + 2
             };
 
-            var toAddressInput = new TextField("")
+            var toWarehouseInput = new TextField("")
             {
                 X = 20,
-                Y = Pos.Top(toAddressLabel),
+                Y = Pos.Top(toWarehouseLabel),
                 Width = Dim.Percent(60),
             };
 
             var descriptionLabel = new Label("Description:")
             {
                 X = 3,
-                Y = Pos.Bottom(toAddressLabel) + 2
+                Y = Pos.Bottom(toWarehouseLabel) + 2
             };
 
             var descriptionInput = new TextView()
@@ -147,6 +147,7 @@ namespace WarehouseManager.UI.Menu
             dataTable.Rows.Add(3, "Charlie", 35);
             dataTable.Rows.Add(1, "Alice", 30);
 
+
             var tableView = UIComponent.Table(dataTable);
 
             //Tạo nút save
@@ -164,8 +165,8 @@ namespace WarehouseManager.UI.Menu
 
 
             tableContainer.Add(tableView);
-            leftContainer.Add(fromWarehouseLabel, fromWarehouseInput, toAddressLabel, toAddressInput, descriptionLabel, descriptionInput);
-            rightContainer.Add(dateLabel, dateInput, userLabel, userInput, statusLabel, statusBox);
+            leftContainer.Add(fromWarehouseLabel, fromWarehouseInput, toWarehouseLabel, toWarehouseInput, descriptionLabel, descriptionInput);
+            rightContainer.Add(userLabel, userInput, dateLabel, dateInput, statusLabel, statusBox);
             container.Add(leftContainer, rightContainer);
             mainWindow.Add(container, tableContainer, separatorLine, errorLabel, userPermissionLabel, saveButton);
         }

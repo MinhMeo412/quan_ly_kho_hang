@@ -2,14 +2,18 @@ using System.Data;
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
 
-namespace WarehouseManager.UI.Menu
+namespace WarehouseManager.UI.Pages
 {
-    public static class EditInventoryAudit
+    public static class AddOutboundShipment
     {
+        /*
+            Todo.
+            Thêm phiếu xuất.
+        */
         public static void Display()
         {
             Application.Top.RemoveAll();
-            var mainWindow = UIComponent.LoggedInMainWindow("Edit Inventory Audit");
+            var mainWindow = UIComponent.LoggedInMainWindow("Add Outbound Shipment");
             Application.Top.Add(mainWindow);
 
             var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
@@ -42,36 +46,36 @@ namespace WarehouseManager.UI.Menu
                 Border = new Border() { BorderStyle = BorderStyle.None }
             };
 
-            var warehouseLabel = new Label("Warehouse:")
+            var fromWarehouseLabel = new Label("From Warehouse:")
             {
                 X = 3,
                 Y = 1
             };
 
-            var warehouseInput = new TextField("")
+            var fromWarehouseInput = new TextField("")
             {
                 X = 20,
-                Y = Pos.Top(warehouseLabel),
+                Y = Pos.Top(fromWarehouseLabel),
                 Width = Dim.Percent(60),
             };
 
-            var dateLabel = new Label("Date:")
+            var toAddressLabel = new Label("To Address:")
             {
                 X = 3,
-                Y = Pos.Bottom(warehouseLabel) + 2
+                Y = Pos.Bottom(fromWarehouseLabel) + 2
             };
 
-            var dateInput = new TextField("")
+            var toAddressInput = new TextField("")
             {
                 X = 20,
-                Y = Pos.Top(dateLabel),
+                Y = Pos.Top(toAddressLabel),
                 Width = Dim.Percent(60),
             };
 
             var descriptionLabel = new Label("Description:")
             {
                 X = 3,
-                Y = Pos.Bottom(dateLabel) + 2
+                Y = Pos.Bottom(toAddressLabel) + 2
             };
 
             var descriptionInput = new TextView()
@@ -83,10 +87,23 @@ namespace WarehouseManager.UI.Menu
                 Text = "",
             };
 
-            var userLabel = new Label("User:")
+            var dateLabel = new Label("Date:")
             {
                 X = 3,
                 Y = 1
+            };
+
+            var dateInput = new TextField("")
+            {
+                X = 20,
+                Y = Pos.Top(dateLabel),
+                Width = Dim.Percent(60),
+            };
+
+            var userLabel = new Label("User:")
+            {
+                X = 3,
+                Y = Pos.Bottom(dateLabel) + 2
             };
 
             var userInput = new TextField("")
@@ -112,6 +129,7 @@ namespace WarehouseManager.UI.Menu
                 Height = 4
             };
 
+
             var tableContainer = new FrameView()
             {
                 X = Pos.Center(),
@@ -128,7 +146,6 @@ namespace WarehouseManager.UI.Menu
             dataTable.Rows.Add(2, "Bob", 25);
             dataTable.Rows.Add(3, "Charlie", 35);
             dataTable.Rows.Add(1, "Alice", 30);
-
 
             var tableView = UIComponent.Table(dataTable);
 
@@ -147,10 +164,11 @@ namespace WarehouseManager.UI.Menu
 
 
             tableContainer.Add(tableView);
-            leftContainer.Add(warehouseLabel, warehouseInput, dateLabel, dateInput, descriptionLabel, descriptionInput);
-            rightContainer.Add(userLabel, userInput, statusLabel, statusBox);
+            leftContainer.Add(fromWarehouseLabel, fromWarehouseInput, toAddressLabel, toAddressInput, descriptionLabel, descriptionInput);
+            rightContainer.Add(dateLabel, dateInput, userLabel, userInput, statusLabel, statusBox);
             container.Add(leftContainer, rightContainer);
-            mainWindow.Add(container, tableContainer, errorLabel, userPermissionLabel, separatorLine, saveButton);
+            mainWindow.Add(container, tableContainer, separatorLine, errorLabel, userPermissionLabel, saveButton);
         }
+
     }
 }

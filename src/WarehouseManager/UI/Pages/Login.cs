@@ -1,9 +1,8 @@
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
 using WarehouseManager.Core;
-using MySql.Data.MySqlClient;
 
-namespace WarehouseManager.UI.Menu
+namespace WarehouseManager.UI.Pages
 {
 
     public static class Login

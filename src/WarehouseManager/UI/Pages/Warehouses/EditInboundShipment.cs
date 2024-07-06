@@ -1,11 +1,9 @@
 using System.Data;
-using System.Security.Cryptography.X509Certificates;
 using Terminal.Gui;
 using WarehouseManager.Core;
-using WarehouseManager.Data.Entity;
 using WarehouseManager.UI.Utility;
 
-namespace WarehouseManager.UI.Menu
+namespace WarehouseManager.UI.Pages
 {
     public static class EditInboundShipment
     {

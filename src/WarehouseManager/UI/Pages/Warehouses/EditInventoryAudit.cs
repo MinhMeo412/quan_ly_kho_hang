@@ -2,18 +2,14 @@ using System.Data;
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
 
-namespace WarehouseManager.UI.Menu
+namespace WarehouseManager.UI.Pages
 {
-    public static class AddTransferShipment
+    public static class EditInventoryAudit
     {
-        /*
-             Todo.
-             Thêm phiếu nhập .
-         */
         public static void Display()
         {
             Application.Top.RemoveAll();
-            var mainWindow = UIComponent.LoggedInMainWindow("Add Transfer Shipment");
+            var mainWindow = UIComponent.LoggedInMainWindow("Edit Inventory Audit");
             Application.Top.Add(mainWindow);
 
             var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
@@ -46,36 +42,36 @@ namespace WarehouseManager.UI.Menu
                 Border = new Border() { BorderStyle = BorderStyle.None }
             };
 
-            var fromWarehouseLabel = new Label("From Warehouse:")
+            var warehouseLabel = new Label("Warehouse:")
             {
                 X = 3,
                 Y = 1
             };
 
-            var fromWarehouseInput = new TextField("")
+            var warehouseInput = new TextField("")
             {
                 X = 20,
-                Y = Pos.Top(fromWarehouseLabel),
+                Y = Pos.Top(warehouseLabel),
                 Width = Dim.Percent(60),
             };
 
-            var toWarehouseLabel = new Label("To Warehouse:")
+            var dateLabel = new Label("Date:")
             {
                 X = 3,
-                Y = Pos.Bottom(fromWarehouseLabel) + 2
+                Y = Pos.Bottom(warehouseLabel) + 2
             };
 
-            var toWarehouseInput = new TextField("")
+            var dateInput = new TextField("")
             {
                 X = 20,
-                Y = Pos.Top(toWarehouseLabel),
+                Y = Pos.Top(dateLabel),
                 Width = Dim.Percent(60),
             };
 
             var descriptionLabel = new Label("Description:")
             {
                 X = 3,
-                Y = Pos.Bottom(toWarehouseLabel) + 2
+                Y = Pos.Bottom(dateLabel) + 2
             };
 
             var descriptionInput = new TextView()
@@ -87,23 +83,10 @@ namespace WarehouseManager.UI.Menu
                 Text = "",
             };
 
-            var dateLabel = new Label("Date:")
-            {
-                X = 3,
-                Y = 1
-            };
-
-            var dateInput = new TextField("")
-            {
-                X = 20,
-                Y = Pos.Top(dateLabel),
-                Width = Dim.Percent(60),
-            };
-
             var userLabel = new Label("User:")
             {
                 X = 3,
-                Y = Pos.Bottom(dateLabel) + 2
+                Y = 1
             };
 
             var userInput = new TextField("")
@@ -128,7 +111,6 @@ namespace WarehouseManager.UI.Menu
                 Width = Dim.Percent(60),
                 Height = 4
             };
-
 
             var tableContainer = new FrameView()
             {
@@ -165,10 +147,10 @@ namespace WarehouseManager.UI.Menu
 
 
             tableContainer.Add(tableView);
-            leftContainer.Add(fromWarehouseLabel, fromWarehouseInput, toWarehouseLabel, toWarehouseInput, descriptionLabel, descriptionInput);
-            rightContainer.Add(userLabel, userInput, dateLabel, dateInput, statusLabel, statusBox);
+            leftContainer.Add(warehouseLabel, warehouseInput, dateLabel, dateInput, descriptionLabel, descriptionInput);
+            rightContainer.Add(userLabel, userInput, statusLabel, statusBox);
             container.Add(leftContainer, rightContainer);
-            mainWindow.Add(container, tableContainer, separatorLine, errorLabel, userPermissionLabel, saveButton);
+            mainWindow.Add(container, tableContainer, errorLabel, userPermissionLabel, separatorLine, saveButton);
         }
     }
 }
