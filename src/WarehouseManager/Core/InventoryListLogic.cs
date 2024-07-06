@@ -1,7 +1,6 @@
 using System.Data;
 using WarehouseManager.Data.Entity;
 using WarehouseManager.Core.Utility;
-using WarehouseManager.UI.Menu;
 
 namespace WarehouseManager.Core
 {

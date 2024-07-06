@@ -5,7 +5,7 @@ using WarehouseManager.Core;
 using WarehouseManager.Data.Entity;
 using WarehouseManager.UI.Utility;
 
-namespace WarehouseManager.UI.Menu
+namespace WarehouseManager.UI.Pages
 {
     public static class AddOutboundShipment
     {

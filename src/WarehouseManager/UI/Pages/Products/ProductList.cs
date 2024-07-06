@@ -3,15 +3,15 @@ using Terminal.Gui;
 using WarehouseManager.UI.Utility;
 using WarehouseManager.Core;
 
-namespace WarehouseManager.UI.Menu
+namespace WarehouseManager.UI.Pages
 {
-    public static class InventoryAuditList
+    public static class ProductList
     {
         public static void Display()
         {
 
             Application.Top.RemoveAll();
-            var mainWindow = UIComponent.LoggedInMainWindow("Inventory Audits");
+            var mainWindow = UIComponent.LoggedInMainWindow("Products");
             Application.Top.Add(mainWindow);
 
             var errorLabel = UIComponent.ErrorMessageLabel();
@@ -28,7 +28,7 @@ namespace WarehouseManager.UI.Menu
 
             var deleteButton = UIComponent.DeleteButton();
 
-            var addButton = UIComponent.AddButton("Add New Inventory Audit");
+            var addButton = UIComponent.AddButton("Add New Product");
 
             var tableContainer = new FrameView()
             {
@@ -40,9 +40,9 @@ namespace WarehouseManager.UI.Menu
             };
 
             // Create a TableView and set its data source
-            var tableView = UIComponent.Table(InventoryAuditListLogic.GetData());
+            var tableView = UIComponent.Table(ProductListLogic.GetData());
 
-            // Refresh button for renew display
+            // Khi người dùng bấm nút refresh sẽ tải lại trang
             refreshButton.Clicked += () =>
             {
                 Display();
@@ -51,12 +51,11 @@ namespace WarehouseManager.UI.Menu
             // Khi người dùng search một chuỗi gì đó
             searchInput.TextChanged += args =>
             {
-                tableView.Table = InventoryAuditListLogic.SortInventoryAuditBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
+                tableView.Table = ProductListLogic.SortProductBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
             };
 
             int columnCurrentlySortBy = -1;
             bool sortColumnInDescendingOrder = false;
-
             // khi sort cột
             tableView.MouseClick += e =>
             {
@@ -72,47 +71,47 @@ namespace WarehouseManager.UI.Menu
                     columnCurrentlySortBy = columnClicked;
                     searchInput.Text = "";
 
-                    tableView.Table = InventoryAuditListLogic.SortInventoryAuditListByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
+                    tableView.Table = ProductListLogic.SortProductByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
                 }
             };
 
             // khi bấm vào 1 ô trong bảng
             tableView.CellActivated += args =>
             {
-                int inventoryAuditID = (int)tableView.Table.Rows[args.Row][0];
-                EditInventoryAudit.Display(inventoryAuditID);
+                int productID = (int)tableView.Table.Rows[args.Row][0];
+                EditProduct.Display(productID);
             };
 
-            // khi nút Delete được bấm
             deleteButton.Clicked += () =>
             {
+                // khi nút Delete được bấm
                 DataRow selectedRow = tableView.Table.Rows[tableView.SelectedRow];
-                int inventoryAuditID = (int)selectedRow[0];
+                int productID = (int)selectedRow[0];
 
-                int result = MessageBox.Query("Delete", "Are you sure you want to delete this?", "No", "Yes");
+                int result = MessageBox.Query("Delete", "Are you sure you want to delete this item?", "No", "Yes");
                 if (result == 1) // "Yes" button was pressed
                 {
                     try
                     {
-                        tableView.Table = InventoryAuditListLogic.DeleteInventoryAudit(tableView.Table, inventoryAuditID);
+                        tableView.Table = ProductListLogic.DeleteProduct(tableView.Table, productID);
                         errorLabel.Text = "";
                     }
                     catch (Exception ex)
                     {
+
                         errorLabel.Text = $"Error: {ex.Message}";
                     }
+
                 }
             };
 
-            // Add Inventory audit Button
             addButton.Clicked += () =>
             {
-                AddInventoryAudit.Display();
+                AddProduct.Display();
             };
 
             tableContainer.Add(tableView);
             mainWindow.Add(refreshButton, searchLabel, searchInput, tableContainer, addButton, deleteButton, errorLabel, userPermissionLabel, separatorLine);
         }
-
     }
 }

@@ -5,14 +5,14 @@ using WarehouseManager.Core;
 using WarehouseManager.Data.Entity;
 using WarehouseManager.UI.Utility;
 
-namespace WarehouseManager.UI.Menu
+namespace WarehouseManager.UI.Pages
 {
-    public static class EditInboundShipment
+    public static class EditStockTransfer
     {
         public static void Display(int shipmentID)
         {
             Application.Top.RemoveAll();
-            var mainWindow = UIComponent.LoggedInMainWindow("Edit Inbound Shipment");
+            var mainWindow = UIComponent.LoggedInMainWindow("Edit Stock Transfer");
             Application.Top.Add(mainWindow);
 
             var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
@@ -64,31 +64,31 @@ namespace WarehouseManager.UI.Menu
             };
 
             //Left Label/Input
-            var warehouseLabel = new Label("Warehouse:")
+            var fromWarehouseLabel = new Label("From Warehouse:")
             {
                 X = 3,
                 Y = 1
             };
 
-            var warehouseDropDown = new ComboBox()
+            var fromWarehouseDropDown = new ComboBox()
             {
                 X = 20,
-                Y = Pos.Top(warehouseLabel),
+                Y = Pos.Top(fromWarehouseLabel),
                 Width = Dim.Percent(60),
                 Height = Dim.Fill(1),
                 ReadOnly = true
             };
-            var warehouses = EditInboundShipmentLogic.GetWarehouseList();
-            warehouseDropDown.SetSource(warehouses);
-            warehouseDropDown.SelectedItem = EditInboundShipmentLogic.GetInboundShipmentWarehouse(shipmentID);
+            var fromWarehouses = EditStockTransferLogic.GetWarehouseList();
+            fromWarehouseDropDown.SetSource(fromWarehouses);
+            fromWarehouseDropDown.SelectedItem = EditStockTransferLogic.GetStockTransferFromWarehouse(shipmentID);
 
             var dateLabel = new Label("Date:")
             {
                 X = 3,
-                Y = Pos.Bottom(warehouseLabel) + 2
+                Y = Pos.Bottom(fromWarehouseLabel) + 2
             };
 
-            var dateInput = new TextField(EditInboundShipmentLogic.GetInboundShipmentDate(shipmentID).ToString("dd/MM/yyyy h:mm:ss tt"))//(DateTime.Now.ToString("dd/MM/yyyy h:mm:ss tt"))
+            var dateInput = new TextField(EditStockTransferLogic.GetStockTransferDate(shipmentID).ToString("dd/MM/yyyy h:mm:ss tt"))//(DateTime.Now.ToString("dd/MM/yyyy h:mm:ss tt"))
             {
                 X = 20,
                 Y = Pos.Top(dateLabel),
@@ -108,35 +108,35 @@ namespace WarehouseManager.UI.Menu
                 Y = Pos.Top(descriptionLabel),
                 Width = Dim.Percent(60),
                 Height = 3,
-                Text = EditInboundShipmentLogic.GetInboundShipmentDescription(shipmentID),
+                Text = EditStockTransferLogic.GetStockTransferDescription(shipmentID),
             };
 
             //Right Label/Input
-            var supplierNameLabel = new Label("Supplier Name:")
+            var toWarehouseLabel = new Label("To Warehouse :")
             {
                 X = 3,
                 Y = 1
             };
 
-            var supplierDropDown = new ComboBox()
+            var toWarehouseDropDown = new ComboBox()
             {
                 X = 20,
-                Y = Pos.Top(supplierNameLabel),
+                Y = Pos.Top(toWarehouseLabel),
                 Width = Dim.Percent(60),
                 Height = Dim.Fill(1),
                 ReadOnly = true
             };
-            var suppliers = EditInboundShipmentLogic.GetSupplierList();
-            supplierDropDown.SetSource(suppliers);
-            supplierDropDown.SelectedItem = EditInboundShipmentLogic.GetInboundShipmentSupplier(shipmentID);
+            var toWarehouses = EditStockTransferLogic.GetWarehouseList();
+            toWarehouseDropDown.SetSource(toWarehouses);
+            toWarehouseDropDown.SelectedItem = EditStockTransferLogic.GetStockTransferToWarehouse(shipmentID);
 
             var userLabel = new Label("User:")
             {
                 X = 3,
-                Y = Pos.Bottom(supplierNameLabel) + 2
+                Y = Pos.Bottom(toWarehouseLabel) + 2
             };
 
-            var userInput = new TextField(EditInboundShipmentLogic.GetInboundShipmentUserName(shipmentID))
+            var userInput = new TextField(EditStockTransferLogic.GetStockTransferUserName(shipmentID))
             {
                 X = 20,
                 Y = Pos.Top(userLabel),
@@ -165,7 +165,7 @@ namespace WarehouseManager.UI.Menu
             //Item table data
             var dataTable = new DataTable();
 
-            var tableView = UIComponent.Table(EditInboundShipmentLogic.GetInboundShipmentDetailData(shipmentID));
+            var tableView = UIComponent.Table(EditStockTransferLogic.GetStockTransferDetailData(shipmentID));
 
             //Button
             var saveButton = new Button("Save")
@@ -192,25 +192,25 @@ namespace WarehouseManager.UI.Menu
             {
                 try
                 {
-                    EditInboundShipmentLogic.Save(
-                        inboundShipmentID: shipmentID,
-                        supplierName: $"{supplierDropDown.Text}",
-                        warehouseName: $"{warehouseDropDown.Text}",
-                        inboundShipmentStartingDate: DateTime.Now,
-                        inboundShipmentStatus: $"{statusBox.Text}",
-                        inboundShipmentDescription: $"{descriptionInput.Text}",
+                    EditStockTransferLogic.Save(
+                        stockTransferID: shipmentID,
+                        fromWarehouseName: $"{fromWarehouseDropDown.Text}",
+                        toWarehouseName: $"{toWarehouseDropDown.Text}",
+                        stockTransferStartingDate: DateTime.Now,
+                        stockTransferStatus: $"{statusBox.Text}",
+                        stockTransferDescription: $"{descriptionInput.Text}",
                         userName: $"{userInput.Text}"
                     );
 
-                    tableView.Table = EditInboundShipmentLogic.GetInboundShipmentDetailData(shipmentID);
+                    tableView.Table = EditStockTransferLogic.GetStockTransferDetailData(shipmentID);
 
-                    MessageBox.Query("Success", $"Inbound Shipment saved successfully.", "OK");
+                    MessageBox.Query("Success", $"Stock Transfer saved successfully.", "OK");
                     errorLabel.Text = "";
                 }
                 catch (Exception ex)
                 {
                     errorLabel.Text = $"Error: {ex.Message}";
-                    tableView.Table = EditInboundShipmentLogic.GetInboundShipmentDetailData(shipmentID);
+                    tableView.Table = EditStockTransferLogic.GetStockTransferDetailData(shipmentID);
                 }
             };
 
@@ -224,7 +224,7 @@ namespace WarehouseManager.UI.Menu
                 if (int.TryParse(selectedRow[0].ToString(), out int firstColumnValue))
                 {
                     // Gọi phương thức DeleteInboundShipmentDetail với giá trị từ cột đầu tiên
-                    tableView.Table = EditInboundShipmentLogic.DeleteInboundShipmentDetail(tableView.Table, selectedRowIndex, firstColumnValue, shipmentID);
+                    tableView.Table = EditStockTransferLogic.DeleteStockTransferDetail(tableView.Table, selectedRowIndex, firstColumnValue, shipmentID);
                 }
                 else
                 {
@@ -283,7 +283,7 @@ namespace WarehouseManager.UI.Menu
                     tableView.Table.Rows[row][column] = newValue.Text.ToString();
                     var quantityString = tableView.Table.Rows[row][column].ToString(); ;
                     int quantity = int.Parse(quantityString ?? "");
-                    EditInboundShipmentLogic.UpdateInboundShipmentDetail(tableView.Table, variantID, quantity, shipmentID);
+                    EditStockTransferLogic.UpdateStockTransferDetail(tableView.Table, variantID, quantity, shipmentID);
                     Application.RequestStop();
                 };
 
@@ -343,7 +343,7 @@ namespace WarehouseManager.UI.Menu
                     // Chuyển đổi giá trị TextField từ chuỗi sang số nguyên
                     if (int.TryParse(productVariantIDText, out int productVariantID) && int.TryParse(quantityText, out int quantity))
                     {
-                        tableView.Table = EditInboundShipmentLogic.AddInboundShipmentDetail(tableView.Table, productVariantID, quantity, shipmentID);
+                        tableView.Table = EditStockTransferLogic.AddStockTransferDetail(tableView.Table, productVariantID, quantity, shipmentID);
 
                         productVariantIDInput.Text = "";
                         quantityInput.Text = "";
@@ -364,8 +364,8 @@ namespace WarehouseManager.UI.Menu
             //Add display object
             itemInputContainer.Add(addItemButton, productVariantIDLabel, productVariantIDInput, quantityLabel, quantityInput);
             tableContainer.Add(tableView);
-            leftContainer.Add(warehouseLabel, warehouseDropDown, descriptionLabel, descriptionInput, dateLabel, dateInput);
-            rightContainer.Add(userLabel, userInput, statusLabel, statusBox, supplierNameLabel, supplierDropDown);
+            leftContainer.Add(fromWarehouseLabel, fromWarehouseDropDown, descriptionLabel, descriptionInput, dateLabel, dateInput);
+            rightContainer.Add(userLabel, userInput, statusLabel, statusBox, toWarehouseLabel, toWarehouseDropDown);
             container.Add(leftContainer, rightContainer);
             mainWindow.Add(container, tableContainer, separatorLine, errorLabel, userPermissionLabel, saveButton, deleteButton, returnButton, itemInputContainer);
         }

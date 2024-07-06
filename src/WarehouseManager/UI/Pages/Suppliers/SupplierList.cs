@@ -3,15 +3,15 @@ using Terminal.Gui;
 using WarehouseManager.UI.Utility;
 using WarehouseManager.Core;
 
-namespace WarehouseManager.UI.Menu
+namespace WarehouseManager.UI.Pages
 {
-    public static class AccountList
+    public static class SupplierList
     {
         public static void Display()
         {
 
             Application.Top.RemoveAll();
-            var mainWindow = UIComponent.LoggedInMainWindow("Accounts");
+            var mainWindow = UIComponent.LoggedInMainWindow("Suppliers");
             Application.Top.Add(mainWindow);
 
             var errorLabel = UIComponent.ErrorMessageLabel();
@@ -28,7 +28,7 @@ namespace WarehouseManager.UI.Menu
 
             var deleteButton = UIComponent.DeleteButton();
 
-            var addButton = UIComponent.AddButton("Add New Account");
+            var addButton = UIComponent.AddButton("Add New Supplier");
 
             var tableContainer = new FrameView()
             {
@@ -160,7 +160,7 @@ namespace WarehouseManager.UI.Menu
             addButton.Clicked += () =>
             {
                 // khi nút category đc click
-                AddAccount.Display();
+                AddSupplier.Display();
             };
 
             tableContainer.Add(tableView);

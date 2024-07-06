@@ -1,8 +1,7 @@
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
-using System.Collections.Generic;
 
-namespace WarehouseManager.UI.Menu
+namespace WarehouseManager.UI.Pages
 {
     public static class AddAccount
     {

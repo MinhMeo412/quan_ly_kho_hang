@@ -4,7 +4,7 @@ using WarehouseManager.UI.Utility;
 using WarehouseManager.Core;
 using WarehouseManager.Core.Utility;
 
-namespace WarehouseManager.UI.Menu
+namespace WarehouseManager.UI.Pages
 {
     public static class WarehouseStock
     {

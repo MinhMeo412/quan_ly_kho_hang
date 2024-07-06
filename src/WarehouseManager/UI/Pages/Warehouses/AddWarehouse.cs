@@ -2,7 +2,7 @@ using Terminal.Gui;
 using WarehouseManager.Core;
 using WarehouseManager.UI.Utility;
 
-namespace WarehouseManager.UI.Menu
+namespace WarehouseManager.UI.Pages
 {
     public static class AddWarehouse
     {
