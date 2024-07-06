@@ -59,32 +59,6 @@ namespace WarehouseManager.Core
             return warehouseNames;
         }
 
-        public static int GetOutboundShipmentUser(int outboundShipmentID)
-        {
-            int userID = GetOutboundshipment(outboundShipmentID).UserID;
-
-            List<User> users = Program.Warehouse.UserTable.Users ?? new List<User>();
-
-            User user = users.FirstOrDefault(u => u.UserID == userID) ?? new User(0, "", "", "", "", "", 0);
-            string userName = user.UserFullName;
-
-            List<string> userNames = GetUserList();
-            return userNames.IndexOf(userName);
-        }
-
-        public static List<string> GetUserList()
-        {
-            List<User> users = Program.Warehouse.UserTable.Users ?? new List<User>();
-            List<string> userNames = new List<string>();
-
-            foreach (User user in users)
-            {
-                userNames.Add(user.UserFullName);
-            }
-
-            return userNames;
-        }
-
         public static string GetOutboundShipmentUserName(int outboundShipmentID)
         {
             int userID = GetOutboundshipment(outboundShipmentID).UserID;
@@ -168,12 +142,11 @@ namespace WarehouseManager.Core
 
 
         // Add OutboundShipmentDetail to Table and Database
-        public static DataTable AddOutboundShipmentDetail(DataTable currentDataTable, int productVariantID, int quantity, int outboundShipment)
+        public static DataTable AddOutboundShipmentDetail(DataTable currentDataTable, int productVariantID, int quantity, int outboundShipmentID)
         {
             DataTable dataTable = currentDataTable.Copy();
 
             string productVariantName = GetProductVariantName(productVariantID);
-            int outboundShipmentID = GetOutboundshipment(outboundShipment).OutboundShipmentID;
             dataTable.Rows.Add(productVariantID, productVariantName, quantity);
 
             Program.Warehouse.OutboundShipmentDetailTable.Add(outboundShipmentID, productVariantID, quantity);
@@ -182,7 +155,7 @@ namespace WarehouseManager.Core
         }
 
         // Delete OutboundShipmentDetail to Table and Database
-        public static DataTable DeleteOutboundShipmentDetail(DataTable currentDataTable, int row, int productVariantID)
+        public static DataTable DeleteOutboundShipmentDetail(DataTable currentDataTable, int row, int productVariantID, int outboundShipmentID)
         {
             DataTable dataTable = currentDataTable.Copy();
 
@@ -201,7 +174,7 @@ namespace WarehouseManager.Core
                 // Commit the deletion
                 dataTable.AcceptChanges();
             }
-            Program.Warehouse.ProductVariantTable.Delete(productVariantID);
+            Program.Warehouse.OutboundShipmentDetailTable.Delete(outboundShipmentID, productVariantID);
             return dataTable;
         }
 

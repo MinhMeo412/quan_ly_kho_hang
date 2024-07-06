@@ -41,7 +41,7 @@ namespace WarehouseManager.UI.Utility
                     new MenuItem("_Show all shipments", "", ShipmentList.Display, () => canExecuteMenu(4)),
                     new MenuItem("_Add outbound shipment", "", AddOutboundShipment.Display, () => canExecuteMenu(4)),
                     new MenuItem("_Add inbound shipment", "", AddInboundShipment.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Add transfer shipment", "", AddTransferShipment.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Add transfer shipment", "", AddStockTransfer.Display, () => canExecuteMenu(4)),
                     new MenuItem("_Show all inventory audits", "", InventoryAuditList.Display, () => canExecuteMenu(4)),
                     new MenuItem("_Add new inventory audit", "", AddInventoryAudit.Display, () => canExecuteMenu(4)),
                     new MenuItem("_Show all warehouses", "", WarehouseList.Display, () => canExecuteMenu(4)),
@@ -241,7 +241,7 @@ namespace WarehouseManager.UI.Utility
             {
                 string selectedPath = $"{saveDialog.FilePath}";
                 UIComponentLogic.ExportToExcel(dataTable, selectedPath);
-                MessageBox.Query("Export",$" Successfully exported {saveDialog.FileName} to {saveDialog.DirectoryPath} ", "OK");
+                MessageBox.Query("Export", $" Successfully exported {saveDialog.FileName} to {saveDialog.DirectoryPath} ", "OK");
             }
             return saveDialog;
         }

@@ -49,7 +49,7 @@ namespace WarehouseManager.Core
         }
 
         // Delete OutboundShipmentDetail only to DataTable (not include DataBase)
-        public static DataTable DeleteInboundShipmentDetail(DataTable currentDataTable, int row)
+        public static DataTable DeleteOutboundShipmentDetail(DataTable currentDataTable, int row)
         {
             DataTable dataTable = currentDataTable.Copy();
 
