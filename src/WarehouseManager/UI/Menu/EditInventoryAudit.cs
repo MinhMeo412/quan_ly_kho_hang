@@ -215,7 +215,7 @@ namespace WarehouseManager.UI.Menu
             //Khi nhấn nút Back
             returnButton.Clicked += () =>
             {
-                ShipmentList.Display();
+                InventoryAuditList.Display();
             };
 
             //Khi nhấn vào 1 ô trong bảng để sửa
