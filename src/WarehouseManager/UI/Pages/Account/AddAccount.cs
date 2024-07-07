@@ -1,5 +1,8 @@
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
+using System.Collections.Generic;
+using WarehouseManager.Core;
+using WarehouseManager.Core.Pages;
 
 namespace WarehouseManager.UI.Pages
 {
@@ -121,6 +124,7 @@ namespace WarehouseManager.UI.Pages
                 X = Pos.Right(permissionNameLabel) + 1,
                 Y = Pos.Top(permissionNameLabel),
                 Width = Dim.Fill(),
+                Height=4,
                 ReadOnly = true
             };
 
@@ -136,7 +140,25 @@ namespace WarehouseManager.UI.Pages
 
             saveButton.Clicked += () =>
             {
+                try
+                {
+                    AddAccountLogic.Save
+                    (
+                        userName:$"{userNameInput.Text}",
+                        userPassword:$"{userPasswordInput.Text}",
+                        userFullName:$"{fullNameInput.Text}",
+                        userEmail:$"{emailInput.Text} ",
+                        userPhoneNumber:$"{phoneNumberInput.Text}",
+                        permissionName:$"{permissionDropDown.Text}"
+                    );
+                
                 MessageBox.Query("Save Account", "Account saved successfully!", "OK");
+                Display();
+                }
+                 catch (Exception ex)
+                {
+                    errorLabel.Text = $"Error: {ex.Message}";
+                }
             };
 
             leftCollumnContainer.Add(userNameLabel, userPasswordLabel, fullNameLabel, userNameInput, userPasswordInput, fullNameInput);

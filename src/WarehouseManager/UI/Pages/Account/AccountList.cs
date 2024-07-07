@@ -1,6 +1,7 @@
 using System.Data;
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
+using WarehouseManager.Core;
 using WarehouseManager.Core.Pages;
 
 namespace WarehouseManager.UI.Pages
@@ -39,24 +40,24 @@ namespace WarehouseManager.UI.Pages
                 Border = new Border() { BorderStyle = BorderStyle.None }
             };
 
-            // Create a TableView and set its data source
-            var tableView = UIComponent.Table(CategoryListLogic.GetData());
+       
+            var tableView = UIComponent.Table(UserListLogic.GetData());
 
-            // Khi người dùng bấm nút refresh sẽ tải lại trang
+           
             refreshButton.Clicked += () =>
             {
                 Display();
             };
 
-            // Khi người dùng search một chuỗi gì đó
+           
             searchInput.TextChanged += args =>
             {
-                tableView.Table = CategoryListLogic.SortCategoryBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
+                tableView.Table = UserListLogic.SortUserBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
             };
 
             int columnCurrentlySortBy = -1;
             bool sortColumnInDescendingOrder = false;
-            // khi sort cột
+            
             tableView.MouseClick += e =>
             {
                 tableView.ScreenToCell(e.MouseEvent.X, e.MouseEvent.Y, out DataColumn clickedCol);
@@ -71,20 +72,19 @@ namespace WarehouseManager.UI.Pages
                     columnCurrentlySortBy = columnClicked;
                     searchInput.Text = "";
 
-                    tableView.Table = CategoryListLogic.SortCategoryByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
+                    tableView.Table = UserListLogic.SortUserByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
                 }
             };
 
-            // khi bấm vào 1 ô trong bảng
+           
             tableView.CellActivated += args =>
             {
                 int column = args.Col;
                 int row = args.Row;
 
-                // Retrieve the current value of the cell
                 var currentValue = tableView.Table.Rows[row][column].ToString();
 
-                // Create a dialog box with an input field for editing the cell value
+                
                 var editDialog = new Dialog("Edit Cell")
                 {
                     X = Pos.Center(),
@@ -111,21 +111,26 @@ namespace WarehouseManager.UI.Pages
                 var okButton = new Button("OK", is_default: true);
                 okButton.Clicked += () =>
                 {
-                    // Update the table with the new value
+                    
                     tableView.Table.Rows[row][column] = newValue.Text.ToString();
 
-                    int categoryID = (int)tableView.Table.Rows[row][0];
-                    string categoryName = $"{tableView.Table.Rows[row][1]}";
-                    string categoryDescription = $"{tableView.Table.Rows[row][2]}";
+                    int userID = (int)tableView.Table.Rows[row][0];
+                    string userName = $"{tableView.Table.Rows[row][1]}";
+                    string userPassword = $"{tableView.Table.Rows[row][2]}";
+                    string userFullName = $"{tableView.Table.Rows[row][3]}";
+                    string userEmail =$"{tableView.Table.Rows[row][4]}";
+                    string userPhoneNumber = $"{tableView.Table.Rows[row][5]}";
+                    int permissionLevel =(int)tableView.Table.Rows[row][6];
 
-                    // try catch để xử lý trường hợp nhập dữ liệu quá dài
+
+                    
                     try
                     {
-                        CategoryListLogic.UpdateCategory(categoryID, categoryName, categoryDescription);
+                        UserListLogic.UpdateUser(userID, userName, userPassword,userFullName,userEmail,userPhoneNumber,permissionLevel);
                     }
                     catch (Exception ex)
                     {
-                        tableView.Table.Rows[row][column] = currentValue;
+                        //tableView.Table.Rows[row][column] = currentValue;
                         errorLabel.Text = $"Error: {ex.Message}";
                     }
 
@@ -137,8 +142,8 @@ namespace WarehouseManager.UI.Pages
                 editDialog.AddButton(cancelButton);
                 editDialog.AddButton(okButton);
 
-                // Không cho sửa khi click vào cột category id
-                if (column != 0)
+                
+                if (column != 0 && column !=1)
                 {
                     Application.Run(editDialog);
                 }
@@ -146,20 +151,20 @@ namespace WarehouseManager.UI.Pages
 
             deleteButton.Clicked += () =>
             {
-                // khi nút Delete được bấm
+                
                 DataRow selectedRow = tableView.Table.Rows[tableView.SelectedRow];
-                int categoryID = (int)selectedRow[0];
+                int userID = (int)selectedRow[0];
 
                 int result = MessageBox.Query("Delete", "Are you sure you want to delete this item?", "No", "Yes");
-                if (result == 1) // "Yes" button was pressed
+                if (result == 1) 
                 {
-                    tableView.Table = CategoryListLogic.DeleteCategory(tableView.Table, categoryID);
+                    tableView.Table = UserListLogic.DeleteUser(tableView.Table, userID);
                 }
             };
 
             addButton.Clicked += () =>
             {
-                // khi nút category đc click
+                
                 AddAccount.Display();
             };
 

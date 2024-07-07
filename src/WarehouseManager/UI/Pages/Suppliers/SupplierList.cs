@@ -1,9 +1,9 @@
 using System.Data;
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
-using WarehouseManager.Core.Pages;
+using WarehouseManager.Core;
 
-namespace WarehouseManager.UI.Pages
+namespace WarehouseManager.UI.Menu
 {
     public static class SupplierList
     {
@@ -40,7 +40,7 @@ namespace WarehouseManager.UI.Pages
             };
 
             // Create a TableView and set its data source
-            var tableView = UIComponent.Table(CategoryListLogic.GetData());
+            var tableView = UIComponent.Table(SupplierListLogic.GetData());
 
             // Khi người dùng bấm nút refresh sẽ tải lại trang
             refreshButton.Clicked += () =>
@@ -51,7 +51,7 @@ namespace WarehouseManager.UI.Pages
             // Khi người dùng search một chuỗi gì đó
             searchInput.TextChanged += args =>
             {
-                tableView.Table = CategoryListLogic.SortCategoryBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
+                tableView.Table = SupplierListLogic.SortSupplierBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
             };
 
             int columnCurrentlySortBy = -1;
@@ -71,7 +71,7 @@ namespace WarehouseManager.UI.Pages
                     columnCurrentlySortBy = columnClicked;
                     searchInput.Text = "";
 
-                    tableView.Table = CategoryListLogic.SortCategoryByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
+                    tableView.Table = SupplierListLogic.SortSupplierByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
                 }
             };
 
@@ -114,14 +114,18 @@ namespace WarehouseManager.UI.Pages
                     // Update the table with the new value
                     tableView.Table.Rows[row][column] = newValue.Text.ToString();
 
-                    int categoryID = (int)tableView.Table.Rows[row][0];
-                    string categoryName = $"{tableView.Table.Rows[row][1]}";
-                    string categoryDescription = $"{tableView.Table.Rows[row][2]}";
+                    int SupplierID = (int)tableView.Table.Rows[row][0];
+                    string SupplierName = $"{tableView.Table.Rows[row][1]}";
+                    string SupplierDescription = $"{tableView.Table.Rows[row][2]}";
+                    string SupplierAddress = $"{tableView.Table.Rows[row][3]}";
+                    string SupplierEmail = $"{tableView.Table.Rows[row][4]}";
+                    string SupplierPhoneNumber = $"{tableView.Table.Rows[row][5]}";
+                    string SupplierWebsite = $"{tableView.Table.Rows[row][6]}";
 
                     // try catch để xử lý trường hợp nhập dữ liệu quá dài
                     try
                     {
-                        CategoryListLogic.UpdateCategory(categoryID, categoryName, categoryDescription);
+                        SupplierListLogic.UpdateSupplier(SupplierID, SupplierName, SupplierDescription,SupplierAddress,SupplierEmail,SupplierPhoneNumber,SupplierWebsite);
                     }
                     catch (Exception ex)
                     {
@@ -137,7 +141,7 @@ namespace WarehouseManager.UI.Pages
                 editDialog.AddButton(cancelButton);
                 editDialog.AddButton(okButton);
 
-                // Không cho sửa khi click vào cột category id
+                
                 if (column != 0)
                 {
                     Application.Run(editDialog);
@@ -148,12 +152,12 @@ namespace WarehouseManager.UI.Pages
             {
                 // khi nút Delete được bấm
                 DataRow selectedRow = tableView.Table.Rows[tableView.SelectedRow];
-                int categoryID = (int)selectedRow[0];
+                int supplierID = (int)selectedRow[0];
 
                 int result = MessageBox.Query("Delete", "Are you sure you want to delete this item?", "No", "Yes");
                 if (result == 1) // "Yes" button was pressed
                 {
-                    tableView.Table = CategoryListLogic.DeleteCategory(tableView.Table, categoryID);
+                    tableView.Table = SupplierListLogic.DeleteSupplier(tableView.Table, supplierID);
                 }
             };
 

@@ -1,15 +1,12 @@
 using Terminal.Gui;
+using WarehouseManager.Core.Pages;
 using WarehouseManager.UI.Utility;
 
 namespace WarehouseManager.UI.Pages
 {
     public static class ChangePassword
     {
-        /*
-            Todo.
-            Đổi mật khẩu.
-        */
-        public static void Display()
+           public static void Display()
         {
             Application.Top.RemoveAll();
             var mainWindow = UIComponent.LoggedInMainWindow("Change Password");
@@ -45,13 +42,13 @@ namespace WarehouseManager.UI.Pages
                 Y = 9
             };
 
-            var userNameInput = new TextField("")
+            var userNameInput = new TextField($"{Program.Warehouse.Username}")
             {
                 X = Pos.Right(userNameLabel) + 1,
                 Y = Pos.Top(userNameLabel),
                 Width = Dim.Fill() - 1,
+                ReadOnly = true
             };
-
             var oldPasswordInput = new TextField("")
             {
                 X = Pos.Right(oldPasswordLabel) + 1,
@@ -76,7 +73,16 @@ namespace WarehouseManager.UI.Pages
 
             saveButton.Clicked += () =>
             {
-                MessageBox.Query("Save Password", "Password changed successfully!", "OK");
+                try
+                {
+                    ChangePasswordLogic.ChangePassword($"{oldPasswordInput}", $"{newPasswordInput}");
+                    MessageBox.Query("Save Password", "Password changed successfully!", "OK");
+                }
+                catch (Exception ex)
+                {
+
+                    errorLabel.Text = $"Error: {ex.Message}";
+                }
             };
 
             infoContainer.Add(userNameLabel, userNameInput, oldPasswordLabel, oldPasswordInput, newPasswordLabel, newPasswordInput);
