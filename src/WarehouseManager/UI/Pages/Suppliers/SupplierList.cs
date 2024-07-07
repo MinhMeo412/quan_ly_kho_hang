@@ -3,7 +3,7 @@ using Terminal.Gui;
 using WarehouseManager.UI.Utility;
 using WarehouseManager.Core;
 
-namespace WarehouseManager.UI.Menu
+namespace WarehouseManager.UI.Pages
 {
     public static class SupplierList
     {
@@ -75,16 +75,15 @@ namespace WarehouseManager.UI.Menu
                 }
             };
 
-            // khi bấm vào 1 ô trong bảng
+     
             tableView.CellActivated += args =>
             {
                 int column = args.Col;
                 int row = args.Row;
 
-                // Retrieve the current value of the cell
+        
                 var currentValue = tableView.Table.Rows[row][column].ToString();
 
-                // Create a dialog box with an input field for editing the cell value
                 var editDialog = new Dialog("Edit Cell")
                 {
                     X = Pos.Center(),
@@ -111,7 +110,7 @@ namespace WarehouseManager.UI.Menu
                 var okButton = new Button("OK", is_default: true);
                 okButton.Clicked += () =>
                 {
-                    // Update the table with the new value
+
                     tableView.Table.Rows[row][column] = newValue.Text.ToString();
 
                     int SupplierID = (int)tableView.Table.Rows[row][0];
@@ -122,7 +121,7 @@ namespace WarehouseManager.UI.Menu
                     string SupplierPhoneNumber = $"{tableView.Table.Rows[row][5]}";
                     string SupplierWebsite = $"{tableView.Table.Rows[row][6]}";
 
-                    // try catch để xử lý trường hợp nhập dữ liệu quá dài
+
                     try
                     {
                         SupplierListLogic.UpdateSupplier(SupplierID, SupplierName, SupplierDescription,SupplierAddress,SupplierEmail,SupplierPhoneNumber,SupplierWebsite);
@@ -150,12 +149,12 @@ namespace WarehouseManager.UI.Menu
 
             deleteButton.Clicked += () =>
             {
-                // khi nút Delete được bấm
+
                 DataRow selectedRow = tableView.Table.Rows[tableView.SelectedRow];
                 int supplierID = (int)selectedRow[0];
 
                 int result = MessageBox.Query("Delete", "Are you sure you want to delete this item?", "No", "Yes");
-                if (result == 1) // "Yes" button was pressed
+                if (result == 1) 
                 {
                     tableView.Table = SupplierListLogic.DeleteSupplier(tableView.Table, supplierID);
                 }
@@ -163,7 +162,6 @@ namespace WarehouseManager.UI.Menu
 
             addButton.Clicked += () =>
             {
-                // khi nút category đc click
                 AddSupplier.Display();
             };
 

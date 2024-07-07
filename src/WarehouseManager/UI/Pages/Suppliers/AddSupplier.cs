@@ -7,10 +7,7 @@ namespace WarehouseManager.UI.Pages
 {
     public static class AddSupplier
     {
-        /*
-            Todo.
-            Thêm nhà cung cấp.
-        */
+
         public static void Display()
         {
             Application.Top.RemoveAll();
@@ -51,7 +48,6 @@ namespace WarehouseManager.UI.Pages
                 }
             };
 
-            // Left column labels and inputs
             var supplierNameLabel = new Label("Supplier Name:")
             {
                 X = 1,
@@ -91,7 +87,7 @@ namespace WarehouseManager.UI.Pages
                 Width = Dim.Fill() - 1,
             };
 
-            // Right column labels and inputs
+
             var phoneLabel = new Label("Phone:")
             {
                 X = 1,
@@ -129,7 +125,7 @@ namespace WarehouseManager.UI.Pages
                 X = Pos.Right(descriptionLabel) + 1,
                 Y = Pos.Top(descriptionLabel),
                 Width = Dim.Fill() - 1,
-                Height = 5 // Adjust height as needed
+                Height = 5 
             };
 
             var saveButton = new Button("Save")
