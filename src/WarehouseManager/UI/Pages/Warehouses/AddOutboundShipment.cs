@@ -199,7 +199,7 @@ namespace WarehouseManager.UI.Pages
                 }
                 catch (Exception ex)
                 {
-                    errorLabel.Text = $"Error: {ex.Message}";
+                    errorLabel.Text = $"Error: {ex}";
                 }
             };
 
