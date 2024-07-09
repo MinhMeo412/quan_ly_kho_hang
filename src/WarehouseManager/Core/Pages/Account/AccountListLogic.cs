@@ -42,64 +42,12 @@ namespace WarehouseManager.Core.Pages
         }
         public static DataTable SortUserBySearchTerm(DataTable dataTable, string searchTerm)
         {
-            List<User> users = ConvertDataTableToUserList(dataTable);
-            List<(User, double)> userSimilarities = new List<(User, double)>();
-            foreach (User user in users)
-            {
-                double maxSimilarity = Misc.MaxDouble(
-                    Misc.JaccardSimilarity($"{user.UserID}", searchTerm),
-                    Misc.JaccardSimilarity(user.UserName, searchTerm),
-                    Misc.JaccardSimilarity(user.UserPassword, searchTerm),
-                    Misc.JaccardSimilarity(user.UserFullName, searchTerm),
-                    Misc.JaccardSimilarity(user.UserEmail ?? "", searchTerm),
-                    Misc.JaccardSimilarity(user.UserPhoneNumber ?? "", searchTerm),
-                    Misc.JaccardSimilarity($"{user.PermissionLevel}", searchTerm)
-                );
-                userSimilarities.Add((user, maxSimilarity));
-            }
-            List<User> sortedUsers = userSimilarities
-              .OrderByDescending(cs => cs.Item2)
-              .Select(cs => cs.Item1)
-              .ToList();
-            return ConvertUserListToDataTable(sortedUsers);
+            return SortDataTable.BySearchTerm(dataTable, searchTerm);
         }
+
         public static DataTable SortUserByColumn(DataTable dataTable, int columnToSortBy, bool sortColumnInDescendingOrder)
         {
-            List<User> users = ConvertDataTableToUserList(dataTable);
-
-            switch (columnToSortBy)
-            {
-                case 0:
-                    users = users.OrderBy(c => c.UserID).ToList();
-                    break;
-                case 1:
-                    users = users.OrderBy(c => c.UserName).ToList();
-                    break;
-                case 2:
-                    users = users.OrderBy(c => c.UserPassword).ToList();
-                    break;
-                case 3:
-                    users = users.OrderBy(c => c.UserFullName).ToList();
-                    break;
-                case 4:
-                    users = users.OrderBy(c => c.UserEmail).ToList();
-                    break;
-                case 5:
-                    users = users.OrderBy(c => c.UserPhoneNumber).ToList();
-                    break;
-                case 6:
-                    users = users.OrderBy(c => c.PermissionLevel).ToList();
-                    break;
-                default:
-                    break;
-            }
-            if (sortColumnInDescendingOrder)
-            {
-                users.Reverse();
-            }
-            DataTable sortedDataTable = ConvertUserListToDataTable(users);
-            sortedDataTable.Columns[columnToSortBy].ColumnName = Misc.ShowCurrentSortingDirection(sortedDataTable.Columns[columnToSortBy].ColumnName, sortColumnInDescendingOrder);
-            return sortedDataTable;
+            return SortDataTable.ByColumn(dataTable, columnToSortBy, sortColumnInDescendingOrder);
         }
 
 

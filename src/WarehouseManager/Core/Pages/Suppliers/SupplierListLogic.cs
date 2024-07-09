@@ -1,7 +1,6 @@
 using System.Data;
 using WarehouseManager.Data.Entity;
 using WarehouseManager.Core.Utility;
-using Org.BouncyCastle.Asn1.Icao;
 
 namespace WarehouseManager.Core.Pages
 {
@@ -44,71 +43,12 @@ namespace WarehouseManager.Core.Pages
 
         public static DataTable SortSupplierBySearchTerm(DataTable dataTable, string searchTerm)
         {
-            List<Supplier> suppliers = ConvertDataTableToSupplierList(dataTable);
-            List<(Supplier, double)> supplierSimilarities = new List<(Supplier, double)>();
-
-            foreach (Supplier supplier in suppliers)
-            {
-                double maxSimilarity = Misc.MaxDouble(
-                 Misc.JaccardSimilarity($"{supplier.SupplierID}", searchTerm),
-                 Misc.JaccardSimilarity(supplier.SupplierName, searchTerm),
-                 Misc.JaccardSimilarity(supplier.SupplierDescription ?? "", searchTerm),
-                 Misc.JaccardSimilarity(supplier.SupplierAddress ?? "", searchTerm),
-                 Misc.JaccardSimilarity(supplier.SupplierEmail ?? "", searchTerm),
-                 Misc.JaccardSimilarity(supplier.SupplierPhoneNumber ?? "", searchTerm),
-                 Misc.JaccardSimilarity(supplier.SupplierWebsite ?? "", searchTerm)
-                );
-
-                supplierSimilarities.Add((supplier, maxSimilarity));
-            }
-
-            List<Supplier> sortedSuplier = supplierSimilarities
-            .OrderByDescending(cs => cs.Item2)
-            .Select(cs => cs.Item1)
-            .ToList();
-
-            return ConvertSupplierListToDataTable(sortedSuplier);
+            return SortDataTable.BySearchTerm(dataTable, searchTerm);
         }
 
         public static DataTable SortSupplierByColumn(DataTable dataTable, int columnToSortBy, bool sortColumnInDescendingOrder)
         {
-            List<Supplier> suppliers = ConvertDataTableToSupplierList(dataTable);
-
-            switch (columnToSortBy)
-            {
-                case 0:
-                    suppliers = suppliers.OrderBy(c => c.SupplierID).ToList();
-                    break;
-                case 1:
-                    suppliers = suppliers.OrderBy(c => c.SupplierName).ToList();
-                    break;
-                case 2:
-                    suppliers = suppliers.OrderBy(c => c.SupplierDescription).ToList();
-                    break;
-                case 3:
-                    suppliers = suppliers.OrderBy(c => c.SupplierAddress).ToList();
-                    break;
-                case 4:
-                    suppliers = suppliers.OrderBy(c => c.SupplierEmail).ToList();
-                    break;
-                case 5:
-                    suppliers = suppliers.OrderBy(c => c.SupplierPhoneNumber).ToList();
-                    break;
-                case 6:
-                    suppliers = suppliers.OrderBy(c => c.SupplierWebsite).ToList();
-                    break;
-                default:
-                    break;
-            }
-            if (sortColumnInDescendingOrder)
-            {
-                suppliers.Reverse();
-            }
-
-            DataTable sortedDataTable = ConvertSupplierListToDataTable(suppliers);
-
-            sortedDataTable.Columns[columnToSortBy].ColumnName = Misc.ShowCurrentSortingDirection(sortedDataTable.Columns[columnToSortBy].ColumnName, sortColumnInDescendingOrder);
-            return sortedDataTable;
+            return SortDataTable.ByColumn(dataTable, columnToSortBy, sortColumnInDescendingOrder);
         }
         public static void UpdateSupplier(int supplierID, string SupplierName, string? supplierDescription, string? supplierAddress, string? supplierEmail, string? supplierPhoneNumber, string? supplierWebsite)
         {
@@ -122,7 +62,6 @@ namespace WarehouseManager.Core.Pages
             suppliers.RemoveAll(c => c.SupplierID == SupplierID);
 
             return ConvertSupplierListToDataTable(suppliers);
-
         }
     }
 }
