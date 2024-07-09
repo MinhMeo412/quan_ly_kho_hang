@@ -1,14 +1,13 @@
 using Terminal.Gui;
+using WarehouseManager.Core;
+using WarehouseManager.Core.Pages;
 using WarehouseManager.UI.Utility;
 
 namespace WarehouseManager.UI.Pages
 {
     public static class AddSupplier
     {
-        /*
-            Todo.
-            Thêm nhà cung cấp.
-        */
+
         public static void Display()
         {
             Application.Top.RemoveAll();
@@ -49,7 +48,6 @@ namespace WarehouseManager.UI.Pages
                 }
             };
 
-            // Left column labels and inputs
             var supplierNameLabel = new Label("Supplier Name:")
             {
                 X = 1,
@@ -89,7 +87,7 @@ namespace WarehouseManager.UI.Pages
                 Width = Dim.Fill() - 1,
             };
 
-            // Right column labels and inputs
+
             var phoneLabel = new Label("Phone:")
             {
                 X = 1,
@@ -127,7 +125,7 @@ namespace WarehouseManager.UI.Pages
                 X = Pos.Right(descriptionLabel) + 1,
                 Y = Pos.Top(descriptionLabel),
                 Width = Dim.Fill() - 1,
-                Height = 5 // Adjust height as needed
+                Height = 5 
             };
 
             var saveButton = new Button("Save")
@@ -138,7 +136,22 @@ namespace WarehouseManager.UI.Pages
 
             saveButton.Clicked += () =>
             {
-                MessageBox.Query("Save Supplier", "Supplier added successfully!", "OK");
+                try
+                {
+                    AddSupplierLogic.Save(
+                        supplierName: $"{supplierNameInput.Text}",
+                        supplierDescription: $"{descriptionInput.Text}",
+                        supplierAddress: $"{addressInput.Text}",
+                        supplierEmail: $"{emailInput.Text}",
+                        supplierPhoneNumber: $"{phoneInput.Text}", 
+                        supplierWebsite: $"{websiteInput.Text}"
+                    );
+                    MessageBox.Query("Save Supplier", "Supplier added successfully!", "OK");
+                }
+                catch (Exception ex)
+                {
+                    errorLabel.Text = $"Error: {ex.Message}";
+                }
             };
 
             leftCollumnContainer.Add(supplierNameLabel, supplierNameInput, addressLabel, addressInput, emailLabel, emailInput);
