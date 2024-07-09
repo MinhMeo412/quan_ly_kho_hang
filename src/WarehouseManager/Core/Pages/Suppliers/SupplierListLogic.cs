@@ -1,7 +1,6 @@
 using System.Data;
 using WarehouseManager.Data.Entity;
 using WarehouseManager.Core.Utility;
-using Org.BouncyCastle.Asn1.Icao;
 
 namespace WarehouseManager.Core.Pages
 {
