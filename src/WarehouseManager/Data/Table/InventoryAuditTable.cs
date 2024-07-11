@@ -36,7 +36,8 @@ namespace WarehouseManager.Data.Table
                 InventoryAudit audit = new InventoryAudit(
                     (int)(rawAudit[0] ?? 0),
                     (int)(rawAudit[1] ?? 0),
-                    (int)(rawAudit[2] ?? 0),
+                    (string)(rawAudit[2] ?? ""),
+                    (int)(rawAudit[3] ?? 0),
                     (DateTime)(rawAudit[3] ?? DateTime.Now)
                 );
                 inventoryAudits.Add(audit);
@@ -45,24 +46,26 @@ namespace WarehouseManager.Data.Table
             this.InventoryAudits = inventoryAudits;
         }
 
-        public void Add(int inventoryAuditID, int warehouseID, int? userID, DateTime inventoryAuditTime)
+        public void Add(int inventoryAuditID, int warehouseID, string inventoryAuditStatus, int? userID, DateTime inventoryAuditTime)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"input_token", this.Token},
                 {"input_inventory_audit_id", inventoryAuditID},
                 {"input_warehouse_id", warehouseID},
+                {"input_inventory_audit_status", inventoryAuditStatus},
                 {"input_user_id", userID},
                 {"input_inventory_audit_time", inventoryAuditTime}
             };
             Procedure.ExecuteNonQuery(this.ConnectionString, "create_inventory_audit", inParameters);
         }
 
-        public void Update(int inventoryAuditID, int warehouseID, int? userID, DateTime inventoryAuditTime)
+        public void Update(int inventoryAuditID, int warehouseID, string inventoryAuditStatus, int? userID, DateTime inventoryAuditTime)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"input_token", this.Token},
                 {"input_inventory_audit_id", inventoryAuditID},
                 {"input_warehouse_id", warehouseID},
+                {"input_inventory_audit_status", inventoryAuditStatus},
                 {"input_user_id", userID},
                 {"input_inventory_audit_time", inventoryAuditTime}
             };
