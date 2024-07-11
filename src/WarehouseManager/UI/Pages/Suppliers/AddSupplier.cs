@@ -1,5 +1,4 @@
 using Terminal.Gui;
-using WarehouseManager.Core;
 using WarehouseManager.Core.Pages;
 using WarehouseManager.UI.Utility;
 
@@ -138,14 +137,14 @@ namespace WarehouseManager.UI.Pages
             {
                 try
                 {
-                    // AddSupplierLogic.Save(
-                    //     supplierName: $"{supplierNameInput.Text}",
-                    //     supplierDescription: $"{descriptionInput.Text}",
-                    //     supplierAddress: $"{addressInput.Text}",
-                    //     supplierEmail: $"{emailInput.Text}",
-                    //     supplierPhoneNumber: $"{phoneInput.Text}", 
-                    //     supplierWebsite: $"{websiteInput.Text}"
-                    // );
+                    AddSupplierLogic.Save(
+                        supplierName: $"{supplierNameInput.Text}",
+                        supplierDescription: $"{descriptionInput.Text}",
+                        supplierAddress: $"{addressInput.Text}",
+                        supplierEmail: $"{emailInput.Text}",
+                        supplierPhoneNumber: $"{phoneInput.Text}", 
+                        supplierWebsite: $"{websiteInput.Text}"
+                    );
                     MessageBox.Query("Save Supplier", "Supplier added successfully!", "OK");
                 }
                 catch (Exception ex)
