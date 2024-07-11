@@ -1,8 +1,5 @@
 using WarehouseManager.Data.Entity;
 
-using System.Data;
-
-
 namespace WarehouseManager.Core.Pages
 {
     public static class AddSupplierLogic
@@ -17,14 +14,13 @@ namespace WarehouseManager.Core.Pages
         {
             int supplierID = GetCurrentHighestSupplierID() + 1;
             AddSupplier(supplierID, supplierName, supplierDescription, supplierAddress, supplierEmail, supplierPhoneNumber, supplierWebsite);
-
         }
+
         private static int GetCurrentHighestSupplierID()
         {
             List<Supplier> suppliers = Program.Warehouse.SupplierTable.Suppliers ?? new List<Supplier>();
             int hightestSupplierID = suppliers.Max(s => s.SupplierID);
             return hightestSupplierID;
         }
-
     }
 }
