@@ -22,8 +22,8 @@ namespace WarehouseManager.UI.Pages
             {
                 X = Pos.Center(),
                 Y = Pos.Center(),
-                Width = 40,
-                Height = 8
+                Width = 45,
+                Height = 9
             };
             mainWindow.Add(loginContainer);
 
@@ -80,7 +80,7 @@ namespace WarehouseManager.UI.Pages
             var quitButton = new Button("Quit")
             {
                 X = Pos.Center(),
-                Y = Pos.AnchorEnd(1)
+                Y = Pos.AnchorEnd(2)
             };
             quitButtonContainer.Add(quitButton);
 
@@ -88,7 +88,7 @@ namespace WarehouseManager.UI.Pages
             var loginButton = new Button("Sign in", is_default: true)
             {
                 X = Pos.Center(),
-                Y = Pos.AnchorEnd(1)
+                Y = Pos.AnchorEnd(2)
             };
             loginButtonContainer.Add(loginButton);
 
