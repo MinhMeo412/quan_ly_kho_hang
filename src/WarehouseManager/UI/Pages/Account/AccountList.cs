@@ -39,24 +39,22 @@ namespace WarehouseManager.UI.Pages
                 Border = new Border() { BorderStyle = BorderStyle.None }
             };
 
-       
-            var tableView = UIComponent.Table(UserListLogic.GetData());
+            var tableView = UIComponent.Table(AccountListLogic.GetData());
 
-           
             refreshButton.Clicked += () =>
             {
                 Display();
             };
 
-           
+
             searchInput.TextChanged += args =>
             {
-                tableView.Table = UserListLogic.SortUserBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
+                tableView.Table = AccountListLogic.SortUserBySearchTerm(tableView.Table, $"{searchInput.Text}");
             };
 
             int columnCurrentlySortBy = -1;
             bool sortColumnInDescendingOrder = false;
-            
+
             tableView.MouseClick += e =>
             {
                 tableView.ScreenToCell(e.MouseEvent.X, e.MouseEvent.Y, out DataColumn clickedCol);
@@ -71,11 +69,11 @@ namespace WarehouseManager.UI.Pages
                     columnCurrentlySortBy = columnClicked;
                     searchInput.Text = "";
 
-                    tableView.Table = UserListLogic.SortUserByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
+                    tableView.Table = AccountListLogic.SortUserByColumn(tableView.Table, columnClicked, sortColumnInDescendingOrder);
                 }
             };
 
-           
+
             tableView.CellActivated += args =>
             {
                 int column = args.Col;
@@ -83,7 +81,7 @@ namespace WarehouseManager.UI.Pages
 
                 var currentValue = tableView.Table.Rows[row][column].ToString();
 
-                
+
                 var editDialog = new Dialog("Edit Cell")
                 {
                     X = Pos.Center(),
@@ -110,30 +108,26 @@ namespace WarehouseManager.UI.Pages
                 var okButton = new Button("OK", is_default: true);
                 okButton.Clicked += () =>
                 {
-                    
+
                     tableView.Table.Rows[row][column] = newValue.Text.ToString();
 
                     int userID = (int)tableView.Table.Rows[row][0];
                     string userName = $"{tableView.Table.Rows[row][1]}";
-                    string userPassword = $"{tableView.Table.Rows[row][2]}";
-                    string userFullName = $"{tableView.Table.Rows[row][3]}";
-                    string userEmail =$"{tableView.Table.Rows[row][4]}";
-                    string userPhoneNumber = $"{tableView.Table.Rows[row][5]}";
-                    int permissionLevel =(int)tableView.Table.Rows[row][6];
+                    string userFullName = $"{tableView.Table.Rows[row][2]}";
+                    string userEmail = $"{tableView.Table.Rows[row][3]}";
+                    string userPhoneNumber = $"{tableView.Table.Rows[row][4]}";
+                    string permissionLevel = $"{tableView.Table.Rows[row][5]}";
 
-
-                    
                     try
                     {
-                        UserListLogic.UpdateUser(userID, userName, userPassword,userFullName,userEmail,userPhoneNumber,permissionLevel);
+                        AccountListLogic.UpdateUser(userID, userName, "", userFullName, userEmail, userPhoneNumber, permissionLevel);
                     }
                     catch (Exception ex)
                     {
                         //tableView.Table.Rows[row][column] = currentValue;
                         errorLabel.Text = $"Error: {ex.Message}";
                     }
-
-
+                    
                     Application.RequestStop();
                 };
 
@@ -141,8 +135,8 @@ namespace WarehouseManager.UI.Pages
                 editDialog.AddButton(cancelButton);
                 editDialog.AddButton(okButton);
 
-                
-                if (column != 0 && column !=1)
+
+                if (column != 0 && column != 1)
                 {
                     Application.Run(editDialog);
                 }
@@ -150,20 +144,19 @@ namespace WarehouseManager.UI.Pages
 
             deleteButton.Clicked += () =>
             {
-                
+
                 DataRow selectedRow = tableView.Table.Rows[tableView.SelectedRow];
                 int userID = (int)selectedRow[0];
 
                 int result = MessageBox.Query("Delete", "Are you sure you want to delete this item?", "No", "Yes");
-                if (result == 1) 
+                if (result == 1)
                 {
-                    tableView.Table = UserListLogic.DeleteUser(tableView.Table, userID);
+                    tableView.Table = AccountListLogic.DeleteUser(tableView.Table, userID);
                 }
             };
 
             addButton.Clicked += () =>
             {
-                
                 AddAccount.Display();
             };
 
