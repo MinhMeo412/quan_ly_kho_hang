@@ -6,38 +6,24 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        // string url = "https://wttr.in/?0?A"; // This returns weather condition and temperature
-
-        // using (HttpClient client = new HttpClient())
-        // {
-        //     try
-        //     {
-        //         string response = await client.GetStringAsync(url);
-        //         Console.WriteLine($"Current weather: {response}");
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         Console.WriteLine($"Error: {ex.Message}");
-        //     }
-        // }
-        // Console.WriteLine(GetWeather());
-        await GetWeather();
+        string weather = await GetWeather();
+        Console.WriteLine(weather);
     }
 
-    public static async Task GetWeather()
+    public static async Task<string> GetWeather()
     {
-       string url = "https://wttr.in/?0?A"; // This returns weather condition and temperature
+        string url = "https://wttr.in/?0?A?d"; // This returns weather condition and temperature
 
         using (HttpClient client = new HttpClient())
         {
             try
             {
                 string response = await client.GetStringAsync(url);
-                Console.WriteLine($"Current weather: {response}");
+                return response;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
+               return $"Error: {ex.Message}";
             }
         }
     }
