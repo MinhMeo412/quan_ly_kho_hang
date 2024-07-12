@@ -9,7 +9,7 @@ namespace WarehouseManager.Core.Pages
         private static InventoryAudit GetInventoryAudit(int inventoryAuditID)
         {
             List<InventoryAudit> inventoryAudits = Program.Warehouse.InventoryAuditTable.InventoryAudits ?? new List<InventoryAudit>();
-            InventoryAudit inventoryAudit = inventoryAudits.FirstOrDefault(iA => iA.InventoryAuditID == inventoryAuditID) ?? new InventoryAudit(0, 0, 0, DateTime.Now);
+            InventoryAudit inventoryAudit = inventoryAudits.FirstOrDefault(iA => iA.InventoryAuditID == inventoryAuditID) ?? new InventoryAudit(0, 0, "Processing", 0, DateTime.Now);
             return inventoryAudit;
         }
 
@@ -132,7 +132,7 @@ namespace WarehouseManager.Core.Pages
             int warehouseID = warehouse.WarehouseID;
             int userID = user.UserID;
 
-            Program.Warehouse.InventoryAuditTable.Update(inventoryAuditID, warehouseID, userID, inventoryAuditTime);
+            // Program.Warehouse.InventoryAuditTable.Update(inventoryAuditID, warehouseID, userID, inventoryAuditTime);
         }
 
 
