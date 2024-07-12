@@ -12,7 +12,7 @@ namespace WarehouseManager.UI.Pages
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Product");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.ErrorMessageLabel();
+            var errorLabel = UIComponent.AnnounceLabel();
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
@@ -272,12 +272,13 @@ namespace WarehouseManager.UI.Pages
 
                     tableView.Table = EditProductLogic.GetProductVariantData(productID);
 
-                    MessageBox.Query("Success", $"Product saved successfully.", "OK");
-                    errorLabel.Text = "";
+                    errorLabel.Text = "Sucess";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                 }
                 catch (Exception ex)
                 {
                     errorLabel.Text = $"Error: {ex.Message}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                     tableView.Table = EditProductLogic.GetProductVariantData(productID);
                 }
             };

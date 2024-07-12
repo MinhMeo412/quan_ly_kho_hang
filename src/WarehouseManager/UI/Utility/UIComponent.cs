@@ -104,21 +104,32 @@ namespace WarehouseManager.UI.Utility
             return mainWindow;
         }
 
-        /*
-        Thông báo lỗi
-        */
-        public static Label ErrorMessageLabel(string errorMessage = "")
+        public static Label AnnounceLabel(string labelMessage = "")
         {
-            var errorLabel = new Label(errorMessage)
+            var announceLabel = new Label(labelMessage)
             {
                 X = 1,
-                Y = Pos.AnchorEnd(1),
-                ColorScheme = new ColorScheme
-                {
-                    Normal = Application.Driver.MakeAttribute(Color.BrightRed, MainWindow().ColorScheme.Normal.Background),
-                }
+                Y = Pos.AnchorEnd(1)
             };
-            return errorLabel;
+            return announceLabel;
+        }
+
+        public static ColorScheme AnnounceLabelSuccessColor()
+        {
+            ColorScheme color = new ColorScheme
+            {
+                Normal = Application.Driver.MakeAttribute(Color.BrightGreen, MainWindow().ColorScheme.Normal.Background),
+            };
+            return color;
+        }
+
+        public static ColorScheme AnnounceLabelErrorColor()
+        {
+            ColorScheme color = new ColorScheme
+            {
+                Normal = Application.Driver.MakeAttribute(Color.BrightRed, MainWindow().ColorScheme.Normal.Background),
+            };
+            return color;
         }
 
         /*

@@ -13,7 +13,7 @@ namespace WarehouseManager.UI.Pages
             var mainWindow = UIComponent.LoggedInMainWindow("Warehouses");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.ErrorMessageLabel();
+            var errorLabel = UIComponent.AnnounceLabel();
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 

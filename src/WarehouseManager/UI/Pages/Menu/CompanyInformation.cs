@@ -138,7 +138,7 @@ namespace WarehouseManager.UI.Pages
                 Visible = sufficientPermission
             };
 
-            var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
+            var errorLabel = UIComponent.AnnounceLabel("Error Message Here");
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 

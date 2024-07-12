@@ -13,7 +13,7 @@ namespace WarehouseManager.UI.Pages
 
             string errorMessage = "";
 
-            var errorLabel = UIComponent.ErrorMessageLabel(errorMessage);
+            var errorLabel = UIComponent.AnnounceLabel(errorMessage);
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
@@ -120,7 +120,7 @@ namespace WarehouseManager.UI.Pages
                 }
                 for (int i = 24; i > 0; i--)
                 {
-                    containers[i - 1].Add(containers[i], UIComponent.ErrorMessageLabel(errorMessage), UIComponent.UserPermissionLabel());
+                    containers[i - 1].Add(containers[i], UIComponent.AnnounceLabel(errorMessage), UIComponent.UserPermissionLabel());
                 }
                 mainWindow.Add(containers[0]);
             }

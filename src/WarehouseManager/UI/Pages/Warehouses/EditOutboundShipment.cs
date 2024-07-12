@@ -13,7 +13,7 @@ namespace WarehouseManager.UI.Pages
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Outbound Shipment");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
+            var errorLabel = UIComponent.AnnounceLabel("Error Message Here");
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
