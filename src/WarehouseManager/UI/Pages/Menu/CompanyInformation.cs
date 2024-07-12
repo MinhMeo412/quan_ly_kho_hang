@@ -5,10 +5,6 @@ namespace WarehouseManager.UI.Pages
 {
     public static class CompanyInformation
     {
-        /*
-             Todo.
-             Thông tin công ty.
-         */
         public static void Display()
         {
             Application.Top.RemoveAll();
@@ -18,7 +14,7 @@ namespace WarehouseManager.UI.Pages
             var separatorLine = UIComponent.SeparatorLine();
 
             // Chỉnh thành true nếu là admin. nếu ko là admin thì sẽ không sửa đươc.
-            bool sufficientPermission = true;
+            bool sufficientPermission = false;
 
             var infoContainer = new FrameView()
             {
@@ -67,21 +63,21 @@ namespace WarehouseManager.UI.Pages
                 Y = Pos.Bottom(addressLabel) + 1
             };
 
-            var companyNameInput = new TextField("Tiêu khiết thanh")
+            var companyNameInput = new TextField("Aperture Science")
             {
                 X = Pos.Right(companyNameLabel) + 1,
                 Y = Pos.Top(companyNameLabel),
                 Width = Dim.Fill() - 1,
                 ReadOnly = !sufficientPermission
             };
-            var addressInput = new TextField("18 Tam Trinh, P. Minh Khai, Q. Hai Bà Trưng, Hà Nội")
+            var addressInput = new TextField("123 Enrichment Center Way, Upper Michigan, USA")
             {
                 X = Pos.Right(companyNameLabel) + 1,
                 Y = Pos.Top(addressLabel),
                 Width = Dim.Fill() - 1,
                 ReadOnly = !sufficientPermission
             };
-            var phoneNumberInput = new TextField("113")
+            var phoneNumberInput = new TextField("555-9876")
             {
                 X = Pos.Right(companyNameLabel) + 1,
                 Y = Pos.Top(phoneNumberLabel),
@@ -100,14 +96,14 @@ namespace WarehouseManager.UI.Pages
                 Y = Pos.Bottom(emailLabel) + 1
             };
 
-            var emailInput = new TextField("superman@email.com")
+            var emailInput = new TextField("contact@aperturescience.com")
             {
                 X = Pos.Right(representativeLabel) + 1,
                 Y = Pos.Top(emailLabel),
                 Width = Dim.Fill() - 1,
                 ReadOnly = !sufficientPermission
             };
-            var representativeInput = new TextField("Tập cận bình")
+            var representativeInput = new TextField("Cave Johnson")
             {
                 X = Pos.Right(representativeLabel) + 1,
                 Y = Pos.Top(representativeLabel),
@@ -127,7 +123,7 @@ namespace WarehouseManager.UI.Pages
                 Y = Pos.Bottom(descriptionLabel) + 1,
                 Width = Dim.Fill(2),
                 Height = Dim.Fill() - 3,
-                Text = "Thực phẩm bảo vệ sức khỏe (TPBVSK) Tiêu Khiết Thanh là lựa chọn ưu việt cho người bị khản tiếng, mất tiếng, viêm thanh quản: Giúp giọng nói trong sáng và khỏe mạnh hơn.\nTiêu khiết thanh thực phẩm bảo vệ sức khỏe\nGiúp giảm các triệu chứng như thanh quản mất tiếng để\nđể giọng nói trong sáng hơn nhờ có tiêu khiết thanh giọng nói trong sáng hơn nhờ có tiêu khiết thanh\n",
+                Text = "Aperture Science is a leading innovator in the field of science and technology. \nKnown for its cutting-edge research and development, Aperture Science is dedicated to pushing the boundaries of what is possible.\nOur state-of-the-art Enrichment Center provides a safe and controlled environment for testing revolutionary new products and ideas.",
                 ReadOnly = !sufficientPermission
             };
 
@@ -138,14 +134,13 @@ namespace WarehouseManager.UI.Pages
                 Visible = sufficientPermission
             };
 
-            var errorLabel = UIComponent.AnnounceLabel("Error Message Here");
+            var errorLabel = UIComponent.AnnounceLabel();
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
             saveButton.Clicked += () =>
             {
                 // khi nút save được bấm
-                MessageBox.Query("Company Information", $"Superman", "OK");
             };
 
             leftCollumnContainer.Add(companyNameLabel, addressLabel, phoneNumberLabel, companyNameInput, addressInput, phoneNumberInput);
