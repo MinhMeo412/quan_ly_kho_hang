@@ -1,9 +1,6 @@
 using Hardware.Info;
 using System.Diagnostics;
 using WarehouseManager.Data.Entity;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace WarehouseManager.Core.Pages
 {
@@ -16,21 +13,30 @@ namespace WarehouseManager.Core.Pages
             // weather
             return "Not Implemented";
         }
-        public static string GetWeather()
+        public static async Task<string> GetWeather()
         {
-            string url = "https://wttr.in/?0?A"; // This returns weather condition and temperature
+            string url = "https://wttr.in/?0?A?d?T"; // This returns weather condition and temperature
 
             using (HttpClient client = new HttpClient())
             {
                 try
                 {
-                    Task<string> task = client.GetStringAsync(url);
-                    task.Wait(); // Block the current thread until task completes
-                    return task.Result; // Retrieve the result of the completed task
+                    string weather = await client.GetStringAsync(url);
+                    return weather;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    return ex.Message;
+                    string weather =
+                    @"  ________________________    " + "\n" +
+                    @"/ Unable to connect to     \\ " + "\n" +
+                    @"\\ https://wttr.in/?0?A?d?T / " + "\n" +
+                    @"  ------------------------    " + "\n" +
+                    @"         \   ^__^             " + "\n" +
+                    @"          \  (oo)\_______     " + "\n" +
+                    @"             (__)\       )\/\\" + "\n" +
+                    @"                 ||----w |    " + "\n" +
+                    @"                 ||     ||    " + "\n";
+                    return weather;
                 }
             }
         }

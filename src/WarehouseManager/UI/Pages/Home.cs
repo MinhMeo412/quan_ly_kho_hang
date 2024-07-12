@@ -6,7 +6,7 @@ namespace WarehouseManager.UI.Pages
 {
     public static class Home
     {
-        public static void Display()
+        public static async void Display()
         {
             Application.Top.RemoveAll();
             var mainWindow = UIComponent.LoggedInMainWindow("Home");
@@ -85,16 +85,6 @@ namespace WarehouseManager.UI.Pages
                 Width = Dim.Fill()
             };
 
-            string weather =
-            @" ________________________________________ " + "\n" +
-            @"/ You have Egyptian flu: you're going to \" + "\n" +
-            @"\ be a mummy.                            /" + "\n" +
-            @" ---------------------------------------- " + "\n" +
-            @"        \   ^__^                          " + "\n" +
-            @"         \  (oo)\_______" + "\n" +
-            @"            (__)\       )\/\" + "\n" +
-            @"                ||----w |" + "\n" +
-            @"                ||     ||" + "\n";
             var weatherLabel = new TextView()
             {
                 X = 3,
@@ -103,7 +93,7 @@ namespace WarehouseManager.UI.Pages
                 Height = Dim.Fill(1),
                 ReadOnly = true,
                 CanFocus = false,
-                Text = weather
+                Text = "Loading weather..."
             };
 
             var logoLabelTop = new TextView()
@@ -143,7 +133,7 @@ namespace WarehouseManager.UI.Pages
                 Height = Dim.Fill(1),
                 ReadOnly = true,
                 CanFocus = false,
-                Text = HomeLogic.GetSystemInformation()
+                Text = "Loading system information..."
             };
 
             var rightLabel = new TextView()
@@ -154,7 +144,7 @@ namespace WarehouseManager.UI.Pages
                 Height = Dim.Fill(1),
                 ReadOnly = true,
                 CanFocus = false,
-                Text = HomeLogic.GetDatabaseInformation()
+                Text = "Loading quick stats..."
             };
 
             if (UI.DarkTheme)
@@ -183,6 +173,10 @@ namespace WarehouseManager.UI.Pages
             rightContainer.Add(rightLabel);
 
             mainWindow.Add(errorLabel, userPermissionLabel, separatorLine, leftContainer, middleContainer, rightContainer);
+
+            weatherLabel.Text = await HomeLogic.GetWeather();
+            systemInformationLabel.Text = HomeLogic.GetSystemInformation();
+            rightLabel.Text = HomeLogic.GetDatabaseInformation();
         }
     }
 }
