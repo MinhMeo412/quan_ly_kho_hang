@@ -1,6 +1,9 @@
 using Hardware.Info;
 using System.Diagnostics;
 using WarehouseManager.Data.Entity;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace WarehouseManager.Core.Pages
 {
@@ -13,6 +16,25 @@ namespace WarehouseManager.Core.Pages
             // weather
             return "Not Implemented";
         }
+        public static string GetWeather()
+        {
+            string url = "https://wttr.in/?0?A"; // This returns weather condition and temperature
+
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    Task<string> task = client.GetStringAsync(url);
+                    task.Wait(); // Block the current thread until task completes
+                    return task.Result; // Retrieve the result of the completed task
+                }
+                catch (Exception ex)
+                {
+                    return ex.Message;
+                }
+            }
+        }
+
 
         public static string GetLogoTop()
         {

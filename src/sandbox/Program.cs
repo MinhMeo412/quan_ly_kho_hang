@@ -1,27 +1,44 @@
 ﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 class Program
 {
-    static void Main()
+    static async Task Main(string[] args)
     {
-        string message = "Hello from C#!";
-        string cowSpeech = GenerateCowsay(message);
-        Console.WriteLine(cowSpeech);
+        // string url = "https://wttr.in/?0?A"; // This returns weather condition and temperature
+
+        // using (HttpClient client = new HttpClient())
+        // {
+        //     try
+        //     {
+        //         string response = await client.GetStringAsync(url);
+        //         Console.WriteLine($"Current weather: {response}");
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Console.WriteLine($"Error: {ex.Message}");
+        //     }
+        // }
+        // Console.WriteLine(GetWeather());
+        await GetWeather();
     }
 
-    static string GenerateCowsay(string message)
+    public static async Task GetWeather()
     {
-        string bubbleTop = " " + new string('_', message.Length + 2) + "\n";
-        string bubbleMiddle = $"< {message} >\n";
-        string bubbleBottom = " " + new string('-', message.Length + 2) + "\n";
+       string url = "https://wttr.in/?0?A"; // This returns weather condition and temperature
 
-        string cowSays = bubbleTop + bubbleMiddle + bubbleBottom +
-                          "        \\   ^__^\n" +
-                          "         \\  (oo)\\_______\n" +
-                          "            (__)\\       )\\/\\\n" +
-                          "                ||----w |\n" +
-                          "                ||     ||\n";
-
-        return cowSays;
+        using (HttpClient client = new HttpClient())
+        {
+            try
+            {
+                string response = await client.GetStringAsync(url);
+                Console.WriteLine($"Current weather: {response}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
     }
 }
