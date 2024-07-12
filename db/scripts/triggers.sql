@@ -1,6 +1,4 @@
-/*
- * Trigger to auto update warehouse stock when inbound shipment status is set to Completed
- */
+
 DELIMITER //
 Create trigger update_warehouse_stock_after_inbound_shipment
 After update on inbound_shipment
@@ -23,11 +21,10 @@ Begin
     and ws.product_variant_id is null;
     end if;
 End //
-Delimiter ;
+
 /*
  * Trigger to prevent update on inbound shipment when inbound shipment status is Completed
  */
-DELIMITER //
 CREATE TRIGGER prevent_update_completed_inbound_shipment
 BEFORE UPDATE ON inbound_shipment
 FOR EACH ROW
@@ -37,11 +34,11 @@ BEGIN
         SET MESSAGE_TEXT = 'Cannot update inbound shipment when status is Completed';
     END IF;
 END//
-DELIMITER ;
+
+
 /*
  * Trigger to prevent update on inbound shipment detail when inbound shipment status is Completed
  */
-DELIMITER //
 CREATE TRIGGER prevent_update_completed_inbound_shipment_detail
 BEFORE UPDATE ON inbound_shipment_detail
 FOR EACH ROW
@@ -57,14 +54,12 @@ BEGIN
         SET MESSAGE_TEXT = 'Cannot update inbound shipment detail when shipment status is Completed';
     END IF;
 END//
-DELIMITER ;
 
 
 
 /*
  * Trigger to auto update warehouse stock when outbound shipment status is set to Completed
  */
-Delimiter //
 create trigger update_warehouse_stock_after_outbound_shipment
 before update on outbound_shipment
 for each row
@@ -76,11 +71,10 @@ begin
         where osd.outbound_shipment_id = new.outbound_shipment_id;
 	end if;
 end//
-delimiter ;
 /*
  * Trigger to prevent update on outbound shipment when outbound shipment status is Completed
  */
-DELIMITER //
+
 CREATE TRIGGER prevent_update_completed_outbound_shipment
 BEFORE UPDATE ON outbound_shipment
 FOR EACH ROW
@@ -90,11 +84,11 @@ BEGIN
         SET MESSAGE_TEXT = 'Cannot update outbound shipment when status is Completed';
     END IF;
 END//
-DELIMITER ;
+
 /*
  * Trigger to prevent update on outbound shipment detail when outbound shipment status is Completed
  */
-DELIMITER //
+
 CREATE TRIGGER prevent_update_completed_outbound_shipment_detail
 BEFORE UPDATE ON outbound_shipment_detail
 FOR EACH ROW
@@ -110,14 +104,13 @@ BEGIN
         SET MESSAGE_TEXT = 'Cannot update outbound shipment detail when shipment status is Completed';
     END IF;
 END//
-DELIMITER ;
 
 
 
 /*
  * Trigger to auto update warehouse stock when stock transfer status is set to Completed
  */
-Delimiter //
+
 create trigger update_warehouse_stock_after_stock_transfer
 before update on stock_transfer
 for each row
@@ -135,11 +128,11 @@ begin
         where std.stock_transfer_id = new.stock_transfer_id;
 	end if;
 end//
-delimiter ;
+
 /*
  * Trigger to prevent update on stock transfer when stock transfer status is Completed
  */
-DELIMITER //
+
 CREATE TRIGGER prevent_update_completed_stock_transfer
 BEFORE UPDATE ON stock_transfer
 FOR EACH ROW
@@ -149,11 +142,11 @@ BEGIN
         SET MESSAGE_TEXT = 'Cannot update stock transfer when status is Completed';
     END IF;
 END//
-DELIMITER ;
+
 /*
  * Trigger to prevent update on stock transfer detail when stock transfer status is Completed
  */
-DELIMITER //
+
 CREATE TRIGGER prevent_update_completed_stock_transfer_detail
 BEFORE UPDATE ON stock_transfer_detail
 FOR EACH ROW

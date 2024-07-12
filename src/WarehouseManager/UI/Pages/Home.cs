@@ -47,7 +47,7 @@ namespace WarehouseManager.UI.Pages
             {
                 X = 1,
                 Y = 1,
-                Width = Dim.Fill(),
+                Width = Dim.Fill(1),
                 Height = Dim.Fill(1),
                 ReadOnly = true,
                 CanFocus = false,
@@ -58,7 +58,7 @@ namespace WarehouseManager.UI.Pages
             {
                 X = 1,
                 Y = 1,
-                Width = Dim.Fill(),
+                Width = Dim.Fill(1),
                 Height = 13,
                 ReadOnly = true,
                 CanFocus = false,
@@ -69,7 +69,7 @@ namespace WarehouseManager.UI.Pages
             {
                 X = 1,
                 Y = Pos.Bottom(logoLabel) + 1,
-                Width = Dim.Fill(),
+                Width = Dim.Fill(1),
                 Height = Dim.Fill(1),
                 ReadOnly = true,
                 CanFocus = false,
@@ -80,7 +80,7 @@ namespace WarehouseManager.UI.Pages
             {
                 X = 1,
                 Y = 1,
-                Width = Dim.Fill(),
+                Width = Dim.Fill(1),
                 Height = Dim.Fill(1),
                 ReadOnly = true,
                 CanFocus = false,
@@ -97,9 +97,9 @@ namespace WarehouseManager.UI.Pages
             else
             {
                 leftLabel.ColorScheme = Theme.Dark;
-                logoLabel.ColorScheme = Theme.Light;
+                logoLabel.ColorScheme = Theme.Dark;
                 systemInformationLabel.ColorScheme = Theme.Dark;
-                rightLabel.ColorScheme = Theme.Light;
+                rightLabel.ColorScheme = Theme.Dark;
             }
 
             leftContainer.Add(leftLabel);
