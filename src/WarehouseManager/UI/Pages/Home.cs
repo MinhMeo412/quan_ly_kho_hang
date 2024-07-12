@@ -1,5 +1,6 @@
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
+using WarehouseManager.Core.Pages;
 
 namespace WarehouseManager.UI.Pages
 {
@@ -11,119 +12,101 @@ namespace WarehouseManager.UI.Pages
             var mainWindow = UIComponent.LoggedInMainWindow("Home");
             Application.Top.Add(mainWindow);
 
-            string errorMessage = "";
-
-            var errorLabel = UIComponent.AnnounceLabel(errorMessage);
-
+            var errorLabel = UIComponent.AnnounceLabel();
             var userPermissionLabel = UIComponent.UserPermissionLabel();
-
             var separatorLine = UIComponent.SeparatorLine();
 
-            string speechBubble =
-            @"⠀⠀⠀⠀⠀⠀⠀⢀⣠⠤⠴⠒⠒⠒⠒⠒⠒⠒⠦⢤⣀⡀⠀⠀⠀⠀⠀⠀⠀" + "\n" +
-            @"⠀⠀⠀⠀⣀⡴⠚⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠳⢦⡀⠀⠀⠀⠀" + "\n" +
-            @"⠀⠀⢠⠞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢳⡀⠀⠀" + "\n" +
-            @"⠀⣰⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣆⠀" + "\n" +
-            @"⢰⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⡆" + "\n" +
-            @"⡟       Use the menu        ⣷" + "\n" +
-            @"⣧     above to navigate!  ⠀⠀⡿" + "\n" +
-            @"⢸⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠇" + "\n" +
-            @"⠀⢳⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡯⠁" + "\n" +
-            @"⠀⠀⠙⢦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡴⠋⠁⠀" + "\n" +
-            @"⠀⠀⠀⠀⠙⠦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⠶⠋⠀⠀⠀⠀" + "\n" +
-            @"⠀⠀⠀⠀⠀⠀⠀⠉⠛⠲⠤⢤⣀⠀⠀⠀⠀⠀⢶⠶⠛⠉⠀⠀⠀⠀⠀⠀⠀" + "\n" +
-            @"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠳⢦⣄⡀⠈⠳⣄⠀⠀⠀⠀⠀⠀⠀⠀" + "\n" +
-            @"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠓⢦⣝⣦⡀⠀⠀⠀⠀⠀⠀" + "\n" +
-            @"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⣓⠀⠀⠀⠀⠀⠀" + "\n";
-
-            string tf2Heavy =
-            @"⠄⠂⠄⠐⠄⠄⠄⠄⠄⢀⣠⣶⣶⣿⣿⣿⣷⣶⣶⣤⣀⡀⠄⠄⠄⠄⠄⠄⠂⠄⠐⠄⠄⠂⠄⠐⠄" + "\n" +
-            @"⠄⠐⠈⠄⠄⠄⠄⣀⣴⣿⣿⣿⣿⣿⢿⣿⢿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠄⠄⠄⠄⠁⢀⠈⠄⠈⠄⡀" + "\n" +
-            @"⠐⠄⠄⠄⠄⢀⣴⣿⣿⡿⣿⢽⣾⣽⢿⣺⡯⣷⣻⣽⣻⣟⣿⣿⣿⣿⣦⡀⠄⠄⠄⠄⡀⠐⠈⠄⠄" + "\n" +
-            @"⠄⠄⠄⠄⢀⣾⣿⣿⢿⡽⡯⣿⢾⣟⣿⣳⢿⡽⣾⣺⣳⣻⣺⣽⣻⡿⣿⣿⣦⠄⠄⠄⠄⠄⠄⠄⠂" + "\n" +
-            @"⠄⠄⠄⠄⣿⣿⣿⣯⢿⣽⣻⣽⣿⣿⣯⣿⣿⣿⣷⣻⢮⣗⡯⣞⡾⡹⡵⣻⣿⣇⠄⠄⠄⠂⠄⠄⠠" + "\n" +
-            @"⠄⠄⠄⣸⣿⣿⣿⣿⡿⡾⣳⢿⢿⢿⠿⠿⠟⠟⠟⠿⣯⡾⣝⣗⣯⢪⢎⢗⣯⣿⣇⠄⠄⠄⠄⢀⠄" + "\n" +
-            @"⠄⠄⠄⠋⠉⠁⠑⠁⢉⣁⡁⠁⠁⠄⠄⠄⠄⠄⠄⠄⢉⢻⢽⣞⢾⣕⢕⢝⢎⣿⣿⡀⠄⠄⠄⠄⢀" + "\n" +
-            @"⠄⠄⠄⡧⠠⡀⠐⠂⣸⣿⢿⢔⢔⢤⢈⠡⡱⣩⢤⢴⣞⣾⣽⢾⣽⣺⡕⡕⡕⡽⣿⣿⠟⢶⠄⠄⠄" + "\n" +
-            @"⠄⠄⠄⣿⡳⡄⡢⡂⣿⣿⢯⣫⢗⣽⣳⡣⣗⢯⣟⣿⣿⢿⡽⣳⢗⡷⣻⡎⢎⢎⣿⡇⠻⣦⠃⠄⠄" + "\n" +
-            @"⠄⠄⠄⡿⡝⡜⣜⣬⣿⣿⣿⣷⣯⢺⠻⡻⣜⢔⠡⢓⢝⢕⢏⢗⢏⢯⡳⡝⡸⡸⣸⣧⡀⣹⣠⠄⠄" + "\n" +
-            @"⠄⠄⠄⣇⢪⢎⡧⡛⠛⠋⠋⠉⠙⣨⣮⣦⢅⡃⠇⡕⡌⡪⡨⢸⢨⢣⠫⡨⢪⢸⠰⣿⣇⣾⡞⠄⠄" + "\n" +
-            @"⠄⠄⠄⢑⡕⡵⡻⣕⠄⠄⠄⠔⡜⡗⡟⣟⢿⢮⢆⡑⢕⣕⢎⢮⡪⡎⡪⡐⢅⢇⢣⠹⡛⣿⡅⠄⠄" + "\n" +
-            @"⠄⠄⠄⢸⢎⠪⡊⣄⣰⣰⣵⣕⣮⣢⣳⡸⡨⠪⡨⠂⠄⠑⢏⠗⢍⠪⡢⢣⢃⠪⡂⣹⣽⣿⣷⡄⠄" + "\n" +
-            @"⠄⠄⠄⡸⠐⠝⠋⠃⠡⡕⠬⠎⠬⠩⠱⢙⣘⣑⣁⡈⠄⠄⡕⢌⢊⢪⠸⡘⡜⢌⠢⣸⣾⢿⣿⣿⡀" + "\n" +
-            @"⠄⠄⠄⡎⣐⠲⢒⢚⢛⢛⢛⢛⠛⠝⡋⡫⢉⠪⡱⠡⠄⠠⢣⢑⠱⡨⡊⡎⢜⢐⠅⢼⡾⣟⣿⣿⣷" + "\n" +
-            @"⠄⠄⣠⡃⡢⠨⢀⢂⢐⢐⢄⠑⠌⢌⢂⠢⠡⡑⡘⢌⠠⡘⡌⢎⠜⡌⢎⠜⡌⠢⠨⡸⣿⡽⣿⣿⣿" + "\n" +
-            @"⢴⠋⠁⡢⡑⡨⢐⢐⢌⠢⣂⢣⠩⡂⡢⡑⡑⡌⢜⠰⡨⢪⢘⠔⡱⢘⠔⡑⠨⢈⠐⢼⡷⣿⣻⢷⢯" + "\n" +
-            @"⠂⠄⠄⡢⡃⡢⢊⢔⢢⠣⡪⡢⢣⠪⡢⡑⡕⡜⡜⡌⢎⢢⠱⠨⡂⡑⠨⠄⠁⡂⡨⣺⡽⡯⡫⠣⠡" + "\n" +
-            @"⠄⠄⣰⡸⠐⠌⠆⢇⠎⡎⢎⢎⢎⢎⢎⢎⠎⡎⡪⠘⠌⠂⠁⠁⠄⢀⠄⢄⢢⢚⢮⢏⠞⡨⢂⠕⠉" + "\n" +
-            @"⡀⢀⡯⡃⡌⠈⠈⠄⠄⠈⠄⠄⠄⠄⠄⠂⠁⠄⠄⠄⠄⠄⠄⢄⢂⢢⢱⢱⢱⠱⢡⢑⠌⢂⠡⠠⠡" + "\n" +
-            @"⣀⡸⠨⢂⠌⡊⢄⢂⠠⠄⠄⠄⠄⠄⠄⠄⠄⠄⢀⠠⢐⢨⣘⢔⢵⠱⡃⡃⡕⡸⠐⡁⠌⡐⡨⠨⢊" + "\n" +
-            @"⢣⢎⠨⠄⠄⠨⢊⢪⢪⡫⡪⡊⡐⡐⡐⡌⡬⡪⡪⣎⢗⡕⡎⡣⠃⢅⠊⠆⠡⠠⡁⠢⡑⡐⢌⢌⠢" + "\n" +
-            @"⡎⡎⠄⠈⠄⠡⢂⠂⡕⡕⡕⠕⢌⢌⢢⢱⢸⡸⣪⢮⡣⡓⠌⠠⢑⠡⢈⠌⢌⢂⠪⠨⡂⣊⠢⡢⢣" + "\n" +
-            @"⢢⢣⠊⢀⠨⠨⢐⠐⡸⡸⡪⡱⡑⡌⡆⡇⡇⣏⢮⢪⢪⠊⠄⢑⢐⠨⡐⢌⠢⡪⡘⢌⠢⡢⢣⠪⠊" + "\n" +
-            @"⡣⡑⢅⠄⠄⠨⢐⠨⢰⢱⢣⢣⢪⢸⢨⡚⣞⢜⢎⢎⢎⠪⠐⠄⡆⡣⡪⡊⡪⡂⡪⡘⡌⡎⠊⠄⡐" + "\n" +
-            @"⡣⠊⠄⣷⣄⠄⠄⠌⢸⢸⠱⡱⡡⡣⡣⡳⡕⡇⡇⡇⠥⠑⠄⢡⢑⠕⢔⢑⠔⡌⡆⠇⠁⡀⠄⠁⠄" + "\n" +
-            @"⡊⠌⠄⣿⣿⣷⣤⣤⣂⣅⣑⠰⠨⠢⢑⣕⣜⣘⣨⣦⣥⣬⠄⢐⢅⢊⢢⢡⠣⠃⠄⡐⠠⠄⡂⠡⢈" + "\n" +
-            @"⢨⠨⠄⢹⢛⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⠟⠄⢰⢰⢱⠑⠁⢀⠐⡀⠂⠄⠡⠐⠐⡀" + "\n" +
-            @"⡱⢐⠄⢸⡲⡠⠄⠉⠙⠻⠿⣿⠿⠿⢛⠫⡩⡳⣸⠾⠁⢀⢢⠣⠃⠄⠠⠐⡀⠂⠄⠡⠈⠄⡁⠂⠄" + "\n" +
-            @"⢌⠆⢕⠈⣗⢥⢣⢡⢑⢌⡢⡢⢅⢇⢇⢯⢾⡽⠃⢀⠔⡅⠁⠄⠄⠨⢀⠡⠐⠈⠄⠡⢈⠐⡀⠅⠌" + "\n" +
-            @"⠢⠭⢆⠦⡿⡷⡷⡵⡷⡷⣵⢽⡮⣷⢽⡽⡓⠤⠤⠕⡁⠠⠄⠅⠄⠅⠄⠂⠌⠠⠡⠈⠄⢂⠐⠠⠨" + "\n";
-
-
-            var speechBubbleLabel = new TextView()
+            var leftContainer = new FrameView()
             {
-                X = 3,
+                X = 2,
                 Y = 1,
-                Width = 29,
-                Height = 15,
-                ReadOnly = true,
-                CanFocus = false,
-                Text = speechBubble
+                Width = Dim.Percent(23),
+                Height = Dim.Fill(3),
+                Border = new Border() { BorderStyle = BorderStyle.Rounded }
             };
 
-            var tf2HeavyLabel = new TextView()
+            var middleContainer = new FrameView()
             {
-                X = Pos.Right(speechBubbleLabel) + 1,
+                X = Pos.Right(leftContainer) + 2,
                 Y = 1,
-                Width = 37,
-                Height = Dim.Fill(2),
+                Width = Dim.Percent(50),
+                Height = Dim.Fill(3),
+                Border = new Border() { BorderStyle = BorderStyle.Rounded }
+            };
+
+            var rightContainer = new FrameView()
+            {
+                X = Pos.Right(middleContainer) + 2,
+                Y = 1,
+                Width = Dim.Fill(2),
+                Height = Dim.Fill(3),
+                Border = new Border() { BorderStyle = BorderStyle.Rounded }
+            };
+
+            var leftLabel = new TextView()
+            {
+                X = 1,
+                Y = 1,
+                Width = Dim.Fill(),
+                Height = Dim.Fill(1),
                 ReadOnly = true,
                 CanFocus = false,
-                Text = tf2Heavy
+                Text = HomeLogic.GetTimeInformation()
+            };
+
+            var logoLabel = new TextView()
+            {
+                X = 1,
+                Y = 1,
+                Width = Dim.Fill(),
+                Height = 13,
+                ReadOnly = true,
+                CanFocus = false,
+                Text = HomeLogic.GetLogo()
+            };
+
+            var systemInformationLabel = new TextView()
+            {
+                X = 1,
+                Y = Pos.Bottom(logoLabel) + 1,
+                Width = Dim.Fill(),
+                Height = Dim.Fill(1),
+                ReadOnly = true,
+                CanFocus = false,
+                Text = HomeLogic.GetSystemInformation()
+            };
+
+            var rightLabel = new TextView()
+            {
+                X = 1,
+                Y = 1,
+                Width = Dim.Fill(),
+                Height = Dim.Fill(1),
+                ReadOnly = true,
+                CanFocus = false,
+                Text = HomeLogic.GetDatabaseInformation()
             };
 
             if (UI.DarkTheme)
             {
-                speechBubbleLabel.ColorScheme = Theme.Light;
-                tf2HeavyLabel.ColorScheme = Theme.Light;
+                leftLabel.ColorScheme = Theme.Light;
+                logoLabel.ColorScheme = Theme.Light;
+                systemInformationLabel.ColorScheme = Theme.Light;
+                rightLabel.ColorScheme = Theme.Light;
             }
             else
             {
-                speechBubbleLabel.ColorScheme = Theme.Dark;
-                tf2HeavyLabel.ColorScheme = Theme.Dark;
+                leftLabel.ColorScheme = Theme.Dark;
+                logoLabel.ColorScheme = Theme.Light;
+                systemInformationLabel.ColorScheme = Theme.Dark;
+                rightLabel.ColorScheme = Theme.Light;
             }
 
-            mainWindow.Add(speechBubbleLabel, tf2HeavyLabel, separatorLine, errorLabel, userPermissionLabel);
+            leftContainer.Add(leftLabel);
+            middleContainer.Add(logoLabel, systemInformationLabel);
+            rightContainer.Add(rightLabel);
 
-            // 5% to get secret menu
-            if (new Random().Next(100) > 95)
-            {
-                mainWindow.Title = "The end";
-                List<FrameView> containers = new List<FrameView>();
-                for (int i = 0; i < 25; i++)
-                {
-                    containers.Add(new FrameView("is never the end")
-                    {
-                        Width = Dim.Fill(),
-                        Height = Dim.Fill(1)
-                    });
-                }
-                for (int i = 24; i > 0; i--)
-                {
-                    containers[i - 1].Add(containers[i], UIComponent.AnnounceLabel(errorMessage), UIComponent.UserPermissionLabel());
-                }
-                mainWindow.Add(containers[0]);
-            }
+            mainWindow.Add(errorLabel, userPermissionLabel, separatorLine, leftContainer, middleContainer, rightContainer);
         }
     }
 }
