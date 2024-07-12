@@ -38,7 +38,7 @@ namespace WarehouseManager.Data.Table
                     (int)(rawAudit[1] ?? 0),
                     (string)(rawAudit[2] ?? ""),
                     (int)(rawAudit[3] ?? 0),
-                    (DateTime)(rawAudit[3] ?? DateTime.Now)
+                    (DateTime)(rawAudit[4] ?? DateTime.Now)
                 );
                 inventoryAudits.Add(audit);
             }
