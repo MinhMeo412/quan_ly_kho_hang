@@ -121,13 +121,16 @@ namespace WarehouseManager.UI.Pages
                     try
                     {
                         AccountListLogic.UpdateUser(userID, userName, "", userFullName, userEmail, userPhoneNumber, permissionLevel);
+                        errorLabel.Text = $"User {userName} updated successfully";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                     }
                     catch (Exception ex)
                     {
                         //tableView.Table.Rows[row][column] = currentValue;
                         errorLabel.Text = $"Error: {ex.Message}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                     }
-                    
+
                     Application.RequestStop();
                 };
 
@@ -152,6 +155,8 @@ namespace WarehouseManager.UI.Pages
                 if (result == 1)
                 {
                     tableView.Table = AccountListLogic.DeleteUser(tableView.Table, userID);
+                    errorLabel.Text = $"Successfully deleted user #{userID}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                 }
             };
 

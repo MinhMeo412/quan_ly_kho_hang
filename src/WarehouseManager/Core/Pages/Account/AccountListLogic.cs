@@ -64,7 +64,13 @@ namespace WarehouseManager.Core.Pages
         public static void UpdateUser(int userID, string userName, string userPassword, string userFullName, string? userEmail, string? userPhoneNumber, string permissionName)
         {
             List<Permission> permissions = Program.Warehouse.PermissionTable.Permissions ?? new List<Permission>();
-            Permission permission = permissions.FirstOrDefault(p => p.PermissionName == permissionName) ?? new Permission(4, "", "");
+            Permission? permission = permissions.FirstOrDefault(p => p.PermissionName == permissionName);
+
+            if (permission == null)
+            {
+                throw new Exception("Permission does not exist");
+            }
+
             int permissionLevel = permission.PermissionLevel;
 
             Program.Warehouse.UserTable.Update(userID, userName, userPassword, userFullName, userEmail, userPhoneNumber, permissionLevel);
