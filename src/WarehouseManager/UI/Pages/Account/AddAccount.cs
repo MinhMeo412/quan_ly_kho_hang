@@ -1,7 +1,5 @@
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
-using System.Collections.Generic;
-using WarehouseManager.Core;
 using WarehouseManager.Core.Pages;
 
 namespace WarehouseManager.UI.Pages
@@ -14,7 +12,7 @@ namespace WarehouseManager.UI.Pages
             var mainWindow = UIComponent.LoggedInMainWindow("Add New Account");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
+            var errorLabel = UIComponent.AnnounceLabel("Error Message Here");
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 

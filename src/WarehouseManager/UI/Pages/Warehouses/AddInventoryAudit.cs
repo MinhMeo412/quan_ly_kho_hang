@@ -12,7 +12,7 @@ namespace WarehouseManager.UI.Pages
             var mainWindow = UIComponent.LoggedInMainWindow("Add New Inventory Audit");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.ErrorMessageLabel("Error Message Here");
+            var errorLabel = UIComponent.AnnounceLabel("Error Message Here");
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
