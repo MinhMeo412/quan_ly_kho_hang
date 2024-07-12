@@ -43,33 +43,103 @@ namespace WarehouseManager.UI.Pages
                 Border = new Border() { BorderStyle = BorderStyle.Rounded }
             };
 
-            var leftLabel = new TextView()
+            string time =
+            @"    _        _ " + "\n" +
+            @"/| |_  o /| / \" + "\n" +
+            @" | |_) o  | \_/" + "\n";
+
+            var timeLabel = new TextView()
             {
-                X = 1,
+                X = Pos.Center(),
                 Y = 1,
-                Width = Dim.Fill(1),
+                Width = 15,
+                Height = 3,
+                ReadOnly = true,
+                CanFocus = false,
+                Text = time
+            };
+
+            string calendar =
+            @"         July 2024          " + "\n" +
+            @" Sun Mon Tue Wed Thu Fri Sat" + "\n" +
+            @"       1   2   3   4   5   6" + "\n" +
+            @"   7   8   9  10  11  12  13" + "\n" +
+            @"  14  15  16 <17> 18  19  20" + "\n" +
+            @"  21  22  23  24  25  26  27" + "\n" +
+            @"  28  29  30  31" + "\n";
+            var calendarLabel = new TextView()
+            {
+                X = Pos.Center(),
+                Y = Pos.Bottom(timeLabel) + 1,
+                Width = 28,
+                Height = 7,
+                ReadOnly = true,
+                CanFocus = false,
+                Text = calendar
+            };
+
+            var leftContainerMiddleLine = new LineView()
+            {
+                X = 0,
+                Y = Pos.Bottom(calendarLabel) + 1,
+                Width = Dim.Fill()
+            };
+
+            string weather =
+            @" ________________________________________ " + "\n" +
+            @"/ You have Egyptian flu: you're going to \" + "\n" +
+            @"\ be a mummy.                            /" + "\n" +
+            @" ---------------------------------------- " + "\n" +
+            @"        \   ^__^                          " + "\n" +
+            @"         \  (oo)\_______" + "\n" +
+            @"            (__)\       )\/\" + "\n" +
+            @"                ||----w |" + "\n" +
+            @"                ||     ||" + "\n";
+            var weatherLabel = new TextView()
+            {
+                X = 3,
+                Y = Pos.Bottom(leftContainerMiddleLine) + 1,
+                Width = Dim.Fill(3),
                 Height = Dim.Fill(1),
                 ReadOnly = true,
                 CanFocus = false,
-                Text = HomeLogic.GetTimeInformation()
+                Text = weather
             };
 
-            var logoLabel = new TextView()
+            var logoLabelTop = new TextView()
             {
-                X = 1,
+                X = Pos.Center(),
                 Y = 1,
-                Width = Dim.Fill(1),
-                Height = 13,
+                Width = 76,
+                Height = 7,
                 ReadOnly = true,
                 CanFocus = false,
-                Text = HomeLogic.GetLogo()
+                Text = HomeLogic.GetLogoTop()
+            };
+
+            var logolabelBottom = new TextView()
+            {
+                X = Pos.Center(),
+                Y = Pos.Bottom(logoLabelTop),
+                Width = 62,
+                Height = 6,
+                ReadOnly = true,
+                CanFocus = false,
+                Text = HomeLogic.GetLogoBottom()
+            };
+
+            var middleContainerMiddleLine = new LineView()
+            {
+                X = 0,
+                Y = Pos.Bottom(logolabelBottom) + 1,
+                Width = Dim.Fill()
             };
 
             var systemInformationLabel = new TextView()
             {
-                X = 1,
-                Y = Pos.Bottom(logoLabel) + 1,
-                Width = Dim.Fill(1),
+                X = 3,
+                Y = Pos.Bottom(middleContainerMiddleLine) + 1,
+                Width = Dim.Fill(3),
                 Height = Dim.Fill(1),
                 ReadOnly = true,
                 CanFocus = false,
@@ -78,9 +148,9 @@ namespace WarehouseManager.UI.Pages
 
             var rightLabel = new TextView()
             {
-                X = 1,
+                X = 3,
                 Y = 1,
-                Width = Dim.Fill(1),
+                Width = Dim.Fill(3),
                 Height = Dim.Fill(1),
                 ReadOnly = true,
                 CanFocus = false,
@@ -89,21 +159,27 @@ namespace WarehouseManager.UI.Pages
 
             if (UI.DarkTheme)
             {
-                leftLabel.ColorScheme = Theme.Light;
-                logoLabel.ColorScheme = Theme.Light;
+                timeLabel.ColorScheme = Theme.Light;
+                calendarLabel.ColorScheme = Theme.Light;
+                weatherLabel.ColorScheme = Theme.Light;
+                logoLabelTop.ColorScheme = Theme.Light;
+                logolabelBottom.ColorScheme = Theme.Light;
                 systemInformationLabel.ColorScheme = Theme.Light;
                 rightLabel.ColorScheme = Theme.Light;
             }
             else
             {
-                leftLabel.ColorScheme = Theme.Dark;
-                logoLabel.ColorScheme = Theme.Dark;
+                timeLabel.ColorScheme = Theme.Dark;
+                calendarLabel.ColorScheme = Theme.Dark;
+                weatherLabel.ColorScheme = Theme.Dark;
+                logoLabelTop.ColorScheme = Theme.Dark;
+                logolabelBottom.ColorScheme = Theme.Dark;
                 systemInformationLabel.ColorScheme = Theme.Dark;
                 rightLabel.ColorScheme = Theme.Dark;
             }
 
-            leftContainer.Add(leftLabel);
-            middleContainer.Add(logoLabel, systemInformationLabel);
+            leftContainer.Add(timeLabel, calendarLabel, leftContainerMiddleLine, weatherLabel);
+            middleContainer.Add(logoLabelTop, logolabelBottom, middleContainerMiddleLine, systemInformationLabel);
             rightContainer.Add(rightLabel);
 
             mainWindow.Add(errorLabel, userPermissionLabel, separatorLine, leftContainer, middleContainer, rightContainer);
