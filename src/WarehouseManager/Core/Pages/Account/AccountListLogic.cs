@@ -4,7 +4,7 @@ using WarehouseManager.Core.Utility;
 
 namespace WarehouseManager.Core.Pages
 {
-    public static class UserListLogic
+    public static class AccountListLogic
     {
         public static DataTable GetData()
         {
@@ -16,30 +16,40 @@ namespace WarehouseManager.Core.Pages
         {
             var dataTable = new DataTable();
             dataTable.Columns.Add("User ID", typeof(int));
-            dataTable.Columns.Add("User Name", typeof(string));
-            dataTable.Columns.Add("User Password", typeof(string));
+            dataTable.Columns.Add("Username", typeof(string));
             dataTable.Columns.Add("Full Name", typeof(string));
             dataTable.Columns.Add("Email", typeof(string));
             dataTable.Columns.Add("Phone Number", typeof(string));
-            dataTable.Columns.Add("Permission Level", typeof(int));
+            dataTable.Columns.Add("Permission Level", typeof(string));
 
-            users ??= new List<User>();
+            List<Permission> permissions = Program.Warehouse.PermissionTable.Permissions ?? new List<Permission>();
+
             foreach (User user in users)
             {
-                dataTable.Rows.Add(user.UserID, user.UserName, user.UserPassword, user.UserFullName, user.UserEmail, user.UserPhoneNumber, user.PermissionLevel);
+                string permissionName = permissions.FirstOrDefault(p => p.PermissionLevel == user.PermissionLevel)?.PermissionName ?? "Unknown Permission";
+
+                dataTable.Rows.Add(user.UserID, user.UserName, user.UserFullName, user.UserEmail, user.UserPhoneNumber, permissionName);
             }
+
             return dataTable;
         }
+
         private static List<User> ConvertDataTableToUserList(DataTable dataTable)
         {
             List<User> users = new List<User>();
+            List<Permission> permissions = Program.Warehouse.PermissionTable.Permissions ?? new List<Permission>();
+
             foreach (DataRow row in dataTable.Rows)
             {
-                User user = new User((int)row[0], (string)row[1], (string)row[2], (string)row[3], (string?)row[4], (string?)row[5], (int)row[6]);
+                Permission permission = permissions.FirstOrDefault(p => p.PermissionName == (string)row[5]) ?? new Permission(4, "", "");
+                int permissionLevel = permission.PermissionLevel;
+
+                User user = new User((int)row[0], (string)row[1], "", (string)row[2], (string?)row[3], (string?)row[4], permissionLevel);
                 users.Add(user);
             }
             return users;
         }
+
         public static DataTable SortUserBySearchTerm(DataTable dataTable, string searchTerm)
         {
             return SortDataTable.BySearchTerm(dataTable, searchTerm);
@@ -51,8 +61,12 @@ namespace WarehouseManager.Core.Pages
         }
 
 
-        public static void UpdateUser(int userID, string userName, string userPassword, string userFullName, string? userEmail, string? userPhoneNumber, int permissionLevel)
+        public static void UpdateUser(int userID, string userName, string userPassword, string userFullName, string? userEmail, string? userPhoneNumber, string permissionName)
         {
+            List<Permission> permissions = Program.Warehouse.PermissionTable.Permissions ?? new List<Permission>();
+            Permission permission = permissions.FirstOrDefault(p => p.PermissionName == permissionName) ?? new Permission(4, "", "");
+            int permissionLevel = permission.PermissionLevel;
+
             Program.Warehouse.UserTable.Update(userID, userName, userPassword, userFullName, userEmail, userPhoneNumber, permissionLevel);
         }
 
