@@ -1,18 +1,55 @@
 using Hardware.Info;
 using System.Diagnostics;
 using WarehouseManager.Data.Entity;
+using Figgle;
 
 namespace WarehouseManager.Core.Pages
 {
     public static class HomeLogic
     {
-        public static string GetTimeInformation()
+        public static string GetTime()
         {
-            // Hour:minutes
-            // Calendar
-            // weather
-            return "Not Implemented";
+            DateTime now = DateTime.Now;
+
+            // Format the time as HH:mm
+            string currentTime = now.ToString("HH:mm");
+            
+            string timeWithSpaces = "";
+            foreach (char letter in currentTime)
+            {
+                timeWithSpaces += $"{letter} ";
+            }
+            timeWithSpaces = timeWithSpaces.Trim();
+
+            string asciiArt = FiggleFonts.Mini.Render(timeWithSpaces).TrimEnd();
+
+            return asciiArt;
         }
+
+        public static string GetCalendar()
+        {
+            string calendar =
+            @"         July 2024          " + "\n" +
+            @" Sun Mon Tue Wed Thu Fri Sat" + "\n" +
+            @"       1   2   3   4   5   6" + "\n" +
+            @"   7   8   9  10  11  12  13" + "\n" +
+            @"  14  15  16 <17> 18  19  20" + "\n" +
+            @"  21  22  23  24  25  26  27" + "\n" +
+            @"  28  29  30  31";
+
+
+            DateTime now = DateTime.Now;
+            // Get the current day of the week
+            string currentDay = now.DayOfWeek.ToString();
+            string currentDate = now.ToString("MM/dd/yyyy");
+
+            // Print the current day and date
+            Console.WriteLine("Current Day: " + currentDay);
+            Console.WriteLine("Current Date: " + currentDate);
+
+            return calendar;
+        }
+
         public static async Task<string> GetWeather()
         {
             string url = "https://wttr.in/?0?A?d?T"; // This returns weather condition and temperature
@@ -113,6 +150,28 @@ namespace WarehouseManager.Core.Pages
             userCount + "\n";
 
             return databaseInformation;
+        }
+
+        public static int GetStringWidth(string input)
+        {
+            List<string> phrases = input.Split('\n').ToList();
+            int maxWidth = 0;
+            foreach (string phrase in phrases)
+            {
+                if (phrase.Length > maxWidth)
+                {
+                    maxWidth = phrase.Length;
+                }
+            }
+            return maxWidth;
+        }
+
+        public static int GetStringHeight(string input)
+        {
+            List<string> phrases = input.Split('\n').ToList();
+            int height = phrases.Count;
+
+            return height;
         }
 
         private static string GetUser()

@@ -1,30 +1,59 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using Figgle;
 
 class Program
 {
-    static async Task Main(string[] args)
+    static void Main()
     {
-        string weather = await GetWeather();
-        Console.WriteLine(weather);
+
+        string time = GetTime();
+        Console.WriteLine(time);
+
+        for (int i = 0; i < GetStringWidth(time); i++)
+        {
+            Console.Write("-");
+        }
+        Console.WriteLine();
+
+        Console.WriteLine(GetStringWidth(time));
     }
 
-    public static async Task<string> GetWeather()
+    public static string GetTime()
     {
-        string url = "https://wttr.in/?0?A?d"; // This returns weather condition and temperature
+        DateTime now = DateTime.Now;
 
-        using (HttpClient client = new HttpClient())
+        // Format the time as HH:mm
+        string currentTime = now.ToString("HH:mm");
+        string timeWithSpaces = "";
+        foreach (char letter in currentTime)
         {
-            try
+            timeWithSpaces += $"{letter} ";
+        }
+        timeWithSpaces = timeWithSpaces.Trim();
+
+        string asciiArt = FiggleFonts.Mini.Render(timeWithSpaces).TrimEnd();
+
+        return asciiArt;
+    }
+
+    public static int GetStringWidth(string input)
+    {
+        List<string> phrases = input.Split('\n').ToList();
+        int maxWidth = 0;
+        foreach (string phrase in phrases)
+        {
+            if (phrase.Length > maxWidth)
             {
-                string response = await client.GetStringAsync(url);
-                return response;
-            }
-            catch (Exception ex)
-            {
-               return $"Error: {ex.Message}";
+                maxWidth = phrase.Length;
             }
         }
+        return maxWidth;
+    }
+
+    public static int GetStringHeight(string input)
+    {
+        List<string> phrases = input.Split('\n').ToList();
+        int height = phrases.Count;
+
+        return height;
     }
 }

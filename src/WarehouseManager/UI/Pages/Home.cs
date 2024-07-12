@@ -43,36 +43,28 @@ namespace WarehouseManager.UI.Pages
                 Border = new Border() { BorderStyle = BorderStyle.Rounded }
             };
 
-            string time =
-            @"    _        _ " + "\n" +
-            @"/| |_  o /| / \" + "\n" +
-            @" | |_) o  | \_/" + "\n";
-
+            string time = HomeLogic.GetTime();
+            int timeWidth = HomeLogic.GetStringWidth(time);
             var timeLabel = new TextView()
             {
                 X = Pos.Center(),
                 Y = 1,
-                Width = 15,
+                Width = timeWidth,
                 Height = 3,
                 ReadOnly = true,
                 CanFocus = false,
                 Text = time
             };
 
-            string calendar =
-            @"         July 2024          " + "\n" +
-            @" Sun Mon Tue Wed Thu Fri Sat" + "\n" +
-            @"       1   2   3   4   5   6" + "\n" +
-            @"   7   8   9  10  11  12  13" + "\n" +
-            @"  14  15  16 <17> 18  19  20" + "\n" +
-            @"  21  22  23  24  25  26  27" + "\n" +
-            @"  28  29  30  31" + "\n";
+            string calendar = HomeLogic.GetCalendar();
+            int calendarWidth = HomeLogic.GetStringWidth(calendar);
+            int calendarHeight = HomeLogic.GetStringHeight(calendar);
             var calendarLabel = new TextView()
             {
                 X = Pos.Center(),
                 Y = Pos.Bottom(timeLabel) + 1,
-                Width = 28,
-                Height = 7,
+                Width = calendarWidth,
+                Height = calendarHeight,
                 ReadOnly = true,
                 CanFocus = false,
                 Text = calendar
