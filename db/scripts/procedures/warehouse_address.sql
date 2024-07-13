@@ -10,7 +10,7 @@ CREATE PROCEDURE create_warehouse_address(
     IN input_warehouse_address_country VARCHAR(64)
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 1;
+    DECLARE required_level INT DEFAULT 3;
     IF sufficient_permission(input_token, required_level) THEN
         INSERT INTO warehouse_address(warehouse_address_id, warehouse_address_address, warehouse_address_district, warehouse_address_postal_code, warehouse_address_city, warehouse_address_country) VALUES
         (input_warehouse_address_id, input_warehouse_address_address, input_warehouse_address_district, input_warehouse_address_postal_code, input_warehouse_address_city, input_warehouse_address_country);
@@ -41,7 +41,7 @@ CREATE PROCEDURE update_warehouse_address(
     IN input_warehouse_address_country VARCHAR(64)
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 1;
+    DECLARE required_level INT DEFAULT 2;
     IF sufficient_permission(input_token, required_level) THEN
         UPDATE warehouse_address
         SET warehouse_address_address = input_warehouse_address_address, 
@@ -60,7 +60,7 @@ CREATE PROCEDURE delete_warehouse_address(
     IN input_warehouse_address_id INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 1;
+    DECLARE required_level INT DEFAULT 2;
     IF sufficient_permission(input_token, required_level) THEN
         DELETE FROM warehouse_address WHERE warehouse_address_id = input_warehouse_address_id;
     ELSE

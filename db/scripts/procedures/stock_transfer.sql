@@ -35,7 +35,7 @@ CREATE PROCEDURE update_stock_transfer_detail(
     IN input_stock_transfer_detail_amount INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 3;
+    DECLARE required_level INT DEFAULT 2;
     IF sufficient_permission(input_token, required_level) THEN
         UPDATE stock_transfer_detail
         SET stock_transfer_detail_amount = input_stock_transfer_detail_amount
@@ -51,7 +51,7 @@ CREATE PROCEDURE delete_stock_transfer_detail(
     IN input_product_variant_id INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 1;
+    DECLARE required_level INT DEFAULT 2;
     IF sufficient_permission(input_token, required_level) THEN
         DELETE FROM stock_transfer_detail WHERE stock_transfer_id = input_stock_transfer_id AND product_variant_id = input_product_variant_id;
     ELSE

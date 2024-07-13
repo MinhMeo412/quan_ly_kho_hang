@@ -11,7 +11,7 @@ CREATE PROCEDURE create_user(
     IN input_permission_level INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 1;
+    DECLARE required_level INT DEFAULT 0;
     IF sufficient_permission(input_token, required_level) THEN
         INSERT INTO user(user_id, user_name, user_password, user_full_name, user_email, user_phone_number, permission_level) VALUES
         (input_user_id, input_user_name, input_user_password, input_user_full_name, input_user_email, input_user_phone_number, input_permission_level);
@@ -23,7 +23,7 @@ END //
 -- Xem danh sách user có bao gồm (0,1,2)
 CREATE PROCEDURE read_user(IN input_token VARCHAR(36))
 BEGIN
-    DECLARE required_level INT DEFAULT 2;
+    DECLARE required_level INT DEFAULT 4;
     IF sufficient_permission(input_token, required_level) THEN
         SELECT * FROM v_user_blank_password;
     ELSE
@@ -43,7 +43,7 @@ CREATE PROCEDURE update_user(
     IN input_permission_level INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 1;
+    DECLARE required_level INT DEFAULT 0;
     IF sufficient_permission(input_token, required_level) THEN
         UPDATE user
         SET user_name = input_user_name,

@@ -43,7 +43,7 @@ CREATE PROCEDURE update_inbound_shipment(
     IN input_user_id INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 3;
+    DECLARE required_level INT DEFAULT 2;
     IF sufficient_permission(input_token, required_level) THEN
         UPDATE inbound_shipment
         SET supplier_id = input_supplier_id,
@@ -63,7 +63,7 @@ CREATE PROCEDURE delete_inbound_shipment(
     IN input_inbound_shipment_id INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 1;
+    DECLARE required_level INT DEFAULT 2;
     IF sufficient_permission(input_token, required_level) THEN
         DELETE FROM inbound_shipment WHERE inbound_shipment_id = input_inbound_shipment_id;
     ELSE

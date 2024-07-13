@@ -35,7 +35,7 @@ CREATE PROCEDURE update_inventory_audit_detail(
     IN input_inventory_audit_detail_actual_quantity INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 3;
+    DECLARE required_level INT DEFAULT 2;
     IF sufficient_permission(input_token, required_level) THEN
         UPDATE inventory_audit_detail
         SET inventory_audit_detail_actual_quantity = input_inventory_audit_detail_actual_quantity
@@ -51,7 +51,7 @@ CREATE PROCEDURE delete_inventory_audit_detail(
     IN input_product_variant_id INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 1;
+    DECLARE required_level INT DEFAULT 2;
     IF sufficient_permission(input_token, required_level) THEN
         DELETE FROM inventory_audit_detail WHERE inventory_audit_id = input_inventory_audit_id AND product_variant_id = input_product_variant_id;
     ELSE

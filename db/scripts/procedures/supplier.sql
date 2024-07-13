@@ -63,7 +63,7 @@ CREATE PROCEDURE delete_supplier(
     IN input_supplier_id INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 1;
+    DECLARE required_level INT DEFAULT 2;
     IF sufficient_permission(input_token, required_level) THEN
         DELETE FROM supplier WHERE supplier_id = input_supplier_id;
     ELSE

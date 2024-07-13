@@ -54,7 +54,7 @@ CREATE PROCEDURE delete_permission(
     IN input_permission_level INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT -1;
+    DECLARE required_level INT DEFAULT -1; 
     IF sufficient_permission(input_token, required_level) THEN
         DELETE FROM permission WHERE permission_level = input_permission_level;
     ELSE

@@ -43,7 +43,7 @@ CREATE PROCEDURE update_stock_transfer(
     IN input_user_id INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 4;
+    DECLARE required_level INT DEFAULT 2;
     IF sufficient_permission(input_token, required_level) THEN
         UPDATE stock_transfer
         SET from_warehouse_id = input_from_warehouse_id,
@@ -63,7 +63,7 @@ CREATE PROCEDURE delete_stock_transfer(
     IN input_stock_transfer_id INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 1;
+    DECLARE required_level INT DEFAULT 2;
     IF sufficient_permission(input_token, required_level) THEN
         DELETE FROM stock_transfer WHERE stock_transfer_id = input_stock_transfer_id;
     ELSE

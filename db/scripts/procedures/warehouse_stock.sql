@@ -35,7 +35,7 @@ CREATE PROCEDURE update_warehouse_stock(
     IN input_warehouse_stock_quantity INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 2;
+    DECLARE required_level INT DEFAULT -1;
     IF sufficient_permission(input_token, required_level) THEN
         UPDATE warehouse_stock
         SET warehouse_stock_quantity = input_warehouse_stock_quantity

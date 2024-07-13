@@ -35,7 +35,7 @@ CREATE PROCEDURE update_outbound_shipment_detail(
     IN input_outbound_shipment_detail_amount INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 3;
+    DECLARE required_level INT DEFAULT 2;
     IF sufficient_permission(input_token, required_level) THEN
         UPDATE outbound_shipment_detail
         SET outbound_shipment_detail_amount = input_outbound_shipment_detail_amount
@@ -51,7 +51,7 @@ CREATE PROCEDURE delete_outbound_shipment_detail(
     IN input_product_variant_id INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 1;
+    DECLARE required_level INT DEFAULT 2;
     IF sufficient_permission(input_token, required_level) THEN
         DELETE FROM outbound_shipment_detail WHERE outbound_shipment_id = input_outbound_shipment_id AND product_variant_id = input_product_variant_id;
     ELSE

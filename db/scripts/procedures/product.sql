@@ -57,7 +57,7 @@ CREATE PROCEDURE delete_product(
     IN input_product_id INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 2;
+    DECLARE required_level INT DEFAULT 2; 
     IF sufficient_permission(input_token, required_level) THEN
         DELETE FROM product WHERE product_id = input_product_id;
     ELSE

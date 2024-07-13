@@ -43,7 +43,7 @@ CREATE PROCEDURE update_outbound_shipment(
     IN input_user_id INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 3;
+    DECLARE required_level INT DEFAULT 2;
     IF sufficient_permission(input_token, required_level) THEN
         UPDATE outbound_shipment
         SET warehouse_id = input_warehouse_id,
@@ -63,7 +63,7 @@ CREATE PROCEDURE delete_outbound_shipment(
     IN input_outbound_shipment_id INT
 )
 BEGIN
-    DECLARE required_level INT DEFAULT 1;
+    DECLARE required_level INT DEFAULT 2;
     IF sufficient_permission(input_token, required_level) THEN
         DELETE FROM outbound_shipment WHERE outbound_shipment_id = input_outbound_shipment_id;
     ELSE
