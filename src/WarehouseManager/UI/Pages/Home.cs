@@ -43,17 +43,15 @@ namespace WarehouseManager.UI.Pages
                 Border = new Border() { BorderStyle = BorderStyle.Rounded }
             };
 
-            string time = HomeLogic.GetTime();
-            int timeWidth = HomeLogic.GetStringWidth(time);
             var timeLabel = new TextView()
             {
                 X = Pos.Center(),
                 Y = 1,
-                Width = timeWidth,
+                Width = 15,
                 Height = 3,
                 ReadOnly = true,
                 CanFocus = false,
-                Text = time
+                Text = "Loading time..."
             };
 
             string calendar = HomeLogic.GetCalendar();
@@ -165,6 +163,10 @@ namespace WarehouseManager.UI.Pages
             rightContainer.Add(rightLabel);
 
             mainWindow.Add(errorLabel, userPermissionLabel, separatorLine, leftContainer, middleContainer, rightContainer);
+
+            string time = HomeLogic.GetTime();
+            timeLabel.Text = time;
+            timeLabel.Width = HomeLogic.GetStringWidth(time);
 
             weatherLabel.Text = await HomeLogic.GetWeather();
             systemInformationLabel.Text = HomeLogic.GetSystemInformation();
