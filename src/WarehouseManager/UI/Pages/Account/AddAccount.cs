@@ -12,128 +12,123 @@ namespace WarehouseManager.UI.Pages
             var mainWindow = UIComponent.LoggedInMainWindow("Add New Account");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.AnnounceLabel("Error Message Here");
-
+            var errorLabel = UIComponent.AnnounceLabel();
             var userPermissionLabel = UIComponent.UserPermissionLabel();
+            var separatorLine = UIComponent.SeparatorLine();
 
             var infoContainer = new FrameView()
             {
                 X = Pos.Center(),
                 Y = Pos.Center(),
                 Width = Dim.Percent(75),
-                Height = Dim.Percent(75)
+                Height = 11
             };
 
             var leftCollumnContainer = new FrameView()
             {
-                X = 1,
-                Width = Dim.Percent(50),
+                X = 3,
+                Width = Dim.Percent(50) - 3,
                 Height = Dim.Fill(),
-                Border = new Border()
-                {
-                    BorderStyle = BorderStyle.None
-                }
+                Border = new Border() { BorderStyle = BorderStyle.None }
             };
 
             var rightCollumnContainer = new FrameView()
             {
-                X = Pos.Right(leftCollumnContainer),
-                Width = Dim.Fill(1),
-                Height = Dim.Fill(),
-                Border = new Border()
-                {
-                    BorderStyle = BorderStyle.None
-                }
+                X = Pos.Right(leftCollumnContainer) + 1,
+                Width = Dim.Fill(3),
+                Height = 6,
+                Border = new Border() { BorderStyle = BorderStyle.None }
             };
 
-            var userNameLabel = new Label("User Name:")
+            var userNameLabel = new Label("Username:")
             {
-                X = 1,
+                X = 0,
                 Y = 1
             };
 
-            var userPasswordLabel = new Label("User Password:")
+            var userPasswordLabel = new Label("Password:")
             {
-                X = 1,
-                Y = 5
+                X = 0,
+                Y = Pos.Bottom(userNameLabel) + 1
+            };
+
+            var permissionNameLabel = new Label("Permission:")
+            {
+                X = 0,
+                Y = Pos.Bottom(userPasswordLabel) + 1
             };
 
             var fullNameLabel = new Label("Full Name:")
             {
-                X = 1,
-                Y = 9
+                X = 0,
+                Y = 1
             };
 
             var emailLabel = new Label("Email:")
             {
-                X = 1,
-                Y = 1
+                X = 0,
+                Y = Pos.Bottom(fullNameLabel) + 1
             };
 
             var phoneNumberLabel = new Label("Phone Number:")
             {
-                X = 1,
-                Y = 5
+                X = 0,
+                Y = Pos.Bottom(emailLabel) + 1
             };
 
-            var permissionNameLabel = new Label("Permission Name:")
-            {
-                X = 1,
-                Y = 9
-            };
 
             var userNameInput = new TextField("")
             {
-                X = Pos.Right(userNameLabel) + 1,
+                X = Pos.Right(permissionNameLabel) + 1,
                 Y = Pos.Top(userNameLabel),
-                Width = Dim.Fill() - 1,
+                Width = Dim.Fill(1),
             };
 
             var userPasswordInput = new TextField("")
             {
-                X = Pos.Right(userPasswordLabel) + 1,
+                X = Pos.Right(permissionNameLabel) + 1,
                 Y = Pos.Top(userPasswordLabel),
-                Width = Dim.Fill() - 1,
-            };
-
-            var fullNameInput = new TextField("")
-            {
-                X = Pos.Right(fullNameLabel) + 1,
-                Y = Pos.Top(fullNameLabel),
-                Width = Dim.Fill() - 1,
-            };
-
-            var emailInput = new TextField("")
-            {
-                X = Pos.Right(emailLabel) + 1,
-                Y = Pos.Top(emailLabel),
-                Width = Dim.Fill() - 1,
-            };
-
-            var phoneNumberInput = new TextField("")
-            {
-                X = Pos.Right(phoneNumberLabel) + 1,
-                Y = Pos.Top(phoneNumberLabel),
-                Width = Dim.Fill() - 1,
+                Width = Dim.Fill(1),
             };
 
             var permissionDropDown = new ComboBox()
             {
                 X = Pos.Right(permissionNameLabel) + 1,
                 Y = Pos.Top(permissionNameLabel),
-                Width = Dim.Fill(),
-                Height=4,
+                Width = Dim.Fill(1),
+                Height = Dim.Fill(),
                 ReadOnly = true
             };
 
-            var items = new List<string> { "Admin", "User", "Guest" };
-            permissionDropDown.SetSource(items);
-            permissionDropDown.SelectedItem = 0;
+            var fullNameInput = new TextField("")
+            {
+                X = Pos.Right(phoneNumberLabel) + 1,
+                Y = Pos.Top(fullNameLabel),
+                Width = Dim.Fill(),
+            };
 
-            var saveButton = new Button("Save")
+            var emailInput = new TextField("")
+            {
+                X = Pos.Right(phoneNumberLabel) + 1,
+                Y = Pos.Top(emailLabel),
+                Width = Dim.Fill(),
+            };
+
+            var phoneNumberInput = new TextField("")
+            {
+                X = Pos.Right(phoneNumberLabel) + 1,
+                Y = Pos.Top(phoneNumberLabel),
+                Width = Dim.Fill(),
+            };
+
+            var items = AddAccountLogic.GetPermissionNames();
+            permissionDropDown.SetSource(items);
+            permissionDropDown.SelectedItem = 4;
+
+            var saveButton = new Button("Save", is_default: true)
             {
                 X = Pos.Center(),
-                Y = Pos.Bottom(infoContainer) - 3
+                Y = Pos.Bottom(rightCollumnContainer) + 1
             };
 
             saveButton.Clicked += () =>
@@ -142,27 +137,35 @@ namespace WarehouseManager.UI.Pages
                 {
                     AddAccountLogic.Save
                     (
-                        userName:$"{userNameInput.Text}",
-                        userPassword:$"{userPasswordInput.Text}",
-                        userFullName:$"{fullNameInput.Text}",
-                        userEmail:$"{emailInput.Text} ",
-                        userPhoneNumber:$"{phoneNumberInput.Text}",
-                        permissionName:$"{permissionDropDown.Text}"
+                        userName: $"{userNameInput.Text}",
+                        userPassword: $"{userPasswordInput.Text}",
+                        userFullName: $"{fullNameInput.Text}",
+                        userEmail: $"{emailInput.Text} ",
+                        userPhoneNumber: $"{phoneNumberInput.Text}",
+                        permissionName: $"{permissionDropDown.Text}"
                     );
-                
-                MessageBox.Query("Save Account", "Account saved successfully!", "OK");
-                Display();
+
+                    errorLabel.Text = $"User created successfully!";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+
+                    userNameInput.Text = "";
+                    userPasswordInput.Text = "";
+                    fullNameInput.Text = "";
+                    emailInput.Text = "";
+                    phoneNumberInput.Text = "";
+                    permissionDropDown.SelectedItem = 4;
                 }
-                 catch (Exception ex)
+                catch (Exception ex)
                 {
                     errorLabel.Text = $"Error: {ex.Message}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                 }
             };
 
-            leftCollumnContainer.Add(userNameLabel, userPasswordLabel, fullNameLabel, userNameInput, userPasswordInput, fullNameInput);
-            rightCollumnContainer.Add(emailLabel, phoneNumberLabel, permissionNameLabel, emailInput, phoneNumberInput, permissionDropDown);
-            infoContainer.Add(leftCollumnContainer, rightCollumnContainer);
-            mainWindow.Add(infoContainer, saveButton, errorLabel, userPermissionLabel);
+            leftCollumnContainer.Add(userNameLabel, userPasswordLabel, permissionNameLabel, userNameInput, userPasswordInput, permissionDropDown);
+            rightCollumnContainer.Add(fullNameLabel, emailLabel, phoneNumberLabel, fullNameInput, emailInput, phoneNumberInput);
+            infoContainer.Add(leftCollumnContainer, rightCollumnContainer, saveButton);
+            mainWindow.Add(infoContainer, errorLabel, userPermissionLabel, separatorLine);
         }
     }
 }
