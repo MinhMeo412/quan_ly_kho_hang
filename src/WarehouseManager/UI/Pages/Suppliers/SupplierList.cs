@@ -153,7 +153,7 @@ namespace WarehouseManager.UI.Pages
                 DataRow selectedRow = tableView.Table.Rows[tableView.SelectedRow];
                 int supplierID = (int)selectedRow[0];
 
-                int result = MessageBox.Query("Delete", "Are you sure you want to delete this item?", "No", "Yes");
+                int result = MessageBox.Query("Delete", "Are you sure you want to delete this supplier?", "No", "Yes");
                 if (result == 1)
                 {
                     try

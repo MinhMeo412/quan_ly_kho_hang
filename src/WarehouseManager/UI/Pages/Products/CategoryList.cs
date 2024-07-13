@@ -32,10 +32,10 @@ namespace WarehouseManager.UI.Pages
 
             var tableContainer = new FrameView()
             {
-                X = 1,
-                Y = Pos.Bottom(searchLabel) + 1,
-                Width = Dim.Fill(1),
-                Height = Dim.Fill(4),
+                X = 3,
+                Y = Pos.Bottom(searchLabel) + 2,
+                Width = Dim.Fill(3),
+                Height = Dim.Fill(6),
                 Border = new Border() { BorderStyle = BorderStyle.None }
             };
 
@@ -122,11 +122,14 @@ namespace WarehouseManager.UI.Pages
                     try
                     {
                         CategoryListLogic.UpdateCategory(categoryID, categoryName, categoryDescription);
+                        errorLabel.Text = $"Category {categoryName} updated successfully";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                     }
                     catch (Exception ex)
                     {
                         tableView.Table.Rows[row][column] = currentValue;
                         errorLabel.Text = $"Error: {ex.Message}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                     }
 
 
@@ -153,7 +156,17 @@ namespace WarehouseManager.UI.Pages
                 int result = MessageBox.Query("Delete", "Are you sure you want to delete this item?", "No", "Yes");
                 if (result == 1) // "Yes" button was pressed
                 {
-                    tableView.Table = CategoryListLogic.DeleteCategory(tableView.Table, categoryID);
+                    try
+                    {
+                        tableView.Table = CategoryListLogic.DeleteCategory(tableView.Table, categoryID);
+                        errorLabel.Text = $"Successfully deleted category#{categoryID}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+                    }
+                    catch (Exception ex)
+                    {
+                        errorLabel.Text = $"Error: {ex.Message}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                    }
                 }
             };
 
