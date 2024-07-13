@@ -1,6 +1,7 @@
 using Hardware.Info;
 using System.Diagnostics;
 using WarehouseManager.Data.Entity;
+using System.Globalization;
 using Figgle;
 
 namespace WarehouseManager.Core.Pages
@@ -13,7 +14,7 @@ namespace WarehouseManager.Core.Pages
 
             // Format the time as HH:mm
             string currentTime = now.ToString("HH:mm");
-            
+
             string timeWithSpaces = "";
             foreach (char letter in currentTime)
             {
@@ -28,24 +29,78 @@ namespace WarehouseManager.Core.Pages
 
         public static string GetCalendar()
         {
-            string calendar =
-            @"         July 2024          " + "\n" +
-            @" Sun Mon Tue Wed Thu Fri Sat" + "\n" +
-            @"       1   2   3   4   5   6" + "\n" +
-            @"   7   8   9  10  11  12  13" + "\n" +
-            @"  14  15  16 <17> 18  19  20" + "\n" +
-            @"  21  22  23  24  25  26  27" + "\n" +
-            @"  28  29  30  31";
-
-
             DateTime now = DateTime.Now;
-            // Get the current day of the week
-            string currentDay = now.DayOfWeek.ToString();
-            string currentDate = now.ToString("MM/dd/yyyy");
 
-            // Print the current day and date
-            Console.WriteLine("Current Day: " + currentDay);
-            Console.WriteLine("Current Date: " + currentDate);
+            int currentDate = now.Day;
+            int currentMonth = now.Month;
+            int currentYear = now.Year;
+
+            string daysOfWeek = GetDaysOfWeek();
+            string monthAndYear = CenterString(GetMonthAndYear(currentMonth, currentYear), daysOfWeek.Length);
+
+            List<string> weeks = new List<string>();
+
+            int dateToPrint = 1;
+            string week = "";
+
+            int dayOfWeekOf1st = GetDayOfWeekOf1st(currentMonth, currentYear);
+            for (int i = 0; i < 7; i++)
+            {
+                if (i < dayOfWeekOf1st)
+                {
+                    week += "    ";
+                }
+                else
+                {
+                    if (dateToPrint == currentDate)
+                    {
+                        week += $"{new string(' ', 3 - $"<{dateToPrint}".Length)}<{dateToPrint}>";
+                        dateToPrint += 1;
+                    }
+                    else
+                    {
+                        week += $"{new string(' ', 3 - $"{dateToPrint}".Length)}{dateToPrint} ";
+                        dateToPrint += 1;
+                    }
+                }
+            }
+            weeks.Add(week.TrimEnd());
+            week = "";
+
+            for (int i = 0; i < 4; i++)
+            {
+                for (int ii = 0; ii < 7; ii++)
+                {
+                    if (dateToPrint <= GetDaysInMonth(currentMonth, currentYear))
+                    {
+                        if (dateToPrint == currentDate)
+                        {
+                            week += $"{new string(' ', 3 - $"<{dateToPrint}".Length)}<{dateToPrint}>";
+                            dateToPrint += 1;
+                        }
+                        else
+                        {
+                            week += $"{new string(' ', 3 - $"{dateToPrint}".Length)}{dateToPrint} ";
+                            dateToPrint += 1;
+                        }
+                    }
+                }
+                if (week.TrimEnd() != "")
+                {
+                    weeks.Add(week.TrimEnd());
+                    week = "";
+                }
+            }
+
+            string calendar =
+            monthAndYear + "\n" +
+            daysOfWeek + "\n";
+
+            for (int i = 0; i < weeks.Count - 1; i++)
+            {
+                calendar += $"{weeks[i]}\n";
+            }
+            calendar += weeks[weeks.Count - 1];
 
             return calendar;
         }
@@ -77,7 +132,6 @@ namespace WarehouseManager.Core.Pages
                 }
             }
         }
-
 
         public static string GetLogoTop()
         {
@@ -172,6 +226,41 @@ namespace WarehouseManager.Core.Pages
             int height = phrases.Count;
 
             return height;
+        }
+
+        private static string GetMonthAndYear(int month, int year)
+        {
+            string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
+            return $"{monthName} {year}";
+        }
+
+        private static string GetDaysOfWeek()
+        {
+            return "Sun Mon Tue Wed Thu Fri Sat";
+        }
+
+        private static int GetDayOfWeekOf1st(int month, int year)
+        {
+            // Create a DateTime object for the 1st of the given month and year
+            DateTime firstDayOfMonth = new DateTime(year, month, 1);
+
+            // Get the day of the week for the 1st day of the month (0 = Sunday, 6 = Saturday)
+            int dayOfWeekOf1st = (int)firstDayOfMonth.DayOfWeek;
+
+            return dayOfWeekOf1st;
+        }
+
+        private static int GetDaysInMonth(int month, int year)
+        {
+            return DateTime.DaysInMonth(year, month);
+        }
+
+        private static string CenterString(string input, int spacesToCenterIn)
+        {
+            int spacesOnLeftSide = (spacesToCenterIn - input.Length) / 2;
+            int spacesOnRightSide = (spacesToCenterIn - input.Length) - spacesOnLeftSide;
+
+            return $"{new string(' ', spacesOnLeftSide)}{input}{new string(' ', spacesOnRightSide)}";
         }
 
         private static string GetUser()
