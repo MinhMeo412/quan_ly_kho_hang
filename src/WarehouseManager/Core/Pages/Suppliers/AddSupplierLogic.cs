@@ -4,16 +4,15 @@ namespace WarehouseManager.Core.Pages
 {
     public static class AddSupplierLogic
     {
-        public static void AddSupplier(int supplierID, string supplierName, string? supplierDescription, string? supplierAddress, string? supplierEmail, string? supplierPhoneNumber, string? supplierWebsite)
-        {
-            Program.Warehouse.SupplierTable.Add(supplierID, supplierName, supplierDescription, supplierAddress, supplierEmail, supplierPhoneNumber, supplierWebsite);
-        }
-
-
         public static void Save(string supplierName, string? supplierDescription, string? supplierAddress, string? supplierEmail, string? supplierPhoneNumber, string? supplierWebsite)
         {
+            AddSupplier(supplierName, supplierDescription, supplierAddress, supplierEmail, supplierPhoneNumber, supplierWebsite);
+        }
+
+        private static void AddSupplier(string supplierName, string? supplierDescription, string? supplierAddress, string? supplierEmail, string? supplierPhoneNumber, string? supplierWebsite)
+        {
             int supplierID = GetCurrentHighestSupplierID() + 1;
-            AddSupplier(supplierID, supplierName, supplierDescription, supplierAddress, supplierEmail, supplierPhoneNumber, supplierWebsite);
+            Program.Warehouse.SupplierTable.Add(supplierID, supplierName, supplierDescription, supplierAddress, supplierEmail, supplierPhoneNumber, supplierWebsite);
         }
 
         private static int GetCurrentHighestSupplierID()
