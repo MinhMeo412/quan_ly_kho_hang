@@ -185,8 +185,8 @@ namespace WarehouseManager.UI.Utility
         {
             var deleteButton = new Button("Delete")
             {
-                X = 1,
-                Y = Pos.AnchorEnd(3)
+                X = 3,
+                Y = Pos.AnchorEnd(4)
             };
             return deleteButton;
         }
@@ -196,8 +196,8 @@ namespace WarehouseManager.UI.Utility
         {
             var addButton = new Button(addPrompt)
             {
-                X = Pos.AnchorEnd(addPrompt.Length + 5),
-                Y = Pos.AnchorEnd(3)
+                X = Pos.AnchorEnd(addPrompt.Length + 7),
+                Y = Pos.AnchorEnd(4)
             };
             return addButton;
         }
@@ -224,7 +224,7 @@ namespace WarehouseManager.UI.Utility
             {
                 X = Pos.Percent(50) + text.Length + 1,
                 Y = 1,
-                Width = Dim.Fill(2)
+                Width = Dim.Fill(3)
             };
 
             return searchInput;
@@ -236,7 +236,7 @@ namespace WarehouseManager.UI.Utility
         {
             var refreshButton = new Button("Refresh")
             {
-                X = 2,
+                X = 3,
                 Y = 1
             };
 

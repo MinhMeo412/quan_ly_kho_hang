@@ -22,7 +22,7 @@ namespace WarehouseManager.UI.Pages
             {
                 X = Pos.Center(),
                 Y = Pos.Center(),
-                Width = 45,
+                Width = 50,
                 Height = 9
             };
             mainWindow.Add(loginContainer);
@@ -30,27 +30,27 @@ namespace WarehouseManager.UI.Pages
             // Create a label and input box for username
             var usernameLabel = new Label("Username:")
             {
-                X = 1,
+                X = 3,
                 Y = 1
             };
             var usernameInput = new TextField("admin")
             {
                 X = Pos.Right(usernameLabel) + 1,
                 Y = Pos.Top(usernameLabel),
-                Width = Dim.Fill() - 1
+                Width = Dim.Fill(3)
             };
 
             // Create a label and input box for password
             var passwordLabel = new Label("Password:")
             {
-                X = 1,
+                X = 3,
                 Y = Pos.Bottom(usernameLabel) + 1
             };
             var passwordInput = new TextField("1234")
             {
                 X = Pos.Right(passwordLabel) + 1,
                 Y = Pos.Top(passwordLabel),
-                Width = Dim.Fill() - 1,
+                Width = Dim.Fill(3),
                 Secret = true // Mask the input for password
             };
 
