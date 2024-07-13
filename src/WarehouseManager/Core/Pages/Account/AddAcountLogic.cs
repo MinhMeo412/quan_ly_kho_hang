@@ -1,30 +1,27 @@
-using System.Data;
 using WarehouseManager.Data.Entity;
-using WarehouseManager.Core.Pages;
 
 namespace WarehouseManager.Core.Pages
 {
     public static class AddAccountLogic
     {
-        public static void AddAccount(int userID, string userName, string userPassword, string userFullName, string? userEmail, string? userPhoneNumber, string permissionName)
+        public static List<string> GetPermissionNames()
         {
+            List<Permission> permissions = Program.Warehouse.PermissionTable.Permissions ?? new List<Permission>();
+            List<string> permissionNames = permissions.Select(p => $"{p.PermissionName}").ToList();
 
-            List<Permission>? permissions = Program.Warehouse.PermissionTable.Permissions ?? new List<Permission>();
-            Permission? permission = permissions.FirstOrDefault(c => c.PermissionName == permissionName);
-
-            int permissionLevel = 0;
-
-            if (permission != null)
-            {
-                permissionLevel = permission.PermissionLevel;
-            }
-            Program.Warehouse.UserTable.Add(userID, userName, userPassword, userFullName, userEmail, userPhoneNumber, permissionLevel);
+            return permissionNames;
         }
 
         public static void Save(string userName, string userPassword, string userFullName, string? userEmail, string? userPhoneNumber, string permissionName)
         {
+            AddAccount(userName, userPassword, userFullName, userEmail, userPhoneNumber, permissionName);
+        }
+
+        private static void AddAccount(string userName, string userPassword, string userFullName, string? userEmail, string? userPhoneNumber, string permissionName)
+        {
+            int permissionLevel = GetPermissionLevel(permissionName);
             int userID = GetCurrentHighestUserID() + 1;
-            AddAccount(userID, userName, userPassword, userFullName, userEmail, userPhoneNumber, permissionName);
+            Program.Warehouse.UserTable.Add(userID, userName, userPassword, userFullName, userEmail, userPhoneNumber, permissionLevel);
         }
 
         private static int GetCurrentHighestUserID()
@@ -32,6 +29,18 @@ namespace WarehouseManager.Core.Pages
             List<User> users = Program.Warehouse.UserTable.Users ?? new List<User>();
             int highestUserID = users.Max(u => u.UserID);
             return highestUserID;
+        }
+
+        private static int GetPermissionLevel(string permissionName)
+        {
+            List<Permission>? permissions = Program.Warehouse.PermissionTable.Permissions ?? new List<Permission>();
+            Permission? permission = permissions.FirstOrDefault(c => c.PermissionName == permissionName);
+
+            if (permission != null)
+            {
+                return permission.PermissionLevel;
+            }
+            return 4;
         }
     }
 }
