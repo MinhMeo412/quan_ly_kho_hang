@@ -25,9 +25,9 @@ namespace WarehouseManager.UI.Pages
 
             var separatorLine = UIComponent.SeparatorLine();
 
-            var warehouseCheckList = new Button("Select Warehouse")
+            var warehouseCheckList = new Button("Select Warehouse", is_default: true)
             {
-                X = 2,
+                X = 3,
                 Y = 1
             };
 
@@ -37,15 +37,15 @@ namespace WarehouseManager.UI.Pages
 
             var exportButton = UIComponent.AddButton("Export to Excel");
 
+
             var tableContainer = new FrameView()
             {
-                X = 1,
-                Y = Pos.Bottom(searchLabel) + 1,
-                Width = Dim.Fill(1),
-                Height = Dim.Fill(4),
+                X = 3,
+                Y = Pos.Bottom(searchLabel) + 2,
+                Width = Dim.Fill(3),
+                Height = Dim.Fill(6),
                 Border = new Border() { BorderStyle = BorderStyle.None }
             };
-
 
             Dictionary<CheckBox, int> warehouseChecklistDict = WarehouseStockLogic.GetWarehouseChecklistDict();
             var tableView = UIComponent.Table(WarehouseStockLogic.GetData(warehouseChecklistDict));
@@ -139,8 +139,6 @@ namespace WarehouseManager.UI.Pages
                 }
             };
 
-
-
             int columnCurrentlySortBy = -1;
             bool sortColumnInDescendingOrder = false;
             // khi sort cột
@@ -177,6 +175,8 @@ namespace WarehouseManager.UI.Pages
 
             tableContainer.Add(tableView);
             mainWindow.Add(warehouseCheckList, searchLabel, searchInput, tableContainer, exportButton, errorLabel, userPermissionLabel, separatorLine);
+
+            warehouseCheckList.OnClicked();
         }
 
     }

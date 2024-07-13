@@ -14,8 +14,8 @@ namespace WarehouseManager.UI.Pages
 
             var separatorLine = UIComponent.SeparatorLine();
 
-            // Chỉnh thành true nếu là admin. nếu ko là admin thì sẽ không sửa đươc.
-            bool sufficientPermission = true;
+            // Chỉnh thành true nếu người dùng được sửa.
+            bool sufficientPermission = false;
 
             var infoContainer = new FrameView()
             {
@@ -31,10 +31,7 @@ namespace WarehouseManager.UI.Pages
                 X = 3,
                 Width = Dim.Percent(50),
                 Height = 8,
-                Border = new Border()
-                {
-                    BorderStyle = BorderStyle.None
-                }
+                Border = new Border() { BorderStyle = BorderStyle.None }
             };
 
             var rightCollumnContainer = new FrameView()

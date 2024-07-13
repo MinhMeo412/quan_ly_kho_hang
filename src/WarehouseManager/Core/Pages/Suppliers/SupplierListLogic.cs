@@ -18,7 +18,8 @@ namespace WarehouseManager.Core.Pages
             dataTable.Columns.Add("Supplier ID", typeof(int));
             dataTable.Columns.Add("Supplier Name", typeof(string));
             dataTable.Columns.Add("Supplier Description", typeof(string));
-            dataTable.Columns.Add("Supplier Email", typeof(int));
+            dataTable.Columns.Add("Supplier Address", typeof(string));
+            dataTable.Columns.Add("Supplier Email", typeof(string));
             dataTable.Columns.Add("Supplier Phone Number", typeof(string));
             dataTable.Columns.Add("Supplier Website", typeof(string));
 
@@ -50,6 +51,7 @@ namespace WarehouseManager.Core.Pages
         {
             return SortDataTable.ByColumn(dataTable, columnToSortBy, sortColumnInDescendingOrder);
         }
+
         public static void UpdateSupplier(int supplierID, string SupplierName, string? supplierDescription, string? supplierAddress, string? supplierEmail, string? supplierPhoneNumber, string? supplierWebsite)
         {
             Program.Warehouse.SupplierTable.Update(supplierID, SupplierName, supplierDescription, supplierAddress, supplierEmail, supplierPhoneNumber, supplierWebsite);

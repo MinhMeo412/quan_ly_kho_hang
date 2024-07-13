@@ -18,6 +18,17 @@ namespace WarehouseManager.UI.Pages
 
             var separatorLine = UIComponent.SeparatorLine();
 
+            var returnButton = new Button("To Product List")
+            {
+                X = 3,
+                Y = 1
+            };
+
+            returnButton.Clicked += () =>
+            {
+                ProductList.Display();
+            };
+
             var middleContainer = new FrameView()
             {
                 X = 1,
@@ -102,7 +113,7 @@ namespace WarehouseManager.UI.Pages
                 Text = ""
             };
 
-            var saveButton = new Button("Save")
+            var saveButton = new Button("Save", is_default: true)
             {
                 X = Pos.Center(),
                 Y = Pos.Bottom(rightContainer) + 1
@@ -110,7 +121,7 @@ namespace WarehouseManager.UI.Pages
 
             // Create a TableView and set its data source
             var tableView = UIComponent.Table(AddProductLogic.GetDataTable());
-            tableView.Height = Dim.Fill(5);
+            tableView.Height = Dim.Fill(6);
             tableView.Width = Dim.Fill(2);
             tableView.X = 1;
             tableView.Y = 1;
@@ -118,7 +129,7 @@ namespace WarehouseManager.UI.Pages
             var deleteButton = new Button("Delete")
             {
                 X = 1,
-                Y = Pos.Bottom(tableView)
+                Y = Pos.Bottom(tableView) + 1
             };
 
             var addVariantButton = new Button("Add variant")
@@ -250,12 +261,19 @@ namespace WarehouseManager.UI.Pages
                         variantDataTable: tableView.Table
                     );
 
-                    MessageBox.Query("Success", $"Product created successfully.", "OK");
-                    Display();
+                    errorLabel.Text = "Product added successfully!";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+
+                    productNameInput.Text = "";
+                    descriptionInput.Text = "";
+                    priceInput.Text = "";
+                    categoryDropDown.Text = "";
+                    tableView.Table = AddProductLogic.GetDataTable();
                 }
                 catch (Exception ex)
                 {
                     errorLabel.Text = $"Error: {ex.Message}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                 }
             };
 
@@ -264,7 +282,7 @@ namespace WarehouseManager.UI.Pages
             rightContainer.Add(tableView, deleteButton, variantInputContainer, addVariantButton);
             middleContainer.Add(leftContainer, rightContainer, saveButton);
 
-            mainWindow.Add(middleContainer, separatorLine, errorLabel, userPermissionLabel);
+            mainWindow.Add(middleContainer, separatorLine, errorLabel, userPermissionLabel, returnButton);
         }
 
     }

@@ -265,87 +265,165 @@ namespace WarehouseManager.Core.Pages
 
         private static string GetUser()
         {
-            return $"{Environment.UserName}@{GetHost()}";
+            try
+            {
+                return $"{Environment.UserName}@{GetHost()}";
+            }
+            catch (Exception)
+            {
+                return $"user@{GetHost()}";
+            }
+
         }
 
         private static string GetOS()
         {
-            var hardwareInfo = new HardwareInfo();
-            hardwareInfo.RefreshOperatingSystem();
-            return $"{hardwareInfo.OperatingSystem.Name} {hardwareInfo.OperatingSystem.VersionString}";
+            try
+            {
+                var hardwareInfo = new HardwareInfo();
+                hardwareInfo.RefreshOperatingSystem();
+                return $"{hardwareInfo.OperatingSystem.Name} {hardwareInfo.OperatingSystem.VersionString}";
+            }
+            catch (Exception)
+            {
+                return "Unknown";
+            }
+
         }
 
         private static string GetHost()
         {
-            return Environment.MachineName;
+            try
+            {
+                return Environment.MachineName;
+            }
+            catch (Exception)
+            {
+                return "host";
+            }
         }
 
         private static string GetKernel()
         {
-            return Environment.OSVersion.VersionString;
+            try
+            {
+                return Environment.OSVersion.VersionString;
+            }
+            catch (Exception)
+            {
+                return "Unknown";
+            }
         }
 
         private static string GetUptime()
         {
-            TimeSpan uptime = TimeSpan.FromSeconds(Stopwatch.GetTimestamp() / (double)Stopwatch.Frequency);
-            return $"{(int)uptime.TotalDays} days, {uptime.Hours} hours, {uptime.Minutes} mins, {uptime.Seconds} seconds";
+            try
+            {
+                TimeSpan uptime = TimeSpan.FromSeconds(Stopwatch.GetTimestamp() / (double)Stopwatch.Frequency);
+                return $"{(int)uptime.TotalDays} days, {uptime.Hours} hours, {uptime.Minutes} mins, {uptime.Seconds} seconds";
+            }
+            catch (Exception)
+            {
+                return $"Unknown";
+            }
         }
 
         private static string GetApplicationTheme()
         {
-            if (UI.UI.DarkTheme)
+            try
             {
-                return "Dark";
+                if (UI.UI.DarkTheme)
+                {
+                    return "Dark";
+                }
+                else
+                {
+                    return "Light";
+                }
             }
-            else
+            catch (Exception)
             {
-                return "Light";
+                return "Unknown";
             }
         }
 
         private static string GetCPU()
         {
-            var hardwareInfo = new HardwareInfo();
-            hardwareInfo.RefreshCPUList();
-
-            foreach (var cpu in hardwareInfo.CpuList)
+            try
             {
-                return cpu.Name;
-            }
+                var hardwareInfo = new HardwareInfo();
+                hardwareInfo.RefreshCPUList();
 
-            return "Unknown";
+                foreach (var cpu in hardwareInfo.CpuList)
+                {
+                    return cpu.Name;
+                }
+                return "Unknown";
+            }
+            catch (Exception)
+            {
+                return "Unknown";
+            }
         }
 
         private static string GetApplicationMemoryUsage()
         {
-            Process process = Process.GetCurrentProcess();
-            long memoryUsed = process.PrivateMemorySize64;
-            long maxMemory = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
+            try
+            {
+                Process process = Process.GetCurrentProcess();
+                long memoryUsed = process.PrivateMemorySize64;
+                long maxMemory = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
 
-            return $"{memoryUsed / 1024 / 1024}MB / {maxMemory / 1024 / 1024}MB";
+                return $"{memoryUsed / 1024 / 1024}MB / {maxMemory / 1024 / 1024}MB";
+            }
+            catch (Exception)
+            {
+                return "Unknown";
+            }
         }
 
         private static string GetShell()
         {
-            string? shell = Environment.GetEnvironmentVariable("SHELL");
-            if (string.IsNullOrEmpty(shell))
+            try
             {
-                shell = Environment.GetEnvironmentVariable("ComSpec"); // On Windows
+                string? shell = Environment.GetEnvironmentVariable("SHELL");
+                if (string.IsNullOrEmpty(shell))
+                {
+                    shell = Environment.GetEnvironmentVariable("ComSpec"); // On Windows
+                }
+                return $"{shell}";
             }
-            return $"{shell}";
+            catch (Exception)
+            {
+                return "Unknown";
+            }
         }
 
         private static string GetTerminal()
         {
-            string terminal = Environment.GetEnvironmentVariable("TERM") ?? "Unknown";
-            return terminal;
+            try
+            {
+                string terminal = Environment.GetEnvironmentVariable("TERM") ?? "Unknown";
+                return terminal;
+            }
+            catch (Exception)
+            {
+                return "Unknown";
+            }
         }
 
         private static string GetTerminalResolution()
         {
-            int screenWidth = Console.WindowWidth;
-            int screenHeight = Console.WindowHeight;
-            return $"{screenWidth}x{screenHeight}";
+            try
+            {
+                int screenWidth = Console.WindowWidth;
+                int screenHeight = Console.WindowHeight;
+                return $"{screenWidth}x{screenHeight}";
+            }
+            catch (Exception)
+            {
+                return "Unknown";
+            }
         }
 
         private static int GetInventoryAuditInProgressCount()

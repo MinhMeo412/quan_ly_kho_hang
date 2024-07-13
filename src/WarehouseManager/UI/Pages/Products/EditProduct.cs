@@ -108,7 +108,7 @@ namespace WarehouseManager.UI.Pages
                 Text = EditProductLogic.GetProductDescription(productID)
             };
 
-            var saveButton = new Button("Save")
+            var saveButton = new Button("Save", is_default: true)
             {
                 X = Pos.Center(),
                 Y = Pos.Bottom(rightContainer) + 1
@@ -116,7 +116,7 @@ namespace WarehouseManager.UI.Pages
 
             // Create a TableView and set its data source
             var tableView = UIComponent.Table(EditProductLogic.GetProductVariantData(productID));
-            tableView.Height = Dim.Fill(5);
+            tableView.Height = Dim.Fill(6);
             tableView.Width = Dim.Fill(2);
             tableView.X = 1;
             tableView.Y = 1;
@@ -124,7 +124,7 @@ namespace WarehouseManager.UI.Pages
             var deleteButton = new Button("Delete")
             {
                 X = 1,
-                Y = Pos.Bottom(tableView)
+                Y = Pos.Bottom(tableView) + 1
             };
 
             var addVariantButton = new Button("Add variant")
@@ -272,14 +272,14 @@ namespace WarehouseManager.UI.Pages
 
                     tableView.Table = EditProductLogic.GetProductVariantData(productID);
 
-                    errorLabel.Text = "Sucess";
+                    errorLabel.Text = "Product updated successfully!";
                     errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                 }
                 catch (Exception ex)
                 {
+                    tableView.Table = EditProductLogic.GetProductVariantData(productID);
                     errorLabel.Text = $"Error: {ex.Message}";
                     errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
-                    tableView.Table = EditProductLogic.GetProductVariantData(productID);
                 }
             };
 

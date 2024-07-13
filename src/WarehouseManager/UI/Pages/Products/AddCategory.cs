@@ -14,10 +14,9 @@ namespace WarehouseManager.UI.Pages
             Application.Top.Add(mainWindow);
 
             var errorLabel = UIComponent.AnnounceLabel();
-
             var userPermissionLabel = UIComponent.UserPermissionLabel();
-
             var separatorLine = UIComponent.SeparatorLine();
+            var refreshButton = UIComponent.RefreshButton();
 
             var infoContainer = new FrameView()
             {
@@ -29,7 +28,7 @@ namespace WarehouseManager.UI.Pages
 
             var categorynameLabel = new Label("Category Name:")
             {
-                X = 2,
+                X = 3,
                 Y = 1
             };
 
@@ -37,21 +36,21 @@ namespace WarehouseManager.UI.Pages
             {
                 X = Pos.Right(categorynameLabel) + 1,
                 Y = Pos.Top(categorynameLabel),
-                Width = Dim.Fill() - 2,
+                Width = Dim.Fill(3),
             };
 
             var descriptionLabel = new Label("Description:")
             {
-                X = 2,
+                X = 3,
                 Y = Pos.Bottom(categorynameLabel) + 2
             };
 
             var descriptionInput = new TextView()
             {
-                X = 2,
+                X = Pos.Left(descriptionLabel),
                 Y = Pos.Bottom(descriptionLabel) + 1,
-                Width = Dim.Fill(2),
-                Height = Dim.Fill() - 3,
+                Width = Dim.Fill(3),
+                Height = Dim.Fill(3),
                 Text = "",
             };
 
@@ -61,24 +60,33 @@ namespace WarehouseManager.UI.Pages
                 Y = Pos.Bottom(descriptionInput) + 1
             };
 
+            refreshButton.Text = "To category list";
+            refreshButton.Clicked += () =>
+            {
+                CategoryList.Display();
+            };
+
             saveButton.Clicked += () =>
             {
                 try
                 {
                     AddCategoryLogic.AddCategory($"{categoryNameInput.Text}", $"{descriptionInput.Text}");
-                    errorLabel.Text = "";
-                    MessageBox.Query("Success", $"Category added successfully", "OK");
+
+                    errorLabel.Text = $"Category created successfully!";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+
                     categoryNameInput.Text = "";
                     descriptionInput.Text = "";
                 }
                 catch (Exception ex)
                 {
                     errorLabel.Text = $"Error: {ex.Message}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                 }
             };
 
             infoContainer.Add(categorynameLabel, descriptionLabel, categoryNameInput, descriptionInput, saveButton);
-            mainWindow.Add(infoContainer, errorLabel, userPermissionLabel, separatorLine);
+            mainWindow.Add(infoContainer, errorLabel, userPermissionLabel, separatorLine, refreshButton);
         }
 
     }

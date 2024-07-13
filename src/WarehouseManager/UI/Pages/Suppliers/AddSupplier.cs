@@ -6,16 +6,17 @@ namespace WarehouseManager.UI.Pages
 {
     public static class AddSupplier
     {
-
+        // warning: this menu layout is copied from company information menu due to time constraints. variable names may not make sense
         public static void Display()
         {
             Application.Top.RemoveAll();
             var mainWindow = UIComponent.LoggedInMainWindow("Add New Supplier");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.AnnounceLabel("Error Message Here");
+            var separatorLine = UIComponent.SeparatorLine();
+            var refreshButton = UIComponent.RefreshButton();
 
-            var userPermissionLabel = UIComponent.UserPermissionLabel();
+            bool sufficientPermission = true;
 
             var infoContainer = new FrameView()
             {
@@ -24,113 +25,123 @@ namespace WarehouseManager.UI.Pages
                 Width = Dim.Percent(75),
                 Height = Dim.Percent(75)
             };
+            mainWindow.Add(infoContainer);
 
             var leftCollumnContainer = new FrameView()
             {
-                X = 1,
+                X = 3,
                 Width = Dim.Percent(50),
-                Height = Dim.Fill(),
-                Border = new Border()
-                {
-                    BorderStyle = BorderStyle.None
-                }
+                Height = 8,
+                Border = new Border() { BorderStyle = BorderStyle.None }
             };
 
             var rightCollumnContainer = new FrameView()
             {
                 X = Pos.Right(leftCollumnContainer),
-                Width = Dim.Fill(1),
-                Height = Dim.Fill(),
+                Width = Dim.Fill(3),
+                Height = 8,
                 Border = new Border()
                 {
                     BorderStyle = BorderStyle.None
                 }
             };
 
-            var supplierNameLabel = new Label("Supplier Name:")
+            var companyNameLabel = new Label("Supplier Name:")
             {
-                X = 1,
+                X = 0,
                 Y = 1
             };
-
             var addressLabel = new Label("Address:")
             {
-                X = 1,
-                Y = 5
+                X = 0,
+                Y = Pos.Bottom(companyNameLabel) + 1
+            };
+            var phoneNumberLabel = new Label("Website:")
+            {
+                X = 0,
+                Y = Pos.Bottom(addressLabel) + 1
+            };
+
+            var companyNameInput = new TextField()
+            {
+                X = Pos.Right(companyNameLabel) + 1,
+                Y = Pos.Top(companyNameLabel),
+                Width = Dim.Fill(3),
+                ReadOnly = !sufficientPermission
+            };
+            var addressInput = new TextField()
+            {
+                X = Pos.Right(companyNameLabel) + 1,
+                Y = Pos.Top(addressLabel),
+                Width = Dim.Fill(3),
+                ReadOnly = !sufficientPermission
+            };
+            var phoneNumberInput = new TextField()
+            {
+                X = Pos.Right(companyNameLabel) + 1,
+                Y = Pos.Top(phoneNumberLabel),
+                Width = Dim.Fill(3),
+                ReadOnly = !sufficientPermission
             };
 
             var emailLabel = new Label("Email:")
             {
-                X = 1,
-                Y = 9
-            };
-
-            var supplierNameInput = new TextField("")
-            {
-                X = Pos.Right(supplierNameLabel) + 1,
-                Y = Pos.Top(supplierNameLabel),
-                Width = Dim.Fill() - 1,
-            };
-
-            var addressInput = new TextField("")
-            {
-                X = Pos.Right(addressLabel) + 1,
-                Y = Pos.Top(addressLabel),
-                Width = Dim.Fill() - 1,
-            };
-
-            var emailInput = new TextField("")
-            {
-                X = Pos.Right(emailLabel) + 1,
-                Y = Pos.Top(emailLabel),
-                Width = Dim.Fill() - 1,
-            };
-
-
-            var phoneLabel = new Label("Phone:")
-            {
-                X = 1,
+                X = 0,
                 Y = 1
             };
-
-            var websiteLabel = new Label("Website:")
+            var representativeLabel = new Label("Phone Number:")
             {
-                X = 1,
-                Y = 5
+                X = 0,
+                Y = Pos.Bottom(emailLabel) + 1
+            };
+
+            var emailInput = new TextField()
+            {
+                X = Pos.Right(representativeLabel) + 1,
+                Y = Pos.Top(emailLabel),
+                Width = Dim.Fill(),
+                ReadOnly = !sufficientPermission
+            };
+            var representativeInput = new TextField()
+            {
+                X = Pos.Right(representativeLabel) + 1,
+                Y = Pos.Top(representativeLabel),
+                Width = Dim.Fill(),
+                ReadOnly = !sufficientPermission
             };
 
             var descriptionLabel = new Label("Description:")
             {
-                X = 1,
-                Y = 9
-            };
-
-            var phoneInput = new TextField("")
-            {
-                X = Pos.Right(phoneLabel) + 1,
-                Y = Pos.Top(phoneLabel),
-                Width = Dim.Fill() - 1,
-            };
-
-            var websiteInput = new TextField("")
-            {
-                X = Pos.Right(websiteLabel) + 1,
-                Y = Pos.Top(websiteLabel),
-                Width = Dim.Fill() - 1,
+                X = 3,
+                Y = Pos.Bottom(leftCollumnContainer),
+                Width = Dim.Fill(3)
             };
 
             var descriptionInput = new TextView()
             {
-                X = Pos.Right(descriptionLabel) + 1,
-                Y = Pos.Top(descriptionLabel),
-                Width = Dim.Fill() - 1,
-                Height = 5 
+                X = 3,
+                Y = Pos.Bottom(descriptionLabel) + 1,
+                Width = Dim.Fill(3),
+                Height = Dim.Fill(3),
+                Text = "",
+                ReadOnly = !sufficientPermission
             };
 
-            var saveButton = new Button("Save")
+            var saveButton = new Button("Save", is_default: true)
             {
                 X = Pos.Center(),
-                Y = Pos.Bottom(infoContainer) - 3
+                Y = Pos.Bottom(descriptionInput) + 1,
+                Visible = sufficientPermission
+            };
+
+            var errorLabel = UIComponent.AnnounceLabel();
+
+            var userPermissionLabel = UIComponent.UserPermissionLabel();
+
+            refreshButton.Text = "To supplier list";
+            refreshButton.Clicked += () =>
+            {
+                SupplierList.Display();
             };
 
             saveButton.Clicked += () =>
@@ -138,25 +149,35 @@ namespace WarehouseManager.UI.Pages
                 try
                 {
                     AddSupplierLogic.Save(
-                        supplierName: $"{supplierNameInput.Text}",
+                        supplierName: $"{companyNameInput.Text}",
                         supplierDescription: $"{descriptionInput.Text}",
                         supplierAddress: $"{addressInput.Text}",
                         supplierEmail: $"{emailInput.Text}",
-                        supplierPhoneNumber: $"{phoneInput.Text}", 
-                        supplierWebsite: $"{websiteInput.Text}"
+                        supplierPhoneNumber: $"{representativeInput.Text}",
+                        supplierWebsite: $"{phoneNumberInput.Text}"
                     );
-                    MessageBox.Query("Save Supplier", "Supplier added successfully!", "OK");
+
+                    errorLabel.Text = $"User created successfully!";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+
+                    companyNameInput.Text = "";
+                    descriptionInput.Text = "";
+                    addressInput.Text = "";
+                    emailInput.Text = "";
+                    representativeInput.Text = "";
+                    phoneNumberInput.Text = "";
                 }
                 catch (Exception ex)
                 {
                     errorLabel.Text = $"Error: {ex.Message}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                 }
             };
 
-            leftCollumnContainer.Add(supplierNameLabel, supplierNameInput, addressLabel, addressInput, emailLabel, emailInput);
-            rightCollumnContainer.Add(phoneLabel, phoneInput, websiteLabel, websiteInput, descriptionLabel, descriptionInput);
-            infoContainer.Add(leftCollumnContainer, rightCollumnContainer);
-            mainWindow.Add(infoContainer, saveButton, errorLabel, userPermissionLabel);
+            leftCollumnContainer.Add(companyNameLabel, addressLabel, phoneNumberLabel, companyNameInput, addressInput, phoneNumberInput);
+            rightCollumnContainer.Add(emailLabel, representativeLabel, emailInput, representativeInput);
+            infoContainer.Add(leftCollumnContainer, rightCollumnContainer, descriptionLabel, descriptionInput, saveButton);
+            mainWindow.Add(errorLabel, userPermissionLabel, separatorLine, refreshButton);
         }
     }
 }

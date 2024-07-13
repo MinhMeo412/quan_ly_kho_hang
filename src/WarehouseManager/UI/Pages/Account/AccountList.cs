@@ -126,7 +126,7 @@ namespace WarehouseManager.UI.Pages
                     }
                     catch (Exception ex)
                     {
-                        //tableView.Table.Rows[row][column] = currentValue;
+                        tableView.Table.Rows[row][column] = currentValue;
                         errorLabel.Text = $"Error: {ex.Message}";
                         errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                     }
@@ -154,9 +154,17 @@ namespace WarehouseManager.UI.Pages
                 int result = MessageBox.Query("Delete", "Are you sure you want to delete this account?", "No", "Yes");
                 if (result == 1)
                 {
-                    tableView.Table = AccountListLogic.DeleteUser(tableView.Table, userID);
-                    errorLabel.Text = $"Successfully deleted user#{userID}";
-                    errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+                    try
+                    {
+                        tableView.Table = AccountListLogic.DeleteUser(tableView.Table, userID);
+                        errorLabel.Text = $"Successfully deleted user#{userID}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+                    }
+                    catch (Exception ex)
+                    {
+                        errorLabel.Text = $"Error: {ex.Message}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                    }
                 }
             };
 
