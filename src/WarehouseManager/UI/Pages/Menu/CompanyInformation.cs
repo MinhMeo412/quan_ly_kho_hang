@@ -15,7 +15,7 @@ namespace WarehouseManager.UI.Pages
             var separatorLine = UIComponent.SeparatorLine();
 
             // Chỉnh thành true nếu là admin. nếu ko là admin thì sẽ không sửa đươc.
-            bool sufficientPermission = true;
+            bool sufficientPermission = false;
 
             var infoContainer = new FrameView()
             {
