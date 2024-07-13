@@ -32,10 +32,10 @@ namespace WarehouseManager.UI.Pages
 
             var tableContainer = new FrameView()
             {
-                X = 1,
-                Y = Pos.Bottom(searchLabel) + 1,
-                Width = Dim.Fill(1),
-                Height = Dim.Fill(4),
+                X = 3,
+                Y = Pos.Bottom(searchLabel) + 2,
+                Width = Dim.Fill(3),
+                Height = Dim.Fill(6),
                 Border = new Border() { BorderStyle = BorderStyle.None }
             };
 
@@ -151,11 +151,11 @@ namespace WarehouseManager.UI.Pages
                 DataRow selectedRow = tableView.Table.Rows[tableView.SelectedRow];
                 int userID = (int)selectedRow[0];
 
-                int result = MessageBox.Query("Delete", "Are you sure you want to delete this item?", "No", "Yes");
+                int result = MessageBox.Query("Delete", "Are you sure you want to delete this account?", "No", "Yes");
                 if (result == 1)
                 {
                     tableView.Table = AccountListLogic.DeleteUser(tableView.Table, userID);
-                    errorLabel.Text = $"Successfully deleted user #{userID}";
+                    errorLabel.Text = $"Successfully deleted user#{userID}";
                     errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                 }
             };

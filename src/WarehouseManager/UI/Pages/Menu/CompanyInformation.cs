@@ -1,4 +1,5 @@
 using Terminal.Gui;
+using WarehouseManager.Core.Pages;
 using WarehouseManager.UI.Utility;
 
 namespace WarehouseManager.UI.Pages
@@ -14,7 +15,7 @@ namespace WarehouseManager.UI.Pages
             var separatorLine = UIComponent.SeparatorLine();
 
             // Chỉnh thành true nếu là admin. nếu ko là admin thì sẽ không sửa đươc.
-            bool sufficientPermission = false;
+            bool sufficientPermission = true;
 
             var infoContainer = new FrameView()
             {
@@ -27,7 +28,7 @@ namespace WarehouseManager.UI.Pages
 
             var leftCollumnContainer = new FrameView()
             {
-                X = 1,
+                X = 3,
                 Width = Dim.Percent(50),
                 Height = 8,
                 Border = new Border()
@@ -39,7 +40,7 @@ namespace WarehouseManager.UI.Pages
             var rightCollumnContainer = new FrameView()
             {
                 X = Pos.Right(leftCollumnContainer),
-                Width = Dim.Fill(1),
+                Width = Dim.Fill(3),
                 Height = 8,
                 Border = new Border()
                 {
@@ -49,81 +50,82 @@ namespace WarehouseManager.UI.Pages
 
             var companyNameLabel = new Label("Company Name:")
             {
-                X = 1,
+                X = 0,
                 Y = 1
             };
             var addressLabel = new Label("Address:")
             {
-                X = 1,
+                X = 0,
                 Y = Pos.Bottom(companyNameLabel) + 1
             };
             var phoneNumberLabel = new Label("Phone Number:")
             {
-                X = 1,
+                X = 0,
                 Y = Pos.Bottom(addressLabel) + 1
             };
 
-            var companyNameInput = new TextField("Aperture Science")
+            var companyNameInput = new TextField(CompanyInformationLogic.GetCompanyName())
             {
                 X = Pos.Right(companyNameLabel) + 1,
                 Y = Pos.Top(companyNameLabel),
-                Width = Dim.Fill() - 1,
+                Width = Dim.Fill(3),
                 ReadOnly = !sufficientPermission
             };
-            var addressInput = new TextField("123 Enrichment Center Way, Upper Michigan, USA")
+            var addressInput = new TextField(CompanyInformationLogic.GetAddresss())
             {
                 X = Pos.Right(companyNameLabel) + 1,
                 Y = Pos.Top(addressLabel),
-                Width = Dim.Fill() - 1,
+                Width = Dim.Fill(3),
                 ReadOnly = !sufficientPermission
             };
-            var phoneNumberInput = new TextField("555-9876")
+            var phoneNumberInput = new TextField(CompanyInformationLogic.GetPhoneNumber())
             {
                 X = Pos.Right(companyNameLabel) + 1,
                 Y = Pos.Top(phoneNumberLabel),
-                Width = Dim.Fill() - 1,
+                Width = Dim.Fill(3),
                 ReadOnly = !sufficientPermission
             };
 
             var emailLabel = new Label("Email:")
             {
-                X = 1,
+                X = 0,
                 Y = 1
             };
             var representativeLabel = new Label("Represenstative:")
             {
-                X = 1,
+                X = 0,
                 Y = Pos.Bottom(emailLabel) + 1
             };
 
-            var emailInput = new TextField("contact@aperturescience.com")
+            var emailInput = new TextField(CompanyInformationLogic.GetEmail())
             {
                 X = Pos.Right(representativeLabel) + 1,
                 Y = Pos.Top(emailLabel),
-                Width = Dim.Fill() - 1,
+                Width = Dim.Fill(),
                 ReadOnly = !sufficientPermission
             };
-            var representativeInput = new TextField("Cave Johnson")
+            var representativeInput = new TextField(CompanyInformationLogic.GetRepresentative())
             {
                 X = Pos.Right(representativeLabel) + 1,
                 Y = Pos.Top(representativeLabel),
-                Width = Dim.Fill() - 1,
+                Width = Dim.Fill(),
                 ReadOnly = !sufficientPermission
             };
 
             var descriptionLabel = new Label("Description:")
             {
-                X = 2,
-                Y = Pos.Bottom(leftCollumnContainer)
+                X = 3,
+                Y = Pos.Bottom(leftCollumnContainer),
+                Width = Dim.Fill(3)
             };
 
             var descriptionInput = new TextView()
             {
-                X = 2,
+                X = 3,
                 Y = Pos.Bottom(descriptionLabel) + 1,
-                Width = Dim.Fill(2),
-                Height = Dim.Fill() - 3,
-                Text = "Aperture Science is a leading innovator in the field of science and technology. \nKnown for its cutting-edge research and development, Aperture Science is dedicated to pushing the boundaries of what is possible.\nOur state-of-the-art Enrichment Center provides a safe and controlled environment for testing revolutionary new products and ideas.",
+                Width = Dim.Fill(3),
+                Height = Dim.Fill(3),
+                Text = CompanyInformationLogic.GetDescription(),
                 ReadOnly = !sufficientPermission
             };
 

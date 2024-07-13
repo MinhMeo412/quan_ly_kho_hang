@@ -28,26 +28,26 @@ namespace WarehouseManager.UI.Pages
 
             var userNameLabel = new Label("Username:")
             {
-                X = 1,
+                X = 3,
                 Y = 1
             };
 
             var oldPasswordLabel = new Label("Current Password:")
             {
-                X = 1,
+                X = 3,
                 Y = Pos.Bottom(userNameLabel) + 1
             };
 
 
             var newPasswordLabel = new Label("New Password:")
             {
-                X = 1,
+                X = 3,
                 Y = Pos.Bottom(oldPasswordLabel) + 2
             };
 
             var repeatNewPasswordLabel = new Label("Confirm New Password:")
             {
-                X = 1,
+                X = 3,
                 Y = Pos.Bottom(newPasswordLabel) + 1
             };
 
@@ -56,7 +56,7 @@ namespace WarehouseManager.UI.Pages
             {
                 X = Pos.Right(repeatNewPasswordLabel) + 1,
                 Y = Pos.Top(userNameLabel),
-                Width = Dim.Fill(1),
+                Width = Dim.Fill(3),
                 ReadOnly = true
             };
 
@@ -64,7 +64,7 @@ namespace WarehouseManager.UI.Pages
             {
                 X = Pos.Right(repeatNewPasswordLabel) + 1,
                 Y = Pos.Top(oldPasswordLabel),
-                Width = Dim.Fill(1),
+                Width = Dim.Fill(3),
                 Secret = true
             };
 
@@ -72,7 +72,7 @@ namespace WarehouseManager.UI.Pages
             {
                 X = Pos.Right(repeatNewPasswordLabel) + 1,
                 Y = Pos.Top(newPasswordLabel),
-                Width = Dim.Fill(1),
+                Width = Dim.Fill(3),
                 Secret = true
             };
 
@@ -80,7 +80,7 @@ namespace WarehouseManager.UI.Pages
             {
                 X = Pos.Right(repeatNewPasswordLabel) + 1,
                 Y = Pos.Top(repeatNewPasswordLabel),
-                Width = Dim.Fill(1),
+                Width = Dim.Fill(3),
                 Secret = true
             };
 
