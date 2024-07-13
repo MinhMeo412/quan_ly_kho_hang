@@ -15,6 +15,7 @@ namespace WarehouseManager.UI.Pages
             var errorLabel = UIComponent.AnnounceLabel();
             var userPermissionLabel = UIComponent.UserPermissionLabel();
             var separatorLine = UIComponent.SeparatorLine();
+            var refreshButton = UIComponent.RefreshButton();
 
             var infoContainer = new FrameView()
             {
@@ -131,6 +132,12 @@ namespace WarehouseManager.UI.Pages
                 Y = Pos.Bottom(rightCollumnContainer) + 1
             };
 
+            refreshButton.Text = "To account list";
+            refreshButton.Clicked += () =>
+            {
+                AccountList.Display();
+            };
+
             saveButton.Clicked += () =>
             {
                 try
@@ -162,10 +169,12 @@ namespace WarehouseManager.UI.Pages
                 }
             };
 
+
+
             leftCollumnContainer.Add(userNameLabel, userPasswordLabel, permissionNameLabel, userNameInput, userPasswordInput, permissionDropDown);
             rightCollumnContainer.Add(fullNameLabel, emailLabel, phoneNumberLabel, fullNameInput, emailInput, phoneNumberInput);
             infoContainer.Add(leftCollumnContainer, rightCollumnContainer, saveButton);
-            mainWindow.Add(infoContainer, errorLabel, userPermissionLabel, separatorLine);
+            mainWindow.Add(infoContainer, errorLabel, userPermissionLabel, separatorLine, refreshButton);
         }
     }
 }
