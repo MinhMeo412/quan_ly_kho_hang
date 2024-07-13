@@ -16,12 +16,12 @@ namespace WarehouseManager.Core.Pages
         {
             var dataTable = new DataTable();
             dataTable.Columns.Add("Supplier ID", typeof(int));
-            dataTable.Columns.Add("Name", typeof(string));
-            dataTable.Columns.Add("Description", typeof(string));
-            dataTable.Columns.Add("Address", typeof(string));
-            dataTable.Columns.Add("Email", typeof(int));
-            dataTable.Columns.Add("Phone Number", typeof(string));
-            dataTable.Columns.Add("Website", typeof(string));
+            dataTable.Columns.Add("Supplier Name", typeof(string));
+            dataTable.Columns.Add("Supplier Description", typeof(string));
+            dataTable.Columns.Add("Supplier Address", typeof(string));
+            dataTable.Columns.Add("Supplier Email", typeof(string));
+            dataTable.Columns.Add("Supplier Phone Number", typeof(string));
+            dataTable.Columns.Add("Supplier Website", typeof(string));
 
             suppliers ??= new List<Supplier>();
             foreach (Supplier supplier in suppliers)

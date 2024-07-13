@@ -126,7 +126,7 @@ namespace WarehouseManager.UI.Pages
                     }
                     catch (Exception ex)
                     {
-                        //tableView.Table.Rows[row][column] = currentValue;
+                        tableView.Table.Rows[row][column] = currentValue;
                         errorLabel.Text = $"Error: {ex.Message}";
                         errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                     }

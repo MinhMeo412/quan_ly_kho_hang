@@ -32,10 +32,10 @@ namespace WarehouseManager.UI.Pages
 
             var tableContainer = new FrameView()
             {
-                X = 1,
-                Y = Pos.Bottom(searchLabel) + 1,
-                Width = Dim.Fill(1),
-                Height = Dim.Fill(4),
+                X = 3,
+                Y = Pos.Bottom(searchLabel) + 2,
+                Width = Dim.Fill(3),
+                Height = Dim.Fill(6),
                 Border = new Border() { BorderStyle = BorderStyle.None }
             };
 
@@ -75,13 +75,13 @@ namespace WarehouseManager.UI.Pages
                 }
             };
 
-     
+
             tableView.CellActivated += args =>
             {
                 int column = args.Col;
                 int row = args.Row;
 
-        
+
                 var currentValue = tableView.Table.Rows[row][column].ToString();
 
                 var editDialog = new Dialog("Edit Cell")
@@ -110,7 +110,6 @@ namespace WarehouseManager.UI.Pages
                 var okButton = new Button("OK", is_default: true);
                 okButton.Clicked += () =>
                 {
-
                     tableView.Table.Rows[row][column] = newValue.Text.ToString();
 
                     int SupplierID = (int)tableView.Table.Rows[row][0];
@@ -121,17 +120,18 @@ namespace WarehouseManager.UI.Pages
                     string SupplierPhoneNumber = $"{tableView.Table.Rows[row][5]}";
                     string SupplierWebsite = $"{tableView.Table.Rows[row][6]}";
 
-
                     try
                     {
-                        SupplierListLogic.UpdateSupplier(SupplierID, SupplierName, SupplierDescription,SupplierAddress,SupplierEmail,SupplierPhoneNumber,SupplierWebsite);
+                        SupplierListLogic.UpdateSupplier(SupplierID, SupplierName, SupplierDescription, SupplierAddress, SupplierEmail, SupplierPhoneNumber, SupplierWebsite);
+                        errorLabel.Text = $"Supplier {SupplierName} updated successfully";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                     }
                     catch (Exception ex)
                     {
                         tableView.Table.Rows[row][column] = currentValue;
                         errorLabel.Text = $"Error: {ex.Message}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                     }
-
 
                     Application.RequestStop();
                 };
@@ -140,7 +140,7 @@ namespace WarehouseManager.UI.Pages
                 editDialog.AddButton(cancelButton);
                 editDialog.AddButton(okButton);
 
-                
+
                 if (column != 0)
                 {
                     Application.Run(editDialog);
@@ -154,9 +154,19 @@ namespace WarehouseManager.UI.Pages
                 int supplierID = (int)selectedRow[0];
 
                 int result = MessageBox.Query("Delete", "Are you sure you want to delete this item?", "No", "Yes");
-                if (result == 1) 
+                if (result == 1)
                 {
-                    tableView.Table = SupplierListLogic.DeleteSupplier(tableView.Table, supplierID);
+                    try
+                    {
+                        tableView.Table = SupplierListLogic.DeleteSupplier(tableView.Table, supplierID);
+                        errorLabel.Text = $"Successfully deleted supplier#{supplierID}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+                    }
+                    catch (Exception ex)
+                    {
+                        errorLabel.Text = $"Error: {ex.Message}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                    }
                 }
             };
 
