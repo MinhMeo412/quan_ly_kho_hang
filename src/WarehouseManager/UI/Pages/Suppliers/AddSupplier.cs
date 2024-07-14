@@ -157,7 +157,7 @@ namespace WarehouseManager.UI.Pages
                         supplierWebsite: $"{phoneNumberInput.Text}"
                     );
 
-                    errorLabel.Text = $"User created successfully!";
+                    errorLabel.Text = $"Supplier added successfully!";
                     errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
 
                     companyNameInput.Text = "";

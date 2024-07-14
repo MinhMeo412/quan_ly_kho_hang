@@ -123,7 +123,7 @@ namespace WarehouseManager.UI.Pages
             quitButton.Clicked += () => Application.RequestStop();
 
             // Add all the elements to the container
-            loginContainer.Add(usernameLabel, usernameInput, passwordLabel, passwordInput, quitButtonContainer, loginButtonContainer);
+            loginContainer.Add(usernameLabel, usernameInput, passwordLabel, passwordInput, loginButtonContainer, quitButtonContainer);
         }
 
     }

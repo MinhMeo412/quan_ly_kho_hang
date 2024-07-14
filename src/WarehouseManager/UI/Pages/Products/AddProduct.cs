@@ -123,12 +123,12 @@ namespace WarehouseManager.UI.Pages
             var tableView = UIComponent.Table(AddProductLogic.GetDataTable());
             tableView.Height = Dim.Fill(6);
             tableView.Width = Dim.Fill(2);
-            tableView.X = 1;
+            tableView.X = 2;
             tableView.Y = 1;
 
             var deleteButton = new Button("Delete")
             {
-                X = 1,
+                X = 2,
                 Y = Pos.Bottom(tableView) + 1
             };
 
@@ -136,6 +136,7 @@ namespace WarehouseManager.UI.Pages
             {
                 Y = Pos.AnchorEnd(2)
             };
+
             addVariantButton.X = Pos.AnchorEnd(addVariantButton.Text.Length + 6);
 
             var variantInputContainer = new FrameView()

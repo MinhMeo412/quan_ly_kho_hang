@@ -68,7 +68,7 @@ namespace WarehouseManager.UI.Pages
                     X = 1,
                     Y = 1,
                     Width = Dim.Fill(1),
-                    Height = Dim.Fill(2),
+                    Height = Dim.Fill(3),
                     ShowVerticalScrollIndicator = false,
                     ShowHorizontalScrollIndicator = false,
                     ContentSize = new Size(widestWarehouseName + 2, warehouseChecklistDict.Count) // Adjust size based on content
@@ -86,7 +86,7 @@ namespace WarehouseManager.UI.Pages
                 var ok = new Button("Ok", is_default: true)
                 {
                     X = Pos.Center(),
-                    Y = Pos.AnchorEnd(1)
+                    Y = Pos.AnchorEnd(2)
                 };
                 ok.Clicked += () =>
                 {
