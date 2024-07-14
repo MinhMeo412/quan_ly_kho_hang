@@ -18,7 +18,7 @@ namespace WarehouseManager.UI.Pages
 
             var separatorLine = UIComponent.SeparatorLine();
 
-            var returnButton = new Button("To Product List")
+            var returnButton = new Button("Back")
             {
                 X = 3,
                 Y = 1

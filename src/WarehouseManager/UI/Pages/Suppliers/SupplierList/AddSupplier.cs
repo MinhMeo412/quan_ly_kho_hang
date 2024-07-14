@@ -138,7 +138,7 @@ namespace WarehouseManager.UI.Pages
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
-            refreshButton.Text = "To supplier list";
+            refreshButton.Text = "Back";
             refreshButton.Clicked += () =>
             {
                 SupplierList.Display();
