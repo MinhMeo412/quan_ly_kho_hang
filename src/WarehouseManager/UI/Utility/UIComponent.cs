@@ -2,6 +2,7 @@ using System.Data;
 using Terminal.Gui;
 using WarehouseManager.UI.Pages;
 using WarehouseManager.Core.Pages;
+using WarehouseManager.Core.Utility;
 
 namespace WarehouseManager.UI.Utility
 {
@@ -13,43 +14,36 @@ namespace WarehouseManager.UI.Utility
         */
         private static MenuBar WarehouseMenuBar()
         {
-            var menuBar = new MenuBar(new MenuBarItem[] {
+            var menuBar = new MenuBar([
                 new MenuBarItem("_Menu", new MenuItem[] {
                     new MenuItem("_Home", "", Home.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Company information", "", CompanyInformation.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Switch theme", "Light/Dark", UI.SwitchTheme, () => canExecuteMenu(4)),
-                    new MenuItem("_Exit program", "Ctrl+Q", () => Application.RequestStop(), () => canExecuteMenu(4))
+                    new MenuItem("_Company Information", "", CompanyInformation.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Switch Theme", "Light/Dark", UI.SwitchTheme, () => canExecuteMenu(4)),
+                    new MenuItem("_Exit Program", "Ctrl+Q", () => Application.RequestStop(), () => canExecuteMenu(4))
                 }),
                 new MenuBarItem("_Account", new MenuItem[] {
-                    new MenuItem("_Change password", "", ChangePassword.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Show all accounts", "", AccountList.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Create new account", "", AddAccount.Display, () => canExecuteMenu(4))
+                    new MenuItem("_Change Password", "", ChangePassword.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Accounts", "", AccountList.Display, () => canExecuteMenu(4))
+                }),
+                new MenuBarItem("_Inventory", new MenuItem[] {
+                    new MenuItem("_Warehouse Stock", "", WarehouseStock.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Products", "", ProductList.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Categories", "", CategoryList.Display, () => canExecuteMenu(4))
+                }),
+                new MenuBarItem("_Operations", new MenuItem[] {
+                    new MenuItem("_Warehouses", "", WarehouseList.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Shipments", "", ShipmentList.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Inventory Audits", "", InventoryAuditList.Display, () => canExecuteMenu(4))
                 }),
                 new MenuBarItem("_Suppliers", new MenuItem[] {
-                    new MenuItem("_Show all suppliers", "", SupplierList.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Add new supplier", "", AddSupplier.Display, () => canExecuteMenu(4))
-                }),
-                new MenuBarItem("_Products", new MenuItem[] {
-                    new MenuItem("_Show all categories", "", CategoryList.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Create new category", "", AddCategory.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Show all products", "", ProductList.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Add new product", "", AddProduct.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Show stock quantity", "", WarehouseStock.Display, () => canExecuteMenu(4))
-                }),
-                new MenuBarItem("_Warehouses", new MenuItem[] {
-                    new MenuItem("_Show all shipments", "", ShipmentList.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Add outbound shipment", "", AddOutboundShipment.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Add inbound shipment", "", AddInboundShipment.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Add transfer shipment", "", AddStockTransfer.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Show all inventory audits", "", InventoryAuditList.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Add new inventory audit", "", AddInventoryAudit.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Show all warehouses", "", WarehouseList.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Add new warehouse", "", AddWarehouse.Display, () => canExecuteMenu(4))
+                    new MenuItem("_Suppliers", "", SupplierList.Display, () => canExecuteMenu(4))
                 }),
                 new MenuBarItem("_Report", new MenuItem[] {
-                    new MenuItem("_Generate Report", "", Home.Display, () => canExecuteMenu(4))
+                    new MenuItem("_Warehouse Stock", "", WarehouseStockReport.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Warehouse Shipments", "", WarehouseShipmentsReport.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Product List", "", ProductListReport.Display, () => canExecuteMenu(4))
                 })
-            });
+            ]);
 
             return menuBar;
         }
@@ -243,15 +237,16 @@ namespace WarehouseManager.UI.Utility
             return refreshButton;
         }
 
-        public static SaveDialog ExportToExcelDialog(DataTable dataTable)
+        public static SaveDialog ExportToExcelDialog(DataTable table1, string sheetName1, DataTable table2, string sheetName2)
         {
             var saveDialog = new SaveDialog("Export to Excel", "Choose export location");
             Application.Run(saveDialog);
             if (!saveDialog.Canceled && saveDialog.DirectoryPath != null)
             {
+                string fileName = UIComponentLogic.GetExcelFileName($"{saveDialog.FileName}");
                 string selectedPath = $"{saveDialog.FilePath}";
-                UIComponentLogic.ExportToExcel(dataTable, selectedPath);
-                MessageBox.Query("Export", $" Successfully exported {saveDialog.FileName} to {saveDialog.DirectoryPath} ", "OK");
+                UIComponentLogic.ExportToExcel(selectedPath, table1, sheetName1, table2, sheetName2);
+                MessageBox.Query("Export", $" Successfully exported {fileName} to {saveDialog.DirectoryPath} ", "OK");
             }
             return saveDialog;
         }

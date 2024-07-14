@@ -177,7 +177,7 @@ namespace WarehouseManager.UI.Pages
             };
 
             tableContainer.Add(tableView);
-            mainWindow.Add(refreshButton, searchLabel, searchInput, tableContainer, addButton, deleteButton, errorLabel, userPermissionLabel, separatorLine);
+            mainWindow.Add(searchLabel, searchInput, tableContainer, addButton, deleteButton, errorLabel, userPermissionLabel, separatorLine, refreshButton);
         }
     }
 }

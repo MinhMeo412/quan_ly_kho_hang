@@ -132,7 +132,7 @@ namespace WarehouseManager.UI.Pages
                 Y = Pos.Bottom(rightCollumnContainer) + 1
             };
 
-            refreshButton.Text = "To account list";
+            refreshButton.Text = "Back";
             refreshButton.Clicked += () =>
             {
                 AccountList.Display();

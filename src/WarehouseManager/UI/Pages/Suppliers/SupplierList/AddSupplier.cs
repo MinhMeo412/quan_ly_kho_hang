@@ -138,7 +138,7 @@ namespace WarehouseManager.UI.Pages
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
-            refreshButton.Text = "To supplier list";
+            refreshButton.Text = "Back";
             refreshButton.Clicked += () =>
             {
                 SupplierList.Display();
@@ -157,7 +157,7 @@ namespace WarehouseManager.UI.Pages
                         supplierWebsite: $"{phoneNumberInput.Text}"
                     );
 
-                    errorLabel.Text = $"User created successfully!";
+                    errorLabel.Text = $"Supplier added successfully!";
                     errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
 
                     companyNameInput.Text = "";

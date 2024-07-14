@@ -60,7 +60,7 @@ namespace WarehouseManager.UI.Pages
                 Y = Pos.Bottom(descriptionInput) + 1
             };
 
-            refreshButton.Text = "To category list";
+            refreshButton.Text = "Back";
             refreshButton.Clicked += () =>
             {
                 CategoryList.Display();

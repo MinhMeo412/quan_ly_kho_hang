@@ -32,7 +32,7 @@ namespace WarehouseManager.UI.Pages
             var addButtonLeft = UIComponent.AddButton("Add New Outbound Shipment");
             addButtonLeft.X = Pos.Left(addButtonRight) - addButtonLeft.Text.Length - 5;
 
-            var addButtonLeft2 = UIComponent.AddButton("Add New Transfer Shipment");
+            var addButtonLeft2 = UIComponent.AddButton("Add New Stock Transfer");
             addButtonLeft2.X = Pos.Left(addButtonLeft) - addButtonLeft2.Text.Length - 5;
 
             var tableContainer = new FrameView()

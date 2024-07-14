@@ -5,12 +5,16 @@ namespace WarehouseManager.Core.Utility
 {
     public static class Excel
     {
-        public static void Export(DataTable table, string filePath)
+        public static void Export(string filePath, DataTable table1, string sheetName1, DataTable table2, string sheetName2)
         {
             using (var package = new ExcelPackage())
             {
-                var worksheet = package.Workbook.Worksheets.Add("Sheet 1");
-                worksheet.Cells["A1"].LoadFromDataTable(table, true);
+                var worksheet1 = package.Workbook.Worksheets.Add(sheetName1);
+                worksheet1.Cells["A1"].LoadFromDataTable(table1, true);
+
+                var worksheet2 = package.Workbook.Worksheets.Add(sheetName2);
+                worksheet2.Cells["A1"].LoadFromDataTable(table2, true);
+
                 package.SaveAs(new FileInfo(filePath));
             }
         }
