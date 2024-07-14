@@ -4,12 +4,12 @@ using WarehouseManager.Core.Pages;
 
 namespace WarehouseManager.UI.Pages
 {
-    public static class WarehouseStockReport
+    public static class WarehouseShipmentsReport
     {
         public static void Display()
         {
             Application.Top.RemoveAll();
-            var mainWindow = UIComponent.LoggedInMainWindow("Warehouse Stock Report");
+            var mainWindow = UIComponent.LoggedInMainWindow("Warehouse Shipments Report");
             Application.Top.Add(mainWindow);
 
             var errorLabel = UIComponent.AnnounceLabel();

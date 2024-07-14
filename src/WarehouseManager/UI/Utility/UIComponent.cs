@@ -13,7 +13,7 @@ namespace WarehouseManager.UI.Utility
         */
         private static MenuBar WarehouseMenuBar()
         {
-            var menuBar = new MenuBar(new MenuBarItem[] {
+            var menuBar = new MenuBar([
                 new MenuBarItem("_Menu", new MenuItem[] {
                     new MenuItem("_Home", "", Home.Display, () => canExecuteMenu(4)),
                     new MenuItem("_Company Information", "", CompanyInformation.Display, () => canExecuteMenu(4)),
@@ -38,9 +38,11 @@ namespace WarehouseManager.UI.Utility
                     new MenuItem("_Suppliers", "", SupplierList.Display, () => canExecuteMenu(4))
                 }),
                 new MenuBarItem("_Report", new MenuItem[] {
-                    new MenuItem("_Generate Report", "", Home.Display, () => canExecuteMenu(4))
+                    new MenuItem("_Warehouse Stock", "", WarehouseStockReport.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Warehouse Shipments", "", WarehouseShipmentsReport.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Product List", "", ProductListReport.Display, () => canExecuteMenu(4))
                 })
-            });
+            ]);
 
             return menuBar;
         }
