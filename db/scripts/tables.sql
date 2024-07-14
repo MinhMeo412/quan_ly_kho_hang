@@ -15,7 +15,9 @@ CREATE TABLE user(
 	permission_level INT NOT NULL,
 	PRIMARY KEY (user_id),
 	FOREIGN KEY (permission_level) REFERENCES permission(permission_level),
-	UNIQUE (user_name, user_email, user_phone_number)
+	UNIQUE (user_name),
+	UNIQUE (user_email),
+	UNIQUE (user_phone_number)
 );
 
 CREATE TABLE token(
@@ -64,7 +66,8 @@ CREATE TABLE product_variant(
 	product_variant_color VARCHAR(32),
 	product_variant_size VARCHAR(16),
 	PRIMARY KEY (product_variant_id),
-	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
+	FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE,
+	UNIQUE (product_id, product_variant_color, product_variant_size)
 );
 
 CREATE TABLE warehouse_address(
@@ -103,7 +106,8 @@ CREATE TABLE inventory_audit(
 	inventory_audit_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 	PRIMARY KEY (inventory_audit_id),
 	FOREIGN KEY (warehouse_id) REFERENCES warehouse(warehouse_id) ON DELETE CASCADE,
-	FOREIGN KEY (user_id) REFERENCES user(user_id)
+	FOREIGN KEY (user_id) REFERENCES user(user_id),
+	UNIQUE (warehouse_id, user_id, inventory_audit_time)
 );
 
 CREATE TABLE inventory_audit_detail(
