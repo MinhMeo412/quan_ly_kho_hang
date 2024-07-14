@@ -27,13 +27,19 @@ namespace WarehouseManager.Core.Pages
             return permissionName;
         }
 
-        public static void ExportToExcel(DataTable dataTable, string selectedPath)
+        public static void ExportToExcel(string selectedPath, DataTable table1, string sheetName1, DataTable table2, string sheetName2)
         {
-            if (!selectedPath.Contains(".xlsx"))
+            selectedPath = GetExcelFileName(selectedPath);
+            Excel.Export(selectedPath, table1, sheetName1, table2, sheetName2);
+        }
+
+        public static string GetExcelFileName(string fileName)
+        {
+            if (!fileName.EndsWith(".xlsx"))
             {
-                selectedPath = $"{selectedPath}.xlsx";
+                fileName = $"{fileName}.xlsx";
             }
-            Excel.Export(dataTable, selectedPath);
+            return fileName;
         }
     }
 }

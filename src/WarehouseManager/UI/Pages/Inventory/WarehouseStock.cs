@@ -162,15 +162,7 @@ namespace WarehouseManager.UI.Pages
 
             exportButton.Clicked += () =>
             {
-                try
-                {
-                    tableView.Table = SortDataTable.ClearDirectionArrow(tableView.Table);
-                    var saveDialog = UIComponent.ExportToExcelDialog(tableView.Table);
-                }
-                catch (Exception ex)
-                {
-                    errorLabel.Text = ex.Message;
-                }
+                WarehouseStockReport.Display();
             };
 
             tableContainer.Add(tableView);
