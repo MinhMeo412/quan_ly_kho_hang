@@ -55,10 +55,6 @@ Warehouse Manager is an application designed to streamline warehouse operations,
         ```bash
         mysql -u your-username -p
         ```
-    - Drop or rename the `warehouse` database if it exists:
-        ```sql
-        DROP DATABASE warehouse;
-        ```
     - Execute the `main.sql` script to set up the database schema and initial data:
         ```sql
         SOURCE main.sql;

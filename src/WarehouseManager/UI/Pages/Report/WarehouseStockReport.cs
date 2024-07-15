@@ -59,9 +59,6 @@ namespace WarehouseManager.UI.Pages
 
                     if (filePath != null)
                     {
-                        errorLabel.Text = $"Processing Warehouse Stock...";
-                        errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
-
                         KeyValuePair<string, int?> selectedWarehouse = new KeyValuePair<string, int?>(
                             warehouseNameID.Keys.ToList()[warehouseDropDown.SelectedItem],
                             warehouseNameID[warehouseNameID.Keys.ToList()[warehouseDropDown.SelectedItem]]
