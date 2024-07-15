@@ -8,7 +8,7 @@ namespace WarehouseManager.Core.Pages
         public static Dictionary<string, int?> GetWarehousesNames()
         {
             Dictionary<string, int?> warehouseNameID = new Dictionary<string, int?>();
-            warehouseNameID["All warehouses"] = null;
+            warehouseNameID["All Warehouses"] = null;
 
             List<Warehouse> warehouses = GetWarehouseList();
             foreach (Warehouse warehouse in warehouses)
