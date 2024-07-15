@@ -87,9 +87,7 @@ namespace WarehouseManager.Core.Pages
 
         private static string GetCurrentTime()
         {
-            DateTime currentDate = DateTime.Now;
-            string formattedDate = currentDate.ToString("dd/MM/yyyy");
-            return formattedDate;
+            return WarehouseStockReportLogic.GetCurrentTime();
         }
 
         private static string GetCategoryName(int categoryID, List<Category> categories)

@@ -85,7 +85,8 @@ CREATE TABLE warehouse(
 	warehouse_name VARCHAR(32) NOT NULL,
 	warehouse_address_id INT,
 	PRIMARY KEY (warehouse_id),
-	FOREIGN KEY (warehouse_address_id) REFERENCES warehouse_address(warehouse_address_id) ON DELETE SET NULL
+	FOREIGN KEY (warehouse_address_id) REFERENCES warehouse_address(warehouse_address_id) ON DELETE SET NULL,
+	UNIQUE (warehouse_name)
 );
 
 CREATE TABLE warehouse_stock(
