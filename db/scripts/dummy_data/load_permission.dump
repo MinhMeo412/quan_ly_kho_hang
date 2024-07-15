@@ -1,6 +1,6 @@
 INSERT INTO permission(permission_level, permission_name, permission_description) VALUES
-('0', 'Admin', 'Tất cả mọi thứ.'),
-('1', 'Director', 'Tất cả mọi thứ.(Trừ tạo user)'),
-('2', 'Warehouse Manager', 'Tất cả mọi thứ.(Trừ tạo user)'),
-('3', 'Warehouse Supervisor', 'Chỉ có quyền đọc, thêm'),
-('4', 'Warehouse Worker', 'Chỉ có quyền đọc');
+('0', 'Admin', 'Full access.'),
+('1', 'Director', 'Read, Create, Modify. Excluding user creation.'),
+('2', 'Warehouse Manager', 'Read, Create, Modify. Excluding user creation.'),
+('3', 'Warehouse Supervisor', 'Read, Create.'),
+('4', 'Warehouse Worker', 'Read-only.');
