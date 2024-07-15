@@ -27,18 +27,18 @@ namespace WarehouseManager.Core.Pages
             List<ProductVariant> relevantProductVariants = GetRelevantProductVariants(selectedWarehouseStocks);
             List<Product> relevantProducts = GetRelevantProducts(relevantProductVariants);
 
-            List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants = new List<(int, string, string, Dictionary<int, int>)>();
+            List<(string, string, string, Dictionary<int, int>)> warehouseStockProductVariants = new List<(string, string, string, Dictionary<int, int>)>();
 
             foreach (ProductVariant relevantProductVariant in relevantProductVariants)
             {
-                int variantID = relevantProductVariant.ProductVariantID;
+                string variantID = $"P{relevantProductVariant.ProductID}-V{relevantProductVariant.ProductVariantID}";
                 string name = $"{GetProductName(relevantProductVariant.ProductID, relevantProducts)} {relevantProductVariant.ProductVariantColor} {relevantProductVariant.ProductVariantSize}";
                 string imageURL = $"{relevantProductVariant.ProductVariantImageURL}";
                 Dictionary<int, int> warehouseVariantQuantity = selectedWarehouseIDs
                     .ToDictionary(
                         selectedWarehouseID => selectedWarehouseID,
                         selectedWarehouseID => selectedWarehouseStocks
-                            .Where(ws => ws.WarehouseID == selectedWarehouseID && ws.ProductVariantID == variantID)
+                            .Where(ws => ws.WarehouseID == selectedWarehouseID && ws.ProductVariantID == relevantProductVariant.ProductVariantID)
                             .Select(ws => ws.WarehouseStockQuantity)
                             .FirstOrDefault()
                     );
@@ -57,7 +57,7 @@ namespace WarehouseManager.Core.Pages
             return selectedWarehousesID;
         }
 
-        private static List<WarehouseStock> GetSelectedWarehousesStocks(List<int> selectedWarehousesID)
+        internal static List<WarehouseStock> GetSelectedWarehousesStocks(List<int> selectedWarehousesID)
         {
             List<WarehouseStock> warehouseStocks = Program.Warehouse.WarehouseStockTable.WarehouseStocks ?? new List<WarehouseStock>();
 
@@ -68,7 +68,7 @@ namespace WarehouseManager.Core.Pages
             return relevantWarehousesStocks;
         }
 
-        private static List<ProductVariant> GetRelevantProductVariants(List<WarehouseStock> selectedWarehouseStocks)
+        internal static List<ProductVariant> GetRelevantProductVariants(List<WarehouseStock> selectedWarehouseStocks)
         {
             // Get all product variants from the program's warehouse
             List<ProductVariant> allProductVariants = Program.Warehouse.ProductVariantTable.ProductVariants ?? new List<ProductVariant>();
@@ -87,7 +87,7 @@ namespace WarehouseManager.Core.Pages
             return relevantProductVariants;
         }
 
-        private static List<Product> GetRelevantProducts(List<ProductVariant> relevantProductVariants)
+        internal static List<Product> GetRelevantProducts(List<ProductVariant> relevantProductVariants)
         {
             // Get all products from the program's warehouse
             List<Product> allProducts = Program.Warehouse.ProductTable.Products ?? new List<Product>();
@@ -101,11 +101,11 @@ namespace WarehouseManager.Core.Pages
             return relevantProducts;
         }
 
-        private static DataTable ConvertWarehouseStockProductVariantsToDataTable(List<(int, string, string, Dictionary<int, int>)> warehouseStockProductVariants)
+        internal static DataTable ConvertWarehouseStockProductVariantsToDataTable(List<(string, string, string, Dictionary<int, int>)> warehouseStockProductVariants)
         {
             var dataTable = new DataTable();
 
-            dataTable.Columns.Add("ID", typeof(int));
+            dataTable.Columns.Add("ID", typeof(string));
             dataTable.Columns.Add("Product", typeof(string));
             dataTable.Columns.Add("Image", typeof(string));
             if (warehouseStockProductVariants.Count > 0)
@@ -115,7 +115,7 @@ namespace WarehouseManager.Core.Pages
                     .ForEach(warehousesQuantity => dataTable.Columns.Add($"{GetWarehouseName(warehousesQuantity.Key)}", typeof(int)));
             }
 
-            foreach ((int, string, string, Dictionary<int, int>) row in warehouseStockProductVariants)
+            foreach ((string, string, string, Dictionary<int, int>) row in warehouseStockProductVariants)
             {
                 List<object> values = new List<object> {
                     row.Item1,
@@ -134,7 +134,7 @@ namespace WarehouseManager.Core.Pages
             return dataTable;
         }
 
-        private static string GetProductName(int productID, List<Product>? relevantProducts = null)
+        internal static string GetProductName(int productID, List<Product>? relevantProducts = null)
         {
             relevantProducts ??= Program.Warehouse.ProductTable.Products ?? new List<Product>();
             string productName = relevantProducts.FirstOrDefault(p => p.ProductID == productID)?.ProductName ?? "";

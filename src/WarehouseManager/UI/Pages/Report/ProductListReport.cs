@@ -2,6 +2,7 @@ using Terminal.Gui;
 using WarehouseManager.UI.Utility;
 using WarehouseManager.Core.Pages;
 using System.Data;
+using WarehouseManager.Core.Utility;
 
 namespace WarehouseManager.UI.Pages
 {
@@ -25,9 +26,27 @@ namespace WarehouseManager.UI.Pages
 
             exportButton.Clicked += () =>
             {
-                DataTable fileInformation = ProductListReportLogic.GetFileInformation();
-                DataTable productList = ProductListReportLogic.GetProductAndVariantList();
-                UIComponent.ExportToExcelDialog(productList, "Product List", fileInformation, "File Information");
+                try
+                {
+                    string? filePath = UIComponent.ChooseFileSaveLocation();
+                    if (filePath != null)
+                    {
+                        // Progress bar starts showing from here and stops when the last line of this if is reached
+                        DataTable productList = ProductListReportLogic.GetProductAndVariantList();
+                        DataTable fileInformation = ProductListReportLogic.GetFileInformation();
+
+                        filePath = Excel.GetExcelFileName(filePath);
+                        Excel.Export(filePath, productList, "Product List", fileInformation, "File Information");
+
+                        errorLabel.Text = $"Successfully exported product list to {filePath}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    errorLabel.Text = $"Error: {ex.Message}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                }
             };
 
             mainWindow.Add(errorLabel, userPermissionLabel, separatorLine, exportButton);

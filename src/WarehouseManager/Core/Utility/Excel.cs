@@ -18,5 +18,14 @@ namespace WarehouseManager.Core.Utility
                 package.SaveAs(new FileInfo(filePath));
             }
         }
+
+        public static string GetExcelFileName(string fileName)
+        {
+            if (!fileName.EndsWith(".xlsx"))
+            {
+                fileName = $"{fileName}.xlsx";
+            }
+            return fileName;
+        }
     }
 }
