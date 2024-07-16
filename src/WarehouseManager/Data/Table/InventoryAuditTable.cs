@@ -37,7 +37,7 @@ namespace WarehouseManager.Data.Table
                     (int)(rawAudit[0] ?? 0),
                     (int)(rawAudit[1] ?? 0),
                     (string)(rawAudit[2] ?? ""),
-                    (string?)rawAudit[3],
+                    (string?)$"{rawAudit[3]}",
                     (int)(rawAudit[4] ?? 0),
                     (DateTime)(rawAudit[5] ?? DateTime.Now)
                 );
