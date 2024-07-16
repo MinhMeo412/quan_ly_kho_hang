@@ -140,6 +140,25 @@ namespace WarehouseManager.UI.Pages
             saveButton.Clicked += () =>
             {
                 // khi nút save được bấm
+                try
+                {
+                    CompanyInformationLogic.Save(
+                        companyName: $"{companyNameInput.Text}",
+                        address: $"{addressInput.Text}",
+                        phoneNumber: $"{phoneNumberInput.Text}",
+                        email: $"{emailInput.Text}",
+                        representative: $"{representativeInput.Text}",
+                        description: $"{descriptionInput.Text}"
+                    );
+
+                    errorLabel.Text = $"Successfully updated company information.";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+                }
+                catch (Exception ex)
+                {
+                    errorLabel.Text = $"Error: {ex.Message}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                }
             };
 
             leftCollumnContainer.Add(companyNameLabel, addressLabel, phoneNumberLabel, companyNameInput, addressInput, phoneNumberInput);

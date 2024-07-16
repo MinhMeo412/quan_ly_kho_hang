@@ -35,8 +35,12 @@ namespace WarehouseManager.Core.Pages
                 "All right, I've been thinking.\nWhen life gives you lemons?\nDon't make lemonade.\nMake life take the lemons back! Get mad!\nI don't want your damn lemons.\nWhat am I supposed to do with these?\nDemand to see life's manager!\nMake life rue the day it thought it could give Cave Johnson lemons!\nDo you know who I am?\nI'm the man who's going to burn your house down! With the lemons!\nI'm going to get my engineers to invent a combustible lemon that burns your house down!"
             };
 
-            var rand = new Random();
-            return descriptions[rand.Next(descriptions.Count)];
+            return descriptions[new Random().Next(descriptions.Count)];
+        }
+
+        public static void Save(string companyName, string address, string phoneNumber, string email, string representative, string description)
+        {
+            // implement save logic if needed
         }
     }
 }

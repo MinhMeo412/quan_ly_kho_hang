@@ -103,6 +103,7 @@ CREATE TABLE inventory_audit(
 	inventory_audit_id INT AUTO_INCREMENT,
 	warehouse_id INT NOT NULL,
 	inventory_audit_status ENUM('Processing','Completed (Unreconciled)', 'Completed (Reconciled)') NOT NULL DEFAULT 'Processing',
+	inventory_audit_description TEXT,
 	user_id INT NOT NULL,
 	inventory_audit_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 	PRIMARY KEY (inventory_audit_id),

@@ -117,3 +117,5 @@ For any questions or feedback, please open an issue on this repository.
 - [Terminal.Gui](https://www.nuget.org/packages/Terminal.Gui) - A library to create console applications with a graphical user interface.
 - [MySql.Data](https://www.nuget.org/packages/MySql.Data) - A library to interact with MySQL databases.
 - [EPPlus](https://www.nuget.org/packages/EPPlus) - A library to manage Excel spreadsheets.
+- [Figgle](https://www.nuget.org/packages/Figgle) - ASCII banner generation for .NET.
+- [Hardware.Info](https://www.nuget.org/packages/Hardware.Info) - A library to get hardware information.
