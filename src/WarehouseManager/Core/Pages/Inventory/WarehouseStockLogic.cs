@@ -105,7 +105,7 @@ namespace WarehouseManager.Core.Pages
         {
             var dataTable = new DataTable();
 
-            dataTable.Columns.Add("ID", typeof(string));
+            dataTable.Columns.Add("PID-VID", typeof(string));
             dataTable.Columns.Add("Product", typeof(string));
             dataTable.Columns.Add("Image", typeof(string));
             if (warehouseStockProductVariants.Count > 0)
