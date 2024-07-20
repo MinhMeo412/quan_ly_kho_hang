@@ -137,13 +137,13 @@ namespace WarehouseManager.UI.Pages
                         Excel.Export(
                             filePath,
                             WarehouseShipmentsReportProductLogic.GetProductExportData(
-                                $"{productDropDown.Text}",
+                                $"{productIDInput.Text}",
                                 productFromDateField.Date,
                                 productToDateField.Date,
                                 stockTransferCheckbox.Checked),
                             "Warehouse Shipments",
                             WarehouseShipmentsReportProductLogic.GetProductFileInformation(
-                                $"{productDropDown.Text}",
+                                $"{productIDInput.Text}",
                                 productFromDateField.Date,
                                 productToDateField.Date),
                             "File Information");

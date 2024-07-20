@@ -41,12 +41,23 @@ namespace WarehouseManager.Core.Pages
         public static DataTable GetProductExportData(string id, DateTime startDate, DateTime endDate, bool includeStockTransfers)
         {
             var dataTable = new DataTable();
+
+            dataTable.Columns.Add($"Warehouse Shipments Report: Inbound", typeof(string));
+
+            dataTable.Rows.Add($"Warehouse: {id}");
+            dataTable.Rows.Add($"Date: {startDate} -> {endDate}, include stock transfers: {includeStockTransfers}");
+
             return dataTable;
         }
 
         public static DataTable GetProductFileInformation(string id, DateTime startDate, DateTime endDate)
         {
             var dataTable = new DataTable();
+            dataTable.Columns.Add($"Warehouse Shipments Report: Inbound", typeof(string));
+
+            dataTable.Rows.Add($"Warehouse: {id}");
+            dataTable.Rows.Add($"Date: {startDate} -> {endDate}, include stock transfers:");
+
             return dataTable;
         }
 
