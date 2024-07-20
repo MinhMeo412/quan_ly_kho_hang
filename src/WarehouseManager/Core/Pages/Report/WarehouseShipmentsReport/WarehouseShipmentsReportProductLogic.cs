@@ -38,7 +38,7 @@ namespace WarehouseManager.Core.Pages
             return DateTime.Now;
         }
 
-        public static DataTable GetProductExportData(string id, DateTime startDate, DateTime endDate)
+        public static DataTable GetProductExportData(string id, DateTime startDate, DateTime endDate, bool includeStockTransfers)
         {
             var dataTable = new DataTable();
             return dataTable;

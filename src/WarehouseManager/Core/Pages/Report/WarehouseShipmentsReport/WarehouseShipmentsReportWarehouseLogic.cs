@@ -31,15 +31,32 @@ namespace WarehouseManager.Core.Pages
             return DateTime.Now;
         }
 
-        public static DataTable GetWarehouseExportData(string option, string warehouseName, DateTime startDate, DateTime endDate)
+        public static DataTable GetWarehouseExportData(string option, string warehouseName, DateTime startDate, DateTime endDate, bool includeStockTransfers)
         {
-            var dataTable = new DataTable();
+            DataTable dataTable;
+
+            if (option == "Inbound")
+            {
+                dataTable = GetInboundWarehouseExportData(warehouseName, startDate, endDate, includeStockTransfers);
+            }
+            else
+            {
+                dataTable = GetOutboundWarehouseExportData(warehouseName, startDate, endDate, includeStockTransfers);
+            }
+
             return dataTable;
         }
 
         public static DataTable GetWarehouseFileInformation(string option, string warehouseName, DateTime startDate, DateTime endDate)
         {
             var dataTable = new DataTable();
+
+            dataTable.Columns.Add($"Warehouse Shipments Report: {option}", typeof(string));
+
+            dataTable.Rows.Add($"Warehouse: {warehouseName}");
+            dataTable.Rows.Add($"Date: {startDate:MM/dd/yyyy} - {endDate:MM/dd/yyyy}");
+
+
             return dataTable;
         }
 
@@ -48,6 +65,31 @@ namespace WarehouseManager.Core.Pages
             List<Warehouse> warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
             return warehouses;
         }
+
+        private static DataTable GetInboundWarehouseExportData(string warehouseName, DateTime startDate, DateTime endDate, bool includeStockTransfers)
+        {
+            var dataTable = new DataTable();
+
+            dataTable.Columns.Add($"Warehouse Shipments Report: Inbound", typeof(string));
+
+            dataTable.Rows.Add($"Warehouse: {warehouseName}");
+            dataTable.Rows.Add($"Date: {startDate} -> {endDate}");
+
+            return dataTable;
+        }
+
+        private static DataTable GetOutboundWarehouseExportData(string warehouseName, DateTime startDate, DateTime endDate, bool includeStockTransfers)
+        {
+            var dataTable = new DataTable();
+
+            dataTable.Columns.Add($"Warehouse Shipments Report: Outbound", typeof(string));
+
+            dataTable.Rows.Add($"Warehouse: {warehouseName}");
+            dataTable.Rows.Add($"Date: {startDate} -> {endDate}");
+
+            return dataTable;
+        }
+
 
     }
 }

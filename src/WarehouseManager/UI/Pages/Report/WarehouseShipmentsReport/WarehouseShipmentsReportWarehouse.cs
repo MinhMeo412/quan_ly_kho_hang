@@ -36,12 +36,18 @@ namespace WarehouseManager.UI.Pages
             {
                 X = Pos.Right(warehouseExportOptionLabel) + 1,
                 Y = Pos.Top(warehouseExportOptionLabel),
-                Width = Dim.Fill(3),
+                Width = Dim.Fill(3 + 26),
                 Height = 4,
                 ReadOnly = true,
                 SelectedItem = chosenOption
             };
 
+            var stockTransferCheckbox = new CheckBox("Include stock transfers")
+            {
+                X = Pos.Right(warehouseExportOptionDropDown) + 1,
+                Y = Pos.Top(warehouseExportOptionLabel),
+                Checked = true
+            };
 
             var warehouseFromDateLabel = new Label("Start date:")
             {
@@ -115,7 +121,8 @@ namespace WarehouseManager.UI.Pages
                                 $"{warehouseExportOptionDropDown.Text}",
                                 $"{warehouseDropDown.Text}",
                                 warehouseFromDateField.Date,
-                                warehouseToDateField.Date),
+                                warehouseToDateField.Date,
+                                stockTransferCheckbox.Checked),
                             "Warehouse Shipments",
                             WarehouseShipmentsReportWarehouseLogic.GetWarehouseFileInformation(
                                 $"{warehouseExportOptionDropDown.Text}",
@@ -135,7 +142,7 @@ namespace WarehouseManager.UI.Pages
                 }
             };
 
-            warehouseContainer.Add(warehouseExportOptionLabel, warehouseExportOptionDropDown, warehouseLabel, warehouseDropDown, warehouseFromDateLabel, warehouseFromDateField, warehouseToDateLabel, warehouseToDateField, warehouseExportButton);
+            warehouseContainer.Add(warehouseExportOptionLabel, warehouseExportOptionDropDown, stockTransferCheckbox, warehouseLabel, warehouseFromDateField, warehouseToDateLabel, warehouseToDateField, warehouseDropDown, warehouseFromDateLabel, warehouseExportButton);
             mainWindow.Add(errorLabel, userPermissionLabel, separatorLine, warehouseContainer);
         }
     }

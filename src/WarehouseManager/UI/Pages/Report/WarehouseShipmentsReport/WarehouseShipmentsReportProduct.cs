@@ -36,12 +36,18 @@ namespace WarehouseManager.UI.Pages
             {
                 X = Pos.Right(productExportOptionLabel) + 1,
                 Y = Pos.Top(productExportOptionLabel),
-                Width = Dim.Fill(3),
+                Width = Dim.Fill(3 + 26),
                 Height = 4,
                 ReadOnly = true,
                 SelectedItem = 2
             };
 
+            var stockTransferCheckbox = new CheckBox("Include stock transfers")
+            {
+                X = Pos.Right(productExportOptionDropDown) + 1,
+                Y = Pos.Top(productExportOptionLabel),
+                Checked = true
+            };
 
             var productFromDateLabel = new Label("Start date:")
             {
@@ -133,7 +139,8 @@ namespace WarehouseManager.UI.Pages
                             WarehouseShipmentsReportProductLogic.GetProductExportData(
                                 $"{productDropDown.Text}",
                                 productFromDateField.Date,
-                                productToDateField.Date),
+                                productToDateField.Date,
+                                stockTransferCheckbox.Checked),
                             "Warehouse Shipments",
                             WarehouseShipmentsReportProductLogic.GetProductFileInformation(
                                 $"{productDropDown.Text}",
@@ -152,7 +159,7 @@ namespace WarehouseManager.UI.Pages
                 }
             };
 
-            productContainer.Add(productExportOptionLabel, productExportOptionDropDown, productLabel, productIDInput, productDropDown, productFromDateLabel, productFromDateField, productToDateLabel, productToDateField, productExportButton);
+            productContainer.Add(productExportOptionLabel, productExportOptionDropDown, stockTransferCheckbox, productFromDateLabel, productFromDateField, productToDateLabel, productToDateField, productLabel, productIDInput, productDropDown, productExportButton);
             mainWindow.Add(errorLabel, userPermissionLabel, separatorLine, productContainer);
         }
     }
