@@ -1,10 +1,9 @@
 using System.Data;
-using System.Dynamic;
 using WarehouseManager.Data.Entity;
 
 namespace WarehouseManager.Core.Pages
 {
-    public static class WarehouseShipmentsReportLogic
+    public static class WarehouseShipmentsReportProductLogic
     {
         public static List<string> GetReportOptions()
         {
@@ -14,12 +13,6 @@ namespace WarehouseManager.Core.Pages
                 "Product"
             };
             return options;
-        }
-
-        public static List<string> GetWarehouseList()
-        {
-            List<Warehouse> warehouses = GetWarehouses();
-            return warehouses.Select(w => w.WarehouseName).ToList();
         }
 
         public static Dictionary<int, string> GetProductList()
@@ -46,18 +39,6 @@ namespace WarehouseManager.Core.Pages
         }
 
         public static DataTable GetProductExportData(string id, DateTime startDate, DateTime endDate)
-        {
-            var dataTable = new DataTable();
-            return dataTable;
-        }
-
-        public static DataTable GetWarehouseExportData(string id, DateTime startDate, DateTime endDate)
-        {
-            var dataTable = new DataTable();
-            return dataTable;
-        }
-
-        public static DataTable GetWarehouseFileInformation(string id, DateTime startDate, DateTime endDate)
         {
             var dataTable = new DataTable();
             return dataTable;
@@ -97,13 +78,6 @@ namespace WarehouseManager.Core.Pages
             }
 
             return -1;
-        }
-
-
-        private static List<Warehouse> GetWarehouses()
-        {
-            List<Warehouse> warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
-            return warehouses;
         }
 
         private static List<Product> GetProducts()

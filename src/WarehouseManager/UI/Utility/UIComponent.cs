@@ -39,7 +39,7 @@ namespace WarehouseManager.UI.Utility
                 }),
                 new MenuBarItem("_Report", new MenuItem[] {
                     new MenuItem("_Warehouse Stock", "", WarehouseStockReport.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Warehouse Shipments", "", WarehouseShipmentsReport.Display, () => canExecuteMenu(4)),
+                    new MenuItem("_Warehouse Shipments", "", () => WarehouseShipmentsReportWarehouse.Display(), () => canExecuteMenu(4)),
                     new MenuItem("_Product List", "", ProductListReport.Display, () => canExecuteMenu(4))
                 })
             ]);

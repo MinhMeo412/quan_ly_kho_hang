@@ -1,6 +1,7 @@
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
 using WarehouseManager.Core.Pages;
+using WarehouseManager.Core.Utility;
 
 namespace WarehouseManager.UI.Pages
 {
@@ -31,48 +32,24 @@ namespace WarehouseManager.UI.Pages
                 Y = 1
             };
 
-            var productExportOptionDropDown = new ComboBox(WarehouseShipmentsReportLogic.GetReportOptions())
+            var productExportOptionDropDown = new ComboBox(WarehouseShipmentsReportProductLogic.GetReportOptions())
             {
                 X = Pos.Right(productExportOptionLabel) + 1,
                 Y = Pos.Top(productExportOptionLabel),
                 Width = Dim.Fill(3),
-                Height = Dim.Fill(),
+                Height = 4,
                 ReadOnly = true,
                 SelectedItem = 2
             };
 
-            var productLabel = new Label("Product ID:")
+
+            var productFromDateLabel = new Label("Start date:")
             {
                 X = 3,
                 Y = Pos.Bottom(productExportOptionLabel) + 1
             };
 
-            var productIDInput = new TextField()
-            {
-                X = Pos.Right(productExportOptionLabel) + 1,
-                Y = Pos.Top(productLabel),
-                Width = 7,
-            };
-
-            Dictionary<int, string> productDictionary = WarehouseShipmentsReportLogic.GetProductList();
-            var productDropDown = new ComboBox(productDictionary.Values.ToList())
-            {
-                X = Pos.Right(productIDInput) + 1,
-                Y = Pos.Top(productLabel),
-                Width = Dim.Fill(3),
-                Height = Dim.Fill(),
-                ReadOnly = true,
-                SelectedItem = 0
-            };
-            productIDInput.Text = $"{WarehouseShipmentsReportLogic.GetProductID($"{productDropDown.Text}", productDictionary)}";
-
-            var productFromDateLabel = new Label("Start date:")
-            {
-                X = 3,
-                Y = Pos.Bottom(productLabel) + 1
-            };
-
-            var productFromDateField = new DateField(WarehouseShipmentsReportLogic.GetDefaultStartDate())
+            var productFromDateField = new DateField(WarehouseShipmentsReportProductLogic.GetDefaultStartDate())
             {
                 X = Pos.Right(productExportOptionLabel) + 1,
                 Y = Pos.Top(productFromDateLabel),
@@ -85,17 +62,43 @@ namespace WarehouseManager.UI.Pages
                 Y = Pos.Bottom(productFromDateLabel) + 1
             };
 
-            var productToDateField = new DateField(WarehouseShipmentsReportLogic.GetDefaultEndDate())
+            var productToDateField = new DateField(WarehouseShipmentsReportProductLogic.GetDefaultEndDate())
             {
                 X = Pos.Right(productExportOptionLabel) + 1,
                 Y = Pos.Top(productToDateLabel),
                 Width = Dim.Fill(3)
             };
 
+
+            var productLabel = new Label("Product ID:")
+            {
+                X = 3,
+                Y = Pos.Bottom(productToDateLabel) + 1
+            };
+
+            var productIDInput = new TextField()
+            {
+                X = Pos.Right(productExportOptionLabel) + 1,
+                Y = Pos.Top(productLabel),
+                Width = 7,
+            };
+
+            Dictionary<int, string> productDictionary = WarehouseShipmentsReportProductLogic.GetProductList();
+            var productDropDown = new ComboBox(productDictionary.Values.ToList())
+            {
+                X = Pos.Right(productIDInput) + 1,
+                Y = Pos.Top(productLabel),
+                Width = Dim.Fill(3),
+                Height = Dim.Fill(),
+                ReadOnly = true,
+                SelectedItem = 0
+            };
+            productIDInput.Text = $"{WarehouseShipmentsReportProductLogic.GetProductID($"{productDropDown.Text}", productDictionary)}";
+
             var productExportButton = new Button("Export Warehouse Shipments", is_default: true)
             {
                 X = Pos.Center(),
-                Y = Pos.Bottom(productToDateLabel) + 2
+                Y = Pos.Bottom(productLabel) + 2
             };
 
             productExportOptionDropDown.OpenSelectedItem += (e) =>
@@ -108,12 +111,12 @@ namespace WarehouseManager.UI.Pages
 
             productIDInput.TextChanged += args =>
             {
-                productDropDown.SelectedItem = WarehouseShipmentsReportLogic.GetProductIndex($"{productIDInput.Text}", productDictionary);
+                productDropDown.SelectedItem = WarehouseShipmentsReportProductLogic.GetProductIndex($"{productIDInput.Text}", productDictionary);
             };
 
             productDropDown.OpenSelectedItem += (a) =>
             {
-                productIDInput.Text = $"{WarehouseShipmentsReportLogic.GetProductID($"{productDropDown.Text}", productDictionary)}";
+                productIDInput.Text = $"{WarehouseShipmentsReportProductLogic.GetProductID($"{productDropDown.Text}", productDictionary)}";
             };
 
             productExportButton.Clicked += () =>
@@ -124,7 +127,22 @@ namespace WarehouseManager.UI.Pages
 
                     if (filePath != null)
                     {
+                        filePath = Excel.GetExcelFileName(filePath);
+                        Excel.Export(
+                            filePath,
+                            WarehouseShipmentsReportProductLogic.GetProductExportData(
+                                $"{productDropDown.Text}",
+                                productFromDateField.Date,
+                                productToDateField.Date),
+                            "Warehouse Shipments",
+                            WarehouseShipmentsReportProductLogic.GetProductFileInformation(
+                                $"{productDropDown.Text}",
+                                productFromDateField.Date,
+                                productToDateField.Date),
+                            "File Information");
 
+                        errorLabel.Text = $"Successfully exported warehouse shipments to {filePath}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                     }
                 }
                 catch (Exception ex)

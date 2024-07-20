@@ -1,6 +1,7 @@
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
 using WarehouseManager.Core.Pages;
+using WarehouseManager.Core.Utility;
 
 namespace WarehouseManager.UI.Pages
 {
@@ -31,39 +32,24 @@ namespace WarehouseManager.UI.Pages
                 Y = 1
             };
 
-            var warehouseExportOptionDropDown = new ComboBox(WarehouseShipmentsReportLogic.GetReportOptions())
+            var warehouseExportOptionDropDown = new ComboBox(WarehouseShipmentsReportWarehouseLogic.GetReportOptions())
             {
                 X = Pos.Right(warehouseExportOptionLabel) + 1,
                 Y = Pos.Top(warehouseExportOptionLabel),
                 Width = Dim.Fill(3),
-                Height = Dim.Fill(),
+                Height = 4,
                 ReadOnly = true,
                 SelectedItem = chosenOption
             };
 
-            var warehouseLabel = new Label("Warehouse:")
+
+            var warehouseFromDateLabel = new Label("Start date:")
             {
                 X = 3,
                 Y = Pos.Bottom(warehouseExportOptionLabel) + 1
             };
 
-            var warehouseDropDown = new ComboBox(WarehouseShipmentsReportLogic.GetWarehouseList())
-            {
-                X = Pos.Right(warehouseExportOptionLabel) + 1,
-                Y = Pos.Top(warehouseLabel),
-                Width = Dim.Fill(3),
-                Height = Dim.Fill(),
-                ReadOnly = true,
-                SelectedItem = 0
-            };
-
-            var warehouseFromDateLabel = new Label("Start date:")
-            {
-                X = 3,
-                Y = Pos.Bottom(warehouseLabel) + 1
-            };
-
-            var warehouseFromDateField = new DateField(WarehouseShipmentsReportLogic.GetDefaultStartDate())
+            var warehouseFromDateField = new DateField(WarehouseShipmentsReportWarehouseLogic.GetDefaultStartDate())
             {
                 X = Pos.Right(warehouseExportOptionLabel) + 1,
                 Y = Pos.Top(warehouseFromDateLabel),
@@ -76,17 +62,34 @@ namespace WarehouseManager.UI.Pages
                 Y = Pos.Bottom(warehouseFromDateLabel) + 1
             };
 
-            var warehouseToDateField = new DateField(WarehouseShipmentsReportLogic.GetDefaultEndDate())
+            var warehouseToDateField = new DateField(WarehouseShipmentsReportWarehouseLogic.GetDefaultEndDate())
             {
                 X = Pos.Right(warehouseExportOptionLabel) + 1,
                 Y = Pos.Top(warehouseToDateLabel),
                 Width = Dim.Fill(3)
             };
 
+
+            var warehouseLabel = new Label("Warehouse:")
+            {
+                X = 3,
+                Y = Pos.Bottom(warehouseToDateLabel) + 1
+            };
+
+            var warehouseDropDown = new ComboBox(WarehouseShipmentsReportWarehouseLogic.GetWarehouseList())
+            {
+                X = Pos.Right(warehouseExportOptionLabel) + 1,
+                Y = Pos.Top(warehouseLabel),
+                Width = Dim.Fill(3),
+                Height = Dim.Fill(),
+                ReadOnly = true,
+                SelectedItem = 0
+            };
+
             var warehouseExportButton = new Button("Export Warehouse Shipments", is_default: true)
             {
                 X = Pos.Center(),
-                Y = Pos.Bottom(warehouseToDateLabel) + 2
+                Y = Pos.Bottom(warehouseLabel) + 2
             };
 
             warehouseExportOptionDropDown.OpenSelectedItem += (e) =>
@@ -105,19 +108,24 @@ namespace WarehouseManager.UI.Pages
 
                     if (filePath != null)
                     {
-                        // KeyValuePair<string, int?> selectedWarehouse = new KeyValuePair<string, int?>(
-                        //     warehouseNameID.Keys.ToList()[warehouseDropDown.SelectedItem],
-                        //     warehouseNameID[warehouseNameID.Keys.ToList()[warehouseDropDown.SelectedItem]]
-                        // );
+                        filePath = Excel.GetExcelFileName(filePath);
+                        Excel.Export(
+                            filePath,
+                            WarehouseShipmentsReportWarehouseLogic.GetWarehouseExportData(
+                                $"{warehouseExportOptionDropDown.Text}",
+                                $"{warehouseDropDown.Text}",
+                                warehouseFromDateField.Date,
+                                warehouseToDateField.Date),
+                            "Warehouse Shipments",
+                            WarehouseShipmentsReportWarehouseLogic.GetWarehouseFileInformation(
+                                $"{warehouseExportOptionDropDown.Text}",
+                                $"{warehouseDropDown.Text}",
+                                warehouseFromDateField.Date,
+                                warehouseToDateField.Date),
+                            "File Information");
 
-                        // DataTable warehouseStock = WarehouseStockReportLogic.GetWarehouseStock(selectedWarehouse);
-                        // DataTable fileInformation = WarehouseStockReportLogic.GetFileInformation(selectedWarehouse);
-
-                        // filePath = Excel.GetExcelFileName(filePath);
-                        // Excel.Export(filePath, warehouseStock, "Warehouse Stock", fileInformation, "File Information");
-
-                        // errorLabel.Text = $"Successfully exported warehouse stock to {filePath}";
-                        // errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+                        errorLabel.Text = $"Successfully exported warehouse shipments to {filePath}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                     }
                 }
                 catch (Exception ex)
