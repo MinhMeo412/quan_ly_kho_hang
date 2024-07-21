@@ -79,21 +79,14 @@ namespace WarehouseManager.Core.Pages
             List<StockTransferDetail> stockTransferDetails = new List<StockTransferDetail>();
             List<Warehouse> warehouses = new List<Warehouse>();
 
-            if (includeStockTransfers)
-            {
-                stockTransfers = GetRelevantInboundStockTransfers(GetWarehouseID(warehouseName), startDate, endDate);
-                stockTransferDetails = GetRelevantStockTransferDetails(stockTransfers);
-                warehouses = GetRelevantWarehouses(stockTransfers);
-            }
-
             DataTable dataTable = new DataTable();
-            dataTable.Columns.Add($"Shipment Type", typeof(string));
-            dataTable.Columns.Add($"PID-VID", typeof(string));
-            dataTable.Columns.Add($"Product", typeof(string));
-            dataTable.Columns.Add($"Category", typeof(string));
-            dataTable.Columns.Add($"Date", typeof(string));
-            dataTable.Columns.Add($"From", typeof(string));
-            dataTable.Columns.Add($"Quantity", typeof(int));
+            dataTable.Columns.Add($"Shipment Type");
+            dataTable.Columns.Add($"PID-VID");
+            dataTable.Columns.Add($"Product");
+            dataTable.Columns.Add($"Category");
+            dataTable.Columns.Add($"Date");
+            dataTable.Columns.Add($"Supplier");
+            dataTable.Columns.Add($"Quantity");
 
             foreach (InboundShipmentDetail inboundShipmentDetail in inboundShipmentDetails)
             {
@@ -110,6 +103,14 @@ namespace WarehouseManager.Core.Pages
                 );
             }
 
+            if (includeStockTransfers)
+            {
+                stockTransfers = GetRelevantInboundStockTransfers(GetWarehouseID(warehouseName), startDate, endDate);
+                stockTransferDetails = GetRelevantStockTransferDetails(stockTransfers);
+                warehouses = GetRelevantWarehouses(stockTransfers);
+
+                dataTable.Columns[5].ColumnName = "From";
+            }
             foreach (StockTransferDetail stockTransferDetail in stockTransferDetails)
             {
 
@@ -135,12 +136,66 @@ namespace WarehouseManager.Core.Pages
 
         private static DataTable GetOutboundWarehouseExportData(string warehouseName, DateTime startDate, DateTime endDate, bool includeStockTransfers)
         {
-            var dataTable = new DataTable();
+            List<OutboundShipment> outboundShipments = GetRelevantOutboundShipments(GetWarehouseID(warehouseName), startDate, endDate);
+            List<OutboundShipmentDetail> outboundShipmentDetails = GetRelevantOutboundShipmentDetails(outboundShipments);
+            List<ProductVariant> productVariants = GetRelevantProductVariants(outboundShipmentDetails);
+            List<Product> products = GetRelevantProducts(productVariants);
+            List<Category> categories = GetRelevantCategories(products);
+            List<StockTransfer> stockTransfers = new List<StockTransfer>();
+            List<StockTransferDetail> stockTransferDetails = new List<StockTransferDetail>();
+            List<Warehouse> warehouses = new List<Warehouse>();
 
-            dataTable.Columns.Add($"Warehouse Shipments Report: Outbound", typeof(string));
+            DataTable dataTable = new DataTable();
+            dataTable.Columns.Add($"Shipment Type");
+            dataTable.Columns.Add($"PID-VID");
+            dataTable.Columns.Add($"Product");
+            dataTable.Columns.Add($"Category");
+            dataTable.Columns.Add($"Date");
+            dataTable.Columns.Add($"To Address");
+            dataTable.Columns.Add($"Quantity");
 
-            dataTable.Rows.Add($"Warehouse: {warehouseName}");
-            dataTable.Rows.Add($"Date: {startDate} -> {endDate}");
+            foreach (OutboundShipmentDetail outboundShipmentDetail in outboundShipmentDetails)
+            {
+                int productID = GetProductID(outboundShipmentDetail.ProductVariantID, productVariants);
+
+                dataTable.Rows.Add(
+                    $"Outbound",
+                    $"P{productID}-V{outboundShipmentDetail.ProductVariantID}",
+                    $"{GetProductName(productID, products)} {GetVariantColor(outboundShipmentDetail.ProductVariantID, productVariants)} {GetVariantSize(outboundShipmentDetail.ProductVariantID, productVariants)}",
+                    $"{GetCategoryName(GetCategoryID(productID, products), categories)}",
+                    $"{GetOutboundShipmentDate(outboundShipmentDetail.OutboundShipmentID, outboundShipments)}",
+                    $"{GetOutboundShipmentAddress(outboundShipmentDetail.OutboundShipmentID, outboundShipments)}",
+                    outboundShipmentDetail.OutboundShipmentDetailAmount
+                );
+            }
+
+            if (includeStockTransfers)
+            {
+                stockTransfers = GetRelevantOutboundStockTransfers(GetWarehouseID(warehouseName), startDate, endDate);
+                stockTransferDetails = GetRelevantStockTransferDetails(stockTransfers);
+                warehouses = GetRelevantWarehouses(stockTransfers);
+
+                dataTable.Columns[5].ColumnName = "To";
+            }
+            foreach (StockTransferDetail stockTransferDetail in stockTransferDetails)
+            {
+
+                int productID = GetProductID(stockTransferDetail.ProductVariantID, productVariants);
+
+                dataTable.Rows.Add(
+                    $"Stock Transfer",
+                    $"P{productID}-V{stockTransferDetail.ProductVariantID}",
+                    $"{GetProductName(productID, products)} {GetVariantColor(stockTransferDetail.ProductVariantID, productVariants)} {GetVariantSize(stockTransferDetail.ProductVariantID, productVariants)}",
+                    $"{GetCategoryName(GetCategoryID(productID, products), categories)}",
+                    $"{GetStockTransferDate(stockTransferDetail.StockTransferID, stockTransfers)}",
+                    $"{GetWarehouseName(GetToWarehouseID(stockTransferDetail.StockTransferID, stockTransfers), warehouses)}",
+                    stockTransferDetail.StockTransferDetailAmount
+                );
+            }
+
+            // sort by date from newest to oldest
+            dataTable = SortDataTable.ByColumn(dataTable, 4, true);
+            dataTable = SortDataTable.ClearDirectionArrow(dataTable);
 
             return dataTable;
         }
@@ -381,5 +436,69 @@ namespace WarehouseManager.Core.Pages
 
             return relevantWarehouses;
         }
+
+        private static List<OutboundShipment> GetOutboundShipments()
+        {
+            return Program.Warehouse.OutboundShipmentTable.OutboundShipments ?? new List<OutboundShipment>();
+        }
+
+        private static List<OutboundShipmentDetail> GetOutboundShipmentDetails()
+        {
+            return Program.Warehouse.OutboundShipmentDetailTable.OutboundShipmentDetails ?? new List<OutboundShipmentDetail>();
+        }
+
+        private static List<OutboundShipment> GetRelevantOutboundShipments(int warehouseID, DateTime startDate, DateTime endDate)
+        {
+            return GetOutboundShipments()
+                .Where(shipment => shipment.WarehouseID == warehouseID && shipment.OutboundShipmentStartingDate >= startDate && shipment.OutboundShipmentStartingDate <= endDate && shipment.OutboundShipmentStatus == "Completed")
+                .ToList();
+        }
+
+        private static List<OutboundShipmentDetail> GetRelevantOutboundShipmentDetails(List<OutboundShipment> relevantOutboundShipments)
+        {
+            var relevantShipmentIDs = relevantOutboundShipments.Select(shipment => shipment.OutboundShipmentID).ToList();
+            return GetOutboundShipmentDetails()
+                .Where(detail => relevantShipmentIDs.Contains(detail.OutboundShipmentID))
+                .ToList();
+        }
+
+        private static List<ProductVariant> GetRelevantProductVariants(List<OutboundShipmentDetail> relevantOutboundShipmentDetails)
+        {
+            var relevantVariantIDs = relevantOutboundShipmentDetails.Select(detail => detail.ProductVariantID).Distinct().ToList();
+            List<ProductVariant> productVariants = GetProductVariants();
+            List<ProductVariant> relevantProductVariants = productVariants
+                .Where(variant => relevantVariantIDs.Contains(variant.ProductVariantID))
+                .ToList();
+
+            return relevantProductVariants;
+        }
+
+        private static List<StockTransfer> GetRelevantOutboundStockTransfers(int warehouseID, DateTime startDate, DateTime endDate)
+        {
+            List<StockTransfer> stockTransfers = GetStockTransfers();
+            List<StockTransfer> relevantStockTransfers = stockTransfers
+                .Where(transfer => transfer.FromWarehouseID == warehouseID && transfer.StockTransferStartingDate >= startDate && transfer.StockTransferStartingDate <= endDate && transfer.StockTransferStatus == "Completed")
+                .ToList();
+            return relevantStockTransfers;
+        }
+
+        private static int GetToWarehouseID(int stockTransferID, List<StockTransfer> stockTransfers)
+        {
+            var transfer = stockTransfers.FirstOrDefault(t => t.ToWarehouseID == stockTransferID);
+            return transfer?.ToWarehouseID ?? -1;
+        }
+
+        private static DateTime GetOutboundShipmentDate(int outboundShipmentID, List<OutboundShipment> outboundShipments)
+        {
+            OutboundShipment shipment = outboundShipments.FirstOrDefault(s => s.OutboundShipmentID == outboundShipmentID) ?? new OutboundShipment(0, 0, "", null, "", null, 0);
+            return shipment.OutboundShipmentStartingDate ?? GetDefaultStartDate();
+        }
+
+        private static string GetOutboundShipmentAddress(int outboundShipmentID, List<OutboundShipment> outboundShipments)
+        {
+            OutboundShipment shipment = outboundShipments.FirstOrDefault(s => s.OutboundShipmentID == outboundShipmentID) ?? new OutboundShipment(0, 0, "", null, "", null, 0);
+            return shipment.OutboundShipmentAddress;
+        }
+
     }
 }
