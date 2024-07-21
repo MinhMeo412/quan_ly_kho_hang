@@ -77,11 +77,13 @@ namespace WarehouseManager.Core.Pages
             List<Supplier> suppliers = GetRelevantSuppliers(inboundShipments);
             List<StockTransfer> stockTransfers = new List<StockTransfer>();
             List<StockTransferDetail> stockTransferDetails = new List<StockTransferDetail>();
+            List<Warehouse> warehouses = new List<Warehouse>();
 
             if (includeStockTransfers)
             {
                 stockTransfers = GetRelevantInboundStockTransfers(GetWarehouseID(warehouseName), startDate, endDate);
                 stockTransferDetails = GetRelevantStockTransferDetails(stockTransfers);
+                warehouses = GetRelevantWarehouses(stockTransfers);
             }
 
             DataTable dataTable = new DataTable();
@@ -105,6 +107,22 @@ namespace WarehouseManager.Core.Pages
                     $"{GetInboundShipmentDate(inboundShipmentDetail.InboundShipmentID, inboundShipments)}",
                     $"{GetSupplierName(GetSupplierID(inboundShipmentDetail.InboundShipmentID, inboundShipments), suppliers)}",
                     inboundShipmentDetail.InboundShipmentDetailAmount
+                );
+            }
+
+            foreach (StockTransferDetail stockTransferDetail in stockTransferDetails)
+            {
+
+                int productID = GetProductID(stockTransferDetail.ProductVariantID, productVariants);
+
+                dataTable.Rows.Add(
+                    $"Stock Transfer",
+                    $"P{productID}-V{stockTransferDetail.ProductVariantID}",
+                    $"{GetProductName(productID, products)} {GetVariantColor(stockTransferDetail.ProductVariantID, productVariants)} {GetVariantSize(stockTransferDetail.ProductVariantID, productVariants)}",
+                    $"{GetCategoryName(GetCategoryID(productID, products), categories)}",
+                    $"{GetStockTransferDate(stockTransferDetail.StockTransferID, stockTransfers)}",
+                    $"{GetWarehouseName(GetFromWarehouseID(stockTransferDetail.StockTransferID, stockTransfers), warehouses)}",
+                    stockTransferDetail.StockTransferDetailAmount
                 );
             }
 
@@ -187,7 +205,7 @@ namespace WarehouseManager.Core.Pages
             List<InboundShipment> inboundShipments = GetInboundShipments();
 
             var relevantInboundShipments = inboundShipments
-                .Where(i => i.WarehouseID == warehouseID && i.InboundShipmentStartingDate >= startDate && i.InboundShipmentStartingDate <= endDate)
+                .Where(i => i.WarehouseID == warehouseID && i.InboundShipmentStartingDate >= startDate && i.InboundShipmentStartingDate <= endDate && i.InboundShipmentStatus == "Completed")
                 .ToList();
 
             return relevantInboundShipments;
@@ -261,7 +279,7 @@ namespace WarehouseManager.Core.Pages
         {
             List<StockTransfer> stockTransfers = GetStockTransfers();
             List<StockTransfer> relevantStockTransfers = stockTransfers
-                .Where(i => i.ToWarehouseID == warehouseID && i.StockTransferStartingDate >= startDate && i.StockTransferStartingDate <= endDate)
+                .Where(i => i.ToWarehouseID == warehouseID && i.StockTransferStartingDate >= startDate && i.StockTransferStartingDate <= endDate && i.StockTransferStatus == "Completed")
                 .ToList();
 
             return relevantStockTransfers;
@@ -334,5 +352,34 @@ namespace WarehouseManager.Core.Pages
             return supplier?.SupplierName ?? "Unknown Supplier";
         }
 
+        private static DateTime GetStockTransferDate(int stockTransferID, List<StockTransfer> stockTransfers)
+        {
+            StockTransfer stockTransfer = stockTransfers.FirstOrDefault(s => s.StockTransferID == stockTransferID) ?? new StockTransfer(0, 0, 0, null, "", null, 0);
+            return stockTransfer.StockTransferStartingDate ?? GetDefaultStartDate();
+        }
+
+        private static int GetFromWarehouseID(int stockTransferID, List<StockTransfer> stockTransfers)
+        {
+            StockTransfer stockTransfer = stockTransfers.FirstOrDefault(s => s.StockTransferID == stockTransferID) ?? new StockTransfer(0, 0, 0, null, "", null, 0);
+            return stockTransfer.FromWarehouseID;
+        }
+
+        private static string GetWarehouseName(int warehouseID, List<Warehouse> warehouses)
+        {
+            Warehouse warehouse = warehouses.FirstOrDefault(w => w.WarehouseID == warehouseID) ?? new Warehouse(0, "", null);
+            return warehouse.WarehouseName;
+        }
+
+        private static List<Warehouse> GetRelevantWarehouses(List<StockTransfer> stockTransfers)
+        {
+            List<Warehouse> warehouses = GetWarehouses();
+            List<int> relevantWarehouseIDs = stockTransfers.Select(w => w.FromWarehouseID).ToList();
+            List<Warehouse> relevantWarehouses = warehouses
+                .Where(w => relevantWarehouseIDs.Contains(w.WarehouseID))
+                .Distinct()
+                .ToList();
+
+            return relevantWarehouses;
+        }
     }
 }
