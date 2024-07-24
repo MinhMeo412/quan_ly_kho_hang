@@ -36,17 +36,10 @@ namespace WarehouseManager.UI.Pages
             {
                 X = Pos.Right(productExportOptionLabel) + 1,
                 Y = Pos.Top(productExportOptionLabel),
-                Width = Dim.Fill(3 + 26),
+                Width = Dim.Fill(3),
                 Height = 4,
                 ReadOnly = true,
                 SelectedItem = 2
-            };
-
-            var stockTransferCheckbox = new CheckBox("Include stock transfers")
-            {
-                X = Pos.Right(productExportOptionDropDown) + 1,
-                Y = Pos.Top(productExportOptionLabel),
-                Checked = true
             };
 
             var productFromDateLabel = new Label("Start date:")
@@ -139,8 +132,7 @@ namespace WarehouseManager.UI.Pages
                             WarehouseShipmentsReportProductLogic.GetProductExportData(
                                 $"{productIDInput.Text}",
                                 productFromDateField.Date,
-                                productToDateField.Date,
-                                stockTransferCheckbox.Checked),
+                                productToDateField.Date),
                             "Warehouse Shipments",
                             WarehouseShipmentsReportProductLogic.GetProductFileInformation(
                                 $"{productIDInput.Text}",
@@ -159,7 +151,7 @@ namespace WarehouseManager.UI.Pages
                 }
             };
 
-            productContainer.Add(productExportOptionLabel, productExportOptionDropDown, stockTransferCheckbox, productFromDateLabel, productFromDateField, productToDateLabel, productToDateField, productLabel, productIDInput, productDropDown, productExportButton);
+            productContainer.Add(productExportOptionLabel, productExportOptionDropDown, productFromDateLabel, productFromDateField, productToDateLabel, productToDateField, productLabel, productIDInput, productDropDown, productExportButton);
             mainWindow.Add(errorLabel, userPermissionLabel, separatorLine, productContainer);
         }
     }

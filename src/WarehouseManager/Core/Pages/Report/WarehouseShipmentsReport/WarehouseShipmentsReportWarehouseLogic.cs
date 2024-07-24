@@ -32,7 +32,7 @@ namespace WarehouseManager.Core.Pages
             return DateTime.Now;
         }
 
-        public static DataTable GetWarehouseExportData(string option, string warehouseName, DateTime startDate, DateTime endDate, bool includeStockTransfers)
+        public static DataTable GetWarehouseExportData(string option, string warehouseName, DateTime startDate, DateTime endDate, bool includeStockTransfers = true)
         {
             DataTable dataTable;
 
@@ -57,11 +57,10 @@ namespace WarehouseManager.Core.Pages
             dataTable.Rows.Add($"Warehouse: {warehouseName}");
             dataTable.Rows.Add($"Date: {startDate:MM/dd/yyyy} - {endDate:MM/dd/yyyy}");
 
-
             return dataTable;
         }
 
-        private static List<Warehouse> GetWarehouses()
+        internal static List<Warehouse> GetWarehouses()
         {
             List<Warehouse> warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
             return warehouses;
@@ -207,49 +206,49 @@ namespace WarehouseManager.Core.Pages
             return warehouse.WarehouseID;
         }
 
-        private static List<InboundShipment> GetInboundShipments()
+        internal static List<InboundShipment> GetInboundShipments()
         {
             List<InboundShipment> inboundShipments = Program.Warehouse.InboundShipmentTable.InboundShipments ?? new List<InboundShipment>();
             return inboundShipments;
         }
 
-        private static List<InboundShipmentDetail> GetInboundShipmentDetails()
+        internal static List<InboundShipmentDetail> GetInboundShipmentDetails()
         {
             List<InboundShipmentDetail> inboundShipmentDetails = Program.Warehouse.InboundShipmentDetailTable.InboundShipmentDetails ?? new List<InboundShipmentDetail>();
             return inboundShipmentDetails;
         }
 
-        private static List<StockTransfer> GetStockTransfers()
+        internal static List<StockTransfer> GetStockTransfers()
         {
             List<StockTransfer> stockTransfers = Program.Warehouse.StockTransferTable.StockTransfers ?? new List<StockTransfer>();
             return stockTransfers;
         }
 
-        private static List<StockTransferDetail> GetStockTransferDetails()
+        internal static List<StockTransferDetail> GetStockTransferDetails()
         {
             List<StockTransferDetail> stockTransferDetails = Program.Warehouse.StockTransferDetailTable.StockTransferDetails ?? new List<StockTransferDetail>();
             return stockTransferDetails;
         }
 
-        private static List<Product> GetProducts()
+        internal static List<Product> GetProducts()
         {
             List<Product> products = Program.Warehouse.ProductTable.Products ?? new List<Product>();
             return products;
         }
 
-        private static List<ProductVariant> GetProductVariants()
+        internal static List<ProductVariant> GetProductVariants()
         {
             List<ProductVariant> productVariants = Program.Warehouse.ProductVariantTable.ProductVariants ?? new List<ProductVariant>();
             return productVariants;
         }
 
-        private static List<Category> GetCategories()
+        internal static List<Category> GetCategories()
         {
             List<Category> categories = Program.Warehouse.CategoryTable.Categories ?? new List<Category>();
             return categories;
         }
 
-        private static List<Supplier> GetSuppliers()
+        internal static List<Supplier> GetSuppliers()
         {
             List<Supplier> suppliers = Program.Warehouse.SupplierTable.Suppliers ?? new List<Supplier>();
             return suppliers;
@@ -305,7 +304,7 @@ namespace WarehouseManager.Core.Pages
             return relevantProducts;
         }
 
-        private static List<Category> GetRelevantCategories(List<Product> relevantProducts)
+        internal static List<Category> GetRelevantCategories(List<Product> relevantProducts)
         {
             List<Category> categories = GetCategories();
             List<int?> relevantCategoryIDs = relevantProducts.Select(p => p.CategoryID).ToList();
@@ -318,7 +317,7 @@ namespace WarehouseManager.Core.Pages
             return relevantCategories;
         }
 
-        private static List<Supplier> GetRelevantSuppliers(List<InboundShipment> relevantInboundShipments)
+        internal static List<Supplier> GetRelevantSuppliers(List<InboundShipment> relevantInboundShipments)
         {
             List<Supplier> suppliers = GetSuppliers();
             List<int> relevantSupplierIDs = relevantInboundShipments.Select(i => i.SupplierID).ToList();
@@ -353,79 +352,79 @@ namespace WarehouseManager.Core.Pages
             return relevantStockTransferDetails;
         }
 
-        private static int GetProductID(int variantID, List<ProductVariant> relevantProductVariants)
+        internal static int GetProductID(int variantID, List<ProductVariant> relevantProductVariants)
         {
             var variant = relevantProductVariants.FirstOrDefault(v => v.ProductVariantID == variantID);
             return variant?.ProductID ?? 0; // Assuming 0 is an invalid ProductID or default value
         }
 
-        private static string GetProductName(int productID, List<Product> relevantProducts)
+        internal static string GetProductName(int productID, List<Product> relevantProducts)
         {
             var product = relevantProducts.FirstOrDefault(p => p.ProductID == productID);
             return product?.ProductName ?? "Unknown Product";
         }
 
-        private static string GetVariantColor(int variantID, List<ProductVariant> relevantProductVariants)
+        internal static string GetVariantColor(int variantID, List<ProductVariant> relevantProductVariants)
         {
             var variant = relevantProductVariants.FirstOrDefault(v => v.ProductVariantID == variantID);
             return variant?.ProductVariantColor ?? "Unknown Color";
         }
 
-        private static string GetVariantSize(int variantID, List<ProductVariant> relevantProductVariants)
+        internal static string GetVariantSize(int variantID, List<ProductVariant> relevantProductVariants)
         {
             var variant = relevantProductVariants.FirstOrDefault(v => v.ProductVariantID == variantID);
             return variant?.ProductVariantSize ?? "Unknown Size";
         }
 
-        private static int GetCategoryID(int productID, List<Product> relevantProducts)
+        internal static int GetCategoryID(int productID, List<Product> relevantProducts)
         {
             var product = relevantProducts.FirstOrDefault(p => p.ProductID == productID);
             return product?.CategoryID ?? 0; // Assuming 0 is an invalid CategoryID or default value
         }
 
-        private static string GetCategoryName(int categoryID, List<Category> relevantCategories)
+        internal static string GetCategoryName(int categoryID, List<Category> relevantCategories)
         {
             var category = relevantCategories.FirstOrDefault(c => c.CategoryID == categoryID);
             return category?.CategoryName ?? "Unknown Category";
         }
 
-        private static DateTime GetInboundShipmentDate(int inboundShipmentID, List<InboundShipment> inboundShipments)
+        internal static DateTime GetInboundShipmentDate(int inboundShipmentID, List<InboundShipment> inboundShipments)
         {
             InboundShipment shipment = inboundShipments.FirstOrDefault(s => s.InboundShipmentID == inboundShipmentID) ?? new InboundShipment(0, 0, 0, null, "", null, 0);
             return shipment.InboundShipmentStartingDate ?? GetDefaultStartDate();
         }
 
-        private static int GetSupplierID(int inboundShipmentID, List<InboundShipment> inboundShipments)
+        internal static int GetSupplierID(int inboundShipmentID, List<InboundShipment> inboundShipments)
         {
             var shipment = inboundShipments.FirstOrDefault(s => s.InboundShipmentID == inboundShipmentID);
             return shipment?.SupplierID ?? 0; // Assuming 0 is an invalid SupplierID or default value
         }
 
-        private static string GetSupplierName(int supplierID, List<Supplier> suppliers)
+        internal static string GetSupplierName(int supplierID, List<Supplier> suppliers)
         {
             var supplier = suppliers.FirstOrDefault(s => s.SupplierID == supplierID);
             return supplier?.SupplierName ?? "Unknown Supplier";
         }
 
-        private static DateTime GetStockTransferDate(int stockTransferID, List<StockTransfer> stockTransfers)
+        internal static DateTime GetStockTransferDate(int stockTransferID, List<StockTransfer> stockTransfers)
         {
             StockTransfer stockTransfer = stockTransfers.FirstOrDefault(s => s.StockTransferID == stockTransferID) ?? new StockTransfer(0, 0, 0, null, "", null, 0);
             return stockTransfer.StockTransferStartingDate ?? GetDefaultStartDate();
         }
 
-        private static int GetFromWarehouseID(int stockTransferID, List<StockTransfer> stockTransfers)
+        internal static int GetFromWarehouseID(int stockTransferID, List<StockTransfer> stockTransfers)
         {
             StockTransfer stockTransfer = stockTransfers.FirstOrDefault(s => s.StockTransferID == stockTransferID) ?? new StockTransfer(0, 0, 0, null, "", null, 0);
             return stockTransfer.FromWarehouseID;
         }
 
-        private static string GetWarehouseName(int warehouseID, List<Warehouse> warehouses)
+        internal static string GetWarehouseName(int warehouseID, List<Warehouse> warehouses)
         {
             Warehouse warehouse = warehouses.FirstOrDefault(w => w.WarehouseID == warehouseID) ?? new Warehouse(0, "", null);
             return warehouse.WarehouseName;
         }
 
-        private static List<Warehouse> GetRelevantWarehouses(List<StockTransfer> stockTransfers)
+        internal static List<Warehouse> GetRelevantWarehouses(List<StockTransfer> stockTransfers)
         {
             List<Warehouse> warehouses = GetWarehouses();
             List<int> relevantWarehouseIDs = stockTransfers.Select(w => w.FromWarehouseID).ToList();
@@ -437,12 +436,12 @@ namespace WarehouseManager.Core.Pages
             return relevantWarehouses;
         }
 
-        private static List<OutboundShipment> GetOutboundShipments()
+        internal static List<OutboundShipment> GetOutboundShipments()
         {
             return Program.Warehouse.OutboundShipmentTable.OutboundShipments ?? new List<OutboundShipment>();
         }
 
-        private static List<OutboundShipmentDetail> GetOutboundShipmentDetails()
+        internal static List<OutboundShipmentDetail> GetOutboundShipmentDetails()
         {
             return Program.Warehouse.OutboundShipmentDetailTable.OutboundShipmentDetails ?? new List<OutboundShipmentDetail>();
         }
@@ -482,19 +481,19 @@ namespace WarehouseManager.Core.Pages
             return relevantStockTransfers;
         }
 
-        private static int GetToWarehouseID(int stockTransferID, List<StockTransfer> stockTransfers)
+        internal static int GetToWarehouseID(int stockTransferID, List<StockTransfer> stockTransfers)
         {
             var transfer = stockTransfers.FirstOrDefault(t => t.ToWarehouseID == stockTransferID);
             return transfer?.ToWarehouseID ?? -1;
         }
 
-        private static DateTime GetOutboundShipmentDate(int outboundShipmentID, List<OutboundShipment> outboundShipments)
+        internal static DateTime GetOutboundShipmentDate(int outboundShipmentID, List<OutboundShipment> outboundShipments)
         {
             OutboundShipment shipment = outboundShipments.FirstOrDefault(s => s.OutboundShipmentID == outboundShipmentID) ?? new OutboundShipment(0, 0, "", null, "", null, 0);
             return shipment.OutboundShipmentStartingDate ?? GetDefaultStartDate();
         }
 
-        private static string GetOutboundShipmentAddress(int outboundShipmentID, List<OutboundShipment> outboundShipments)
+        internal static string GetOutboundShipmentAddress(int outboundShipmentID, List<OutboundShipment> outboundShipments)
         {
             OutboundShipment shipment = outboundShipments.FirstOrDefault(s => s.OutboundShipmentID == outboundShipmentID) ?? new OutboundShipment(0, 0, "", null, "", null, 0);
             return shipment.OutboundShipmentAddress;
