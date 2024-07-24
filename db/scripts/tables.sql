@@ -93,8 +93,8 @@ CREATE TABLE warehouse_stock(
 	warehouse_id INT,
 	product_variant_id INT,
 	warehouse_stock_quantity INT NOT NULL DEFAULT 0,
-	FOREIGN KEY (warehouse_id) REFERENCES warehouse(warehouse_id),
-	FOREIGN KEY (product_variant_id) REFERENCES product_variant(product_variant_id),
+	FOREIGN KEY (warehouse_id) REFERENCES warehouse(warehouse_id) ON DELETE CASCADE,
+	FOREIGN KEY (product_variant_id) REFERENCES product_variant(product_variant_id) ON DELETE CASCADE,
 	PRIMARY KEY (warehouse_id, product_variant_id),
 	CHECK (warehouse_stock_quantity >= 0)
 );
@@ -132,7 +132,7 @@ CREATE TABLE inbound_shipment(
 	user_id INT NOT NULL,
 	PRIMARY KEY (inbound_shipment_id),
 	FOREIGN KEY (supplier_id) REFERENCES supplier(supplier_id),
-	FOREIGN KEY (warehouse_id) REFERENCES warehouse(warehouse_id) ON DELETE CASCADE,
+	FOREIGN KEY (warehouse_id) REFERENCES warehouse(warehouse_id),
 	FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
@@ -141,7 +141,7 @@ CREATE TABLE inbound_shipment_detail(
 	product_variant_id INT,
 	inbound_shipment_detail_amount INT NOT NULL DEFAULT 1,
 	FOREIGN KEY (inbound_shipment_id) REFERENCES inbound_shipment(inbound_shipment_id) ON DELETE CASCADE,
-	FOREIGN KEY (product_variant_id) REFERENCES product_variant(product_variant_id) ON DELETE CASCADE,
+	FOREIGN KEY (product_variant_id) REFERENCES product_variant(product_variant_id),
 	PRIMARY KEY (inbound_shipment_id, product_variant_id),
 	CHECK (inbound_shipment_detail_amount >= 0)
 );
