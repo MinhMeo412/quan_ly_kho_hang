@@ -224,7 +224,9 @@ namespace WarehouseManager.Core.Pages
 
         private static List<ProductVariant> GetRelevantProductVariants(List<Product> products)
         {
-
+            List<int> productIDs = products.Select(p => p.ProductID).ToList();
+            List<ProductVariant> productVariants = GetProductVariants();
+            return productVariants.Where(variant => productIDs.Contains(variant.ProductID)).ToList();
         }
 
         private static List<Category> GetRelevantCategories(List<Product> products)
@@ -234,32 +236,107 @@ namespace WarehouseManager.Core.Pages
 
         private static List<InboundShipmentDetail> GetRelevantInboundShipmentDetails(List<ProductVariant> productVariants, DateTime startDate, DateTime endDate)
         {
+            List<int> relevantVariantIDs = productVariants.Select(v => v.ProductVariantID).ToList();
 
+            List<InboundShipmentDetail> inboundShipmentDetails = GetInboundShipmentDetails()
+                .Where(detail => relevantVariantIDs.Contains(detail.ProductVariantID))
+                .ToList();
+
+            List<int> inboundShipmentIDs = inboundShipmentDetails.Select(i => i.InboundShipmentID).ToList();
+
+            List<InboundShipment> inboundShipments = GetInboundShipments().Where(i => inboundShipmentIDs.Contains(i.InboundShipmentID)).ToList();
+            List<InboundShipment> relevantInboundShipments = inboundShipments
+                .Where(i => i.InboundShipmentStartingDate >= startDate && i.InboundShipmentStartingDate <= endDate && i.InboundShipmentStatus == "Completed")
+                .ToList();
+
+            List<int> relevantInboundShipmentIDs = relevantInboundShipments.Select(i => i.InboundShipmentID).ToList();
+
+            List<InboundShipmentDetail> relevantInboundShipmentDetails = inboundShipmentDetails
+                .Where(isd => relevantInboundShipmentIDs.Contains(isd.InboundShipmentID))
+                .ToList();
+
+            return relevantInboundShipmentDetails;
         }
 
         private static List<OutboundShipmentDetail> GetRelevantOutboundShipmentDetails(List<ProductVariant> productVariants, DateTime startDate, DateTime endDate)
         {
+            List<int> relevantVariantIDs = productVariants.Select(v => v.ProductVariantID).ToList();
 
+            List<OutboundShipmentDetail> outboundShipmentDetails = GetOutboundShipmentDetails()
+                .Where(detail => relevantVariantIDs.Contains(detail.ProductVariantID))
+                .ToList();
+
+            List<int> outboundShipmentIDs = outboundShipmentDetails.Select(i => i.OutboundShipmentID).ToList();
+
+            List<OutboundShipment> outboundShipments = GetOutboundShipments().Where(i => outboundShipmentIDs.Contains(i.OutboundShipmentID)).ToList();
+            List<OutboundShipment> relevantOutboundShipments = outboundShipments
+                .Where(i => i.OutboundShipmentStartingDate >= startDate && i.OutboundShipmentStartingDate <= endDate && i.OutboundShipmentStatus == "Completed")
+                .ToList();
+
+            List<int> relevantOutboundShipmentIDs = relevantOutboundShipments.Select(i => i.OutboundShipmentID).ToList();
+
+            List<OutboundShipmentDetail> relevantOutboundShipmentDetails = outboundShipmentDetails
+                .Where(osd => relevantOutboundShipmentIDs.Contains(osd.OutboundShipmentID))
+                .ToList();
+
+            return relevantOutboundShipmentDetails;
         }
+
 
         private static List<StockTransferDetail> GetRelevantStockTransferDetails(List<ProductVariant> productVariants, DateTime startDate, DateTime endDate)
         {
+            List<int> relevantVariantIDs = productVariants.Select(v => v.ProductVariantID).ToList();
 
+            List<StockTransferDetail> stockTransferDetails = GetStockTransferDetails()
+                .Where(detail => relevantVariantIDs.Contains(detail.ProductVariantID))
+                .ToList();
+
+            List<int> stockTransferIDs = stockTransferDetails.Select(i => i.StockTransferID).ToList();
+
+            List<StockTransfer> stockTransfers = GetStockTransfers().Where(i => stockTransferIDs.Contains(i.StockTransferID)).ToList();
+            List<StockTransfer> relevantStockTransfers = stockTransfers
+                .Where(i => i.StockTransferStartingDate >= startDate && i.StockTransferStartingDate <= endDate && i.StockTransferStatus == "Completed")
+                .ToList();
+
+            List<int> relevantStockTransferIDs = relevantStockTransfers.Select(i => i.StockTransferID).ToList();
+
+            List<StockTransferDetail> relevantStockTransferDetails = stockTransferDetails
+                .Where(std => relevantStockTransferIDs.Contains(std.StockTransferID))
+                .ToList();
+
+            return relevantStockTransferDetails;
         }
+
 
         private static List<InboundShipment> GetRelevantInboundShipments(List<InboundShipmentDetail> inboundShipmentDetails)
         {
+            List<int> shipmentIDs = inboundShipmentDetails.Select(detail => detail.InboundShipmentID).Distinct().ToList();
+            List<InboundShipment> inboundShipments = GetInboundShipments();
 
+            return inboundShipments
+                .Where(shipment => shipmentIDs.Contains(shipment.InboundShipmentID))
+                .ToList();
         }
 
         private static List<OutboundShipment> GetRelevantOutboundShipments(List<OutboundShipmentDetail> outboundShipmentDetails)
         {
+            List<int> shipmentIDs = outboundShipmentDetails.Select(detail => detail.OutboundShipmentID).Distinct().ToList();
+            List<OutboundShipment> outboundShipments = GetOutboundShipments();
+
+            return outboundShipments
+                .Where(shipment => shipmentIDs.Contains(shipment.OutboundShipmentID))
+                .ToList();
 
         }
 
         private static List<StockTransfer> GetRelevantStockTranfers(List<StockTransferDetail> stockTransferDetails)
         {
+            List<int> transferIDs = stockTransferDetails.Select(detail => detail.StockTransferID).Distinct().ToList();
+            List<StockTransfer> stockTransfers = GetStockTransfers();
 
+            return stockTransfers
+                .Where(transfer => transferIDs.Contains(transfer.StockTransferID))
+                .ToList();
         }
 
         private static List<Supplier> GetRelevantSuppliers(List<InboundShipment> inboundShipments)
@@ -269,8 +346,16 @@ namespace WarehouseManager.Core.Pages
 
         private static List<Warehouse> GetRelevantWarehouses(List<InboundShipment> inboundShipments, List<OutboundShipment> outboundShipments, List<StockTransfer> stockTransfers)
         {
-            // not finished
-            return WarehouseShipmentsReportWarehouseLogic.GetRelevantWarehouses(stockTransfers);
+            List<int> relevantWarehousesIDs = inboundShipments.Select(i => i.WarehouseID).ToList();
+            relevantWarehousesIDs.AddRange(outboundShipments.Select(o => o.WarehouseID).ToList());
+
+            List<Warehouse> warehouses = GetWarehouses();
+            List<Warehouse> relevantWarehouses = warehouses.Where(warehouse => relevantWarehousesIDs.Contains(warehouse.WarehouseID)).ToList();
+            relevantWarehouses.AddRange(WarehouseShipmentsReportWarehouseLogic.GetRelevantWarehouses(stockTransfers));
+
+            relevantWarehouses = relevantWarehouses.Distinct().ToList();
+
+            return relevantWarehouses;
         }
 
         private static int GetProductID(int variantID, List<ProductVariant> relevantProductVariants)
