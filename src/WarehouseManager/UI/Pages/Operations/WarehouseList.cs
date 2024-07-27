@@ -116,18 +116,25 @@ namespace WarehouseManager.UI.Pages
 
                     int warehouseID = (int)tableView.Table.Rows[row][0];
                     string warehouseName = $"{tableView.Table.Rows[row][1]}";
-                    int? warehouseAddressID = (int?)tableView.Table.Rows[row][2];
+                    string warehouseAddressAddress = $"{tableView.Table.Rows[row][2]}";
+                    string warehouseAddressDistrict = $"{tableView.Table.Rows[row][3]}";
+                    string warehouseAddressPostalCode = $"{tableView.Table.Rows[row][4]}";
+                    string warehouseAddressCity = $"{tableView.Table.Rows[row][5]}";
+                    string warehouseAddressCountry = $"{tableView.Table.Rows[row][6]}";
 
 
                     // try catch để xử lý trường hợp nhập dữ liệu quá dài
                     try
                     {
-                        WarehouseListLogic.UpdateWarehouse(warehouseID, warehouseName, warehouseAddressID);
+                        WarehouseListLogic.Update(warehouseID, warehouseName, warehouseAddressAddress, warehouseAddressDistrict, warehouseAddressPostalCode, warehouseAddressCity, warehouseAddressCountry);
+                        errorLabel.Text = $"Warehouse {warehouseName} updated successfully";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                     }
                     catch (Exception ex)
                     {
                         tableView.Table.Rows[row][column] = currentValue;
                         errorLabel.Text = $"Error: {ex.Message}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                     }
 
 
@@ -157,12 +164,13 @@ namespace WarehouseManager.UI.Pages
                     try
                     {
                         tableView.Table = WarehouseListLogic.DeleteWarehouse(tableView.Table, warehouseID);
-                        errorLabel.Text = "";
+                        errorLabel.Text = $"Successfully deleted warehouse#{warehouseID}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                     }
                     catch (Exception ex)
                     {
-
                         errorLabel.Text = $"Error: {ex.Message}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                     }
 
                 }
