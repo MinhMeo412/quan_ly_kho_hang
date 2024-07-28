@@ -37,10 +37,10 @@ namespace WarehouseManager.UI.Pages
 
             var tableContainer = new FrameView()
             {
-                X = 1,
-                Y = Pos.Bottom(searchLabel) + 1,
-                Width = Dim.Fill(1),
-                Height = Dim.Fill(4),
+                X = 3,
+                Y = Pos.Bottom(searchLabel) + 2,
+                Width = Dim.Fill(3),
+                Height = Dim.Fill(6),
                 Border = new Border() { BorderStyle = BorderStyle.None }
             };
 

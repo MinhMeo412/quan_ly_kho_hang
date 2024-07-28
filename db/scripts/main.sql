@@ -17,10 +17,13 @@ SOURCE procedures.sql;
 SELECT 'Executing indexes.sql' AS 'INFO';
 SOURCE indexes.sql;
 
-SELECT 'Executing insert_dummy_data.sql' AS 'INFO';
-SOURCE insert_dummy_data.sql;
+SELECT 'Executing insert_required_data.sql' AS 'INFO';
+SOURCE insert_required_data.sql;
 
 SELECT 'Executing user.sql' AS 'INFO';
 SOURCE user.sql;
+
+SELECT 'Executing insert_dummy_data.sql' AS 'INFO';
+SOURCE insert_dummy_data.sql;
 
 SELECT 'Database creation completed.' AS 'INFO';
