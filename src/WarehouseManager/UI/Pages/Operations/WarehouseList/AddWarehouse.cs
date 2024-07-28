@@ -17,6 +17,8 @@ namespace WarehouseManager.UI.Pages
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
             var separatorLine = UIComponent.SeparatorLine();
+            
+            var refreshButton = UIComponent.RefreshButton();
 
             var container = new FrameView()
             {
@@ -109,6 +111,11 @@ namespace WarehouseManager.UI.Pages
                 Y = Pos.Bottom(countryLabel) + 1
             };
 
+            refreshButton.Text = "Back";
+            refreshButton.Clicked += () =>
+            {
+                WarehouseList.Display();
+            };
             //Khi nhấn nút save
             saveButton.Clicked += () =>
             {
@@ -141,7 +148,7 @@ namespace WarehouseManager.UI.Pages
             };
 
             container.Add(warehouseNameLabel, warehouseNameInput, warehouseAddressLabel, warehouseAddressInput, districtLabel, districtInput, postalCodeLabel, postalCodeInput, cityLabel, cityInput, countryLabel, countryInput, saveButton);
-            mainWindow.Add(container, errorLabel, userPermissionLabel, separatorLine);
+            mainWindow.Add(container, errorLabel, userPermissionLabel, separatorLine, refreshButton);
         }
     }
 }
