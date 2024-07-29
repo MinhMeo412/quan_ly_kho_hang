@@ -200,16 +200,6 @@ namespace WarehouseManager.Core.Pages
             return WarehouseShipmentsReportWarehouseLogic.GetStockTransfers();
         }
 
-        private static List<Category> GetCategories()
-        {
-            return WarehouseShipmentsReportWarehouseLogic.GetCategories();
-        }
-
-        private static List<Supplier> GetSuppliers()
-        {
-            return WarehouseShipmentsReportWarehouseLogic.GetSuppliers();
-        }
-
         private static List<Warehouse> GetWarehouses()
         {
             return WarehouseShipmentsReportWarehouseLogic.GetWarehouses();
