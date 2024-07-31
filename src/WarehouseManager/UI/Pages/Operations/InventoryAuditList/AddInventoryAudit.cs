@@ -83,7 +83,7 @@ namespace WarehouseManager.UI.Pages
                 Text = ""
             };
 
-            var variantIDLabel = new Label("Product")
+            var variantIDLabel = new Label("Variant ID")
             {
                 X = 1,
                 Y = 1,
@@ -93,7 +93,7 @@ namespace WarehouseManager.UI.Pages
             {
                 X = Pos.Left(variantIDLabel),
                 Y = Pos.Bottom(variantIDLabel),
-                Width = 7
+                Width = 10
             };
 
             var variantNameDropDown = new ComboBox()
@@ -104,6 +104,12 @@ namespace WarehouseManager.UI.Pages
                 Height = Dim.Fill(),
                 ReadOnly = true,
                 SelectedItem = 0
+            };
+
+            var variantNameLabel = new Label("Name")
+            {
+                X = Pos.Left(variantNameDropDown),
+                Y = Pos.Top(variantNameDropDown) - 1,
             };
 
             var quantityInput = new TextField()
@@ -158,7 +164,7 @@ namespace WarehouseManager.UI.Pages
             };
 
             leftContainer.Add(warehouseLabel, descriptionLabel, warehouseDropDown, descriptionInput);
-            rightContainer.Add(searchLabel, searchInput, variantIDLabel, variantIDInput, variantNameDropDown, quantityLabel, quantityInput, addBUtton, tableView, deleteButton, getAllStockButton);
+            rightContainer.Add(searchLabel, searchInput, variantIDLabel, variantNameLabel, variantIDInput, variantNameDropDown, quantityLabel, quantityInput, addBUtton, tableView, deleteButton, getAllStockButton);
             mainWindow.Add(returnButton, errorLabel, userPermissionLabel, separatorLine, leftContainer, rightContainer, saveButton);
         }
     }
