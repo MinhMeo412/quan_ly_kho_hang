@@ -1,5 +1,6 @@
 using System.Data;
 using Terminal.Gui;
+using WarehouseManager.Core.Pages;
 using WarehouseManager.UI.Utility;
 
 namespace WarehouseManager.UI.Pages
@@ -12,145 +13,153 @@ namespace WarehouseManager.UI.Pages
             var mainWindow = UIComponent.LoggedInMainWindow("Add New Inventory Audit");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.AnnounceLabel("Error Message Here");
+            var errorLabel = UIComponent.AnnounceLabel();
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
             var separatorLine = UIComponent.SeparatorLine();
 
-            var container = new FrameView()
+
+            var returnButton = new Button("Back")
             {
-                X = Pos.Center(),
-                Y = 1,
-                Width = Dim.Percent(85),
-                Height = Dim.Percent(30)
+                X = 3,
+                Y = 1
             };
+
             var leftContainer = new FrameView()
             {
-                X = 0,
-                Y = 0,
-                Width = Dim.Percent(50),
-                Height = Dim.Percent(100),
+                X = 3,
+                Y = 2,
+                Width = Dim.Percent(25),
+                Height = Dim.Fill(5),
                 Border = new Border() { BorderStyle = BorderStyle.None }
             };
+
             var rightContainer = new FrameView()
             {
-                X = Pos.Percent(50),
-                Y = 0,
-                Width = Dim.Percent(50),
-                Height = Dim.Percent(100),
+                X = Pos.Right(leftContainer) + 1,
+                Y = Pos.Top(leftContainer),
+                Width = Dim.Fill(3),
+                Height = Dim.Fill(5),
                 Border = new Border() { BorderStyle = BorderStyle.None }
+            };
+
+
+            var saveButton = new Button("Save", is_default: true)
+            {
+                X = Pos.Center(),
+                Y = Pos.Bottom(rightContainer) + 1
             };
 
             var warehouseLabel = new Label("Warehouse:")
             {
-                X = 3,
+                X = 0,
                 Y = 1
             };
 
-            var warehouseInput = new TextField("")
+            var warehouseDropDown = new ComboBox()
             {
-                X = 20,
-                Y = Pos.Top(warehouseLabel),
-                Width = Dim.Percent(60),
+                X = Pos.Left(warehouseLabel),
+                Y = Pos.Bottom(warehouseLabel),
+                Width = Dim.Fill(1),
+                Height = Dim.Fill(),
+                ReadOnly = true,
+                SelectedItem = 0
             };
 
-            var dateLabel = new Label("Date:")
-            {
-                X = 3,
-                Y = Pos.Bottom(warehouseLabel) + 2
-            };
-
-            var dateInput = new TextField("")
-            {
-                X = 20,
-                Y = Pos.Top(dateLabel),
-                Width = Dim.Percent(60),
-            };
 
             var descriptionLabel = new Label("Description:")
             {
-                X = 3,
-                Y = Pos.Bottom(dateLabel) + 2
+                X = Pos.Left(warehouseLabel),
+                Y = Pos.Bottom(warehouseLabel) + 2
             };
 
             var descriptionInput = new TextView()
             {
-                X = 20,
-                Y = Pos.Top(descriptionLabel),
-                Width = Dim.Percent(60),
-                Height = 2,
-                Text = "",
+                X = Pos.Left(descriptionLabel),
+                Y = Pos.Bottom(descriptionLabel),
+                Width = Dim.Fill(1),
+                Height = Dim.Fill(),
+                Text = ""
             };
 
-            var userLabel = new Label("User:")
+            var variantIDLabel = new Label("Product")
             {
-                X = 3,
-                Y = 1
+                X = 1,
+                Y = 1,
             };
 
-            var userInput = new TextField("")
+            var variantIDInput = new TextField()
             {
-                X = 20,
-                Y = Pos.Top(userLabel),
-                Width = Dim.Percent(60),
+                X = Pos.Left(variantIDLabel),
+                Y = Pos.Bottom(variantIDLabel),
+                Width = 7
             };
 
-            var statusLabel = new Label("Status:")
+            var variantNameDropDown = new ComboBox()
             {
-                X = 3,
-                Y = Pos.Bottom(userLabel) + 2
+                X = Pos.Right(variantIDInput) + 1,
+                Y = Pos.Top(variantIDInput),
+                Width = Dim.Percent(25),
+                Height = Dim.Fill(),
+                ReadOnly = true,
+                SelectedItem = 0
             };
 
-            var options = new string[] { "Processing", "Completed" };
-
-            var statusBox = new ComboBox(options)
+            var quantityInput = new TextField()
             {
-                X = 20,
-                Y = Pos.Top(statusLabel),
-                Width = Dim.Percent(60),
-                Height = 4
+                X = Pos.Right(variantNameDropDown) + 1,
+                Y = Pos.Top(variantNameDropDown),
+                Width = 8
             };
 
-            var tableContainer = new FrameView()
+            var quantityLabel = new Label("Quantity")
             {
-                X = Pos.Center(),
-                Y = Pos.Bottom(container) + 2,
-                Width = Dim.Percent(95),
-                Height = Dim.Fill(7),
+                X = Pos.Left(quantityInput),
+                Y = Pos.Top(quantityInput) - 1,
             };
 
-            var dataTable = new DataTable();
-            dataTable.Columns.Add("ID", typeof(int));
-            dataTable.Columns.Add("Name", typeof(string));
-            dataTable.Columns.Add("Age", typeof(int));
-            dataTable.Rows.Add(1, "Alice", 30);
-            dataTable.Rows.Add(2, "Bob", 25);
-            dataTable.Rows.Add(3, "Charlie", 35);
-            dataTable.Rows.Add(1, "Alice", 30);
 
-
-            var tableView = UIComponent.Table(dataTable);
-
-            //Tạo nút save
-            var saveButton = new Button("Save", is_default: true)
+            var addBUtton = new Button("Add")
             {
-                X = Pos.Center(),
-                Y = Pos.Bottom(tableContainer) + 2
+                X = Pos.Right(quantityInput) + 1,
+                Y = Pos.Top(quantityInput)
             };
 
-            //Khi nhấn nút save
-            saveButton.Clicked += () =>
+
+            var searchLabel = new Label("Search")
             {
-                MessageBox.Query("Save", "", "OK");
+                X = Pos.Right(quantityLabel) + 32,
+                Y = 1,
             };
 
+            var searchInput = new TextField()
+            {
+                X = Pos.Left(searchLabel),
+                Y = Pos.Bottom(searchLabel),
+                Width = Dim.Fill()
+            };
 
-            tableContainer.Add(tableView);
-            leftContainer.Add(warehouseLabel, warehouseInput, dateLabel, dateInput, descriptionLabel, descriptionInput);
-            rightContainer.Add(userLabel, userInput, statusLabel, statusBox);
-            container.Add(leftContainer, rightContainer);
-            mainWindow.Add(container, tableContainer, errorLabel, userPermissionLabel, separatorLine, saveButton);
+            var tableView = UIComponent.Table(AddInventoryAuditLogic.GetDataTable());
+            tableView.X = 1;
+            tableView.Y = Pos.Bottom(variantIDInput) + 2;
+            tableView.Height = Dim.Fill(2);
+
+            var deleteButton = new Button("Delete")
+            {
+                X = Pos.Left(tableView),
+                Y = Pos.Bottom(tableView) + 1
+            };
+
+            var getAllStockButton = new Button("Get All Stock")
+            {
+                X = Pos.AnchorEnd(17),
+                Y = Pos.Top(deleteButton)
+            };
+
+            leftContainer.Add(warehouseLabel, descriptionLabel, warehouseDropDown, descriptionInput);
+            rightContainer.Add(searchLabel, searchInput, variantIDLabel, variantIDInput, variantNameDropDown, quantityLabel, quantityInput, addBUtton, tableView, deleteButton, getAllStockButton);
+            mainWindow.Add(returnButton, errorLabel, userPermissionLabel, separatorLine, leftContainer, rightContainer, saveButton);
         }
     }
 }
