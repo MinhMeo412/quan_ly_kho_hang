@@ -13,338 +13,201 @@ namespace WarehouseManager.UI.Pages
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Inventory Audit");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.AnnounceLabel("Error Message Here");
+            var errorLabel = UIComponent.AnnounceLabel();
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
             var separatorLine = UIComponent.SeparatorLine();
 
-            //Container
-            var container = new FrameView()
+
+            var returnButton = new Button("Back")
             {
-                X = Pos.Center(),
-                Y = 1,
-                Width = Dim.Percent(85),
-                Height = Dim.Percent(30)
+                X = 3,
+                Y = 1
             };
+
             var leftContainer = new FrameView()
             {
-                X = 0,
-                Y = 0,
-                Width = Dim.Percent(50),
-                Height = Dim.Percent(100),
+                X = 3,
+                Y = 2,
+                Width = Dim.Percent(25),
+                Height = Dim.Fill(5),
                 Border = new Border() { BorderStyle = BorderStyle.None }
             };
+
             var rightContainer = new FrameView()
             {
-                X = Pos.Percent(50),
-                Y = 0,
-                Width = Dim.Percent(50),
-                Height = Dim.Percent(100),
+                X = Pos.Right(leftContainer) + 1,
+                Y = Pos.Top(leftContainer),
+                Width = Dim.Fill(3),
+                Height = Dim.Fill(5),
                 Border = new Border() { BorderStyle = BorderStyle.None }
             };
 
-            var tableContainer = new FrameView()
+
+            var saveButton = new Button("Save", is_default: true)
             {
                 X = Pos.Center(),
-                Y = Pos.Bottom(container) + 1,
-                Width = Dim.Percent(95),
-                Height = Dim.Fill(8),
+                Y = Pos.Bottom(rightContainer) + 1
             };
 
-            var itemInputContainer = new FrameView()
-            {
-                X = Pos.Percent(57),
-                Y = Pos.Bottom(tableContainer),
-                Width = Dim.Percent(40),
-                Height = 2,
-                Border = new Border() { BorderStyle = BorderStyle.None }
-            };
-
-            //Left Label/Input
             var warehouseLabel = new Label("Warehouse:")
             {
-                X = 3,
+                X = 0,
                 Y = 1
             };
 
-            var warehouseDropDown = new ComboBox()
+            var warehouseDropDown = new TextField()
             {
-                X = 20,
-                Y = Pos.Top(warehouseLabel),
-                Width = Dim.Percent(60),
-                Height = Dim.Fill(1),
-                ReadOnly = true
-            };
-            var warehouses = EditInventoryAuditLogic.GetWarehouseList();
-            warehouseDropDown.SetSource(warehouses);
-            warehouseDropDown.SelectedItem = EditInventoryAuditLogic.GetInventoryAuditWarehouse(shipmentID);
-
-            var dateLabel = new Label("Date:")
-            {
-                X = 3,
-                Y = Pos.Bottom(warehouseLabel) + 2
-            };
-
-            var dateInput = new TextField(EditInventoryAuditLogic.GetInventoryAuditDate(shipmentID).ToString("dd/MM/yyyy h:mm:ss tt"))//(DateTime.Now.ToString("dd/MM/yyyy h:mm:ss tt"))
-            {
-                X = 20,
-                Y = Pos.Top(dateLabel),
-                Width = Dim.Percent(60),
-                ReadOnly = true
-            };
-
-            var descriptionLabel = new Label("Description:")
-            {
-                X = 3,
-                Y = Pos.Bottom(dateLabel) + 2
-            };
-
-            var descriptionInput = new TextView()
-            {
-                X = 20,
-                Y = Pos.Top(descriptionLabel),
-                Width = Dim.Percent(60),
-                Height = 3,
-                Text = "",
-            };
-
-            //Right Label/Input
-            var userLabel = new Label("User:")
-            {
-                X = 3,
-                Y = 1
-            };
-
-            var userInput = new TextField(EditInventoryAuditLogic.GetInventoryAuditUserName(shipmentID))
-            {
-                X = 20,
-                Y = Pos.Top(userLabel),
-                Width = Dim.Percent(60),
-                ReadOnly = true
+                X = Pos.Left(warehouseLabel),
+                Y = Pos.Bottom(warehouseLabel),
+                Width = Dim.Fill(1),
+                ReadOnly = true,
             };
 
             var statusLabel = new Label("Status:")
             {
-                X = 3,
-                Y = Pos.Bottom(userLabel) + 2
+                X = 0,
+                Y = Pos.Bottom(warehouseDropDown) + 1
             };
 
-            var options = new string[] { "Processing", "Completed" };
-
-            var statusBox = new ComboBox(options)
+            var statusDropDown = new ComboBox()
             {
-                X = 20,
-                Y = Pos.Top(statusLabel),
-                Width = Dim.Percent(60),
-                Height = 3
+                X = Pos.Left(statusLabel),
+                Y = Pos.Bottom(statusLabel),
+                Width = Dim.Fill(1),
+                Height = Dim.Fill(),
+                ReadOnly = true,
+                SelectedItem = 0
             };
 
-
-
-            //Item table data
-            var dataTable = new DataTable();
-
-            var tableView = UIComponent.Table(EditInventoryAuditLogic.GetInventoryAuditDetailData(shipmentID));
-
-            //Button
-            var saveButton = new Button("Save")
+            var userLabel = new Label("Created By:")
             {
-                X = Pos.Percent(95),
-                Y = Pos.Bottom(tableContainer) + 4
+                X = 0,
+                Y = Pos.Bottom(statusLabel) + 2
             };
 
-            var returnButton = new Button("Back")
+            var userInput = new TextField()
             {
-                X = Pos.Left(saveButton) - 10,
-                Y = Pos.Bottom(tableContainer) + 4
+                X = Pos.Left(userLabel),
+                Y = Pos.Bottom(userLabel),
+                Width = Dim.Fill(1),
+                ReadOnly = true,
             };
+
+            var timeLabel = new Label("Date:")
+            {
+                X = 0,
+                Y = Pos.Bottom(userInput) + 1
+            };
+
+            var timeInput = new TimeField()
+            {
+                X = Pos.Left(timeLabel),
+                Y = Pos.Bottom(timeLabel),
+                Width = Dim.Fill(1),
+                ReadOnly = true,
+            };
+
+
+            var descriptionLabel = new Label("Description:")
+            {
+                X = Pos.Left(timeLabel),
+                Y = Pos.Bottom(timeLabel) + 2
+            };
+
+            var descriptionInput = new TextView()
+            {
+                X = Pos.Left(descriptionLabel),
+                Y = Pos.Bottom(descriptionLabel),
+                Width = Dim.Fill(1),
+                Height = Dim.Fill(),
+                Text = ""
+            };
+
+            var variantIDLabel = new Label("Variant ID")
+            {
+                X = 1,
+                Y = 1,
+            };
+
+            var variantIDInput = new TextField()
+            {
+                X = Pos.Left(variantIDLabel),
+                Y = Pos.Bottom(variantIDLabel),
+                Width = 10
+            };
+
+            var variantNameDropDown = new ComboBox()
+            {
+                X = Pos.Right(variantIDInput) + 1,
+                Y = Pos.Top(variantIDInput),
+                Width = Dim.Percent(25),
+                Height = Dim.Fill(),
+                ReadOnly = true,
+                SelectedItem = 0
+            };
+
+            var variantNameLabel = new Label("Name")
+            {
+                X = Pos.Left(variantNameDropDown),
+                Y = Pos.Top(variantNameDropDown) - 1,
+            };
+
+            var quantityInput = new TextField()
+            {
+                X = Pos.Right(variantNameDropDown) + 1,
+                Y = Pos.Top(variantNameDropDown),
+                Width = 8
+            };
+
+            var quantityLabel = new Label("Quantity")
+            {
+                X = Pos.Left(quantityInput),
+                Y = Pos.Top(quantityInput) - 1,
+            };
+
+
+            var addBUtton = new Button("Add")
+            {
+                X = Pos.Right(quantityInput) + 1,
+                Y = Pos.Top(quantityInput)
+            };
+
+
+            var searchLabel = new Label("Search")
+            {
+                X = Pos.Right(quantityLabel) + 32,
+                Y = 1,
+            };
+
+            var searchInput = new TextField()
+            {
+                X = Pos.Left(searchLabel),
+                Y = Pos.Bottom(searchLabel),
+                Width = Dim.Fill()
+            };
+
+            var tableView = UIComponent.Table(AddInventoryAuditLogic.GetDataTable());
+            tableView.X = 1;
+            tableView.Y = Pos.Bottom(variantIDInput) + 2;
+            tableView.Height = Dim.Fill(2);
 
             var deleteButton = new Button("Delete")
             {
-                X = 1,
-                Y = Pos.Bottom(tableContainer) + 4
+                X = Pos.Left(tableView),
+                Y = Pos.Bottom(tableView) + 1
             };
 
-
-            //Khi nhấn nút save (Đổi Date thành thời gian lưu mới nhất)
-            saveButton.Clicked += () =>
+            var getAllStockButton = new Button("Get All Stock")
             {
-                try
-                {
-                    EditInventoryAuditLogic.Save(
-                        inventoryAuditID: shipmentID,
-                        warehouseName: $"{warehouseDropDown.Text}",
-                        inventoryAuditTime: DateTime.Now,
-                        userName: $"{userInput.Text}"
-                    );
-
-                    tableView.Table = EditInventoryAuditLogic.GetInventoryAuditDetailData(shipmentID);
-
-                    MessageBox.Query("Success", $"Inventory Audit saved successfully.", "OK");
-                    errorLabel.Text = "";
-                }
-                catch (Exception ex)
-                {
-                    errorLabel.Text = $"Error: {ex.Message}";
-                    tableView.Table = EditInventoryAuditLogic.GetInventoryAuditDetailData(shipmentID);
-                }
+                X = Pos.AnchorEnd(17),
+                Y = Pos.Top(deleteButton)
             };
 
-            //Khi nhấn nút Delete(cho Item)
-            deleteButton.Clicked += () =>
-            {
-                int selectedRowIndex = tableView.SelectedRow;
-
-                // Lấy giá trị từ cột đầu tiên của hàng được chọn
-                var selectedRow = tableView.Table.Rows[selectedRowIndex];
-                if (int.TryParse(selectedRow[0].ToString(), out int firstColumnValue))
-                {
-                    // Gọi phương thức DeleteInventoryAuditDetail với giá trị từ cột đầu tiên
-                    tableView.Table = EditInventoryAuditLogic.DeleteInventoryAuditDetail(tableView.Table, selectedRowIndex, firstColumnValue, shipmentID);
-                }
-                else
-                {
-                    // Xử lý lỗi khi chuyển đổi thất bại (nếu cần)
-                    MessageBox.Query("Lỗi", "Giá trị trong cột đầu tiên không phải là số nguyên hợp lệ.", "OK");
-                }
-            };
-
-            //Khi nhấn nút Back
-            returnButton.Clicked += () =>
-            {
-                InventoryAuditList.Display();
-            };
-
-            //Khi nhấn vào 1 ô trong bảng để sửa
-            tableView.CellActivated += args =>
-            {
-                int column = args.Col;
-                int row = args.Row;
-
-                // Retrieve the current value of the cell
-                var currentValue = tableView.Table.Rows[row][column].ToString();
-
-                // Create a dialog box with an input field for editing the cell value
-                var editDialog = new Dialog("Edit Cell")
-                {
-                    X = Pos.Center(),
-                    Y = Pos.Center(),
-                    Width = Dim.Percent(50),
-                    Height = Dim.Percent(50)
-                };
-
-                var newValue = new TextView()
-                {
-                    X = Pos.Center(),
-                    Y = Pos.Center(),
-                    Width = Dim.Fill(),
-                    Height = Dim.Fill(),
-                    Text = currentValue
-                };
-
-                var cancelButton = new Button("Cancel");
-                cancelButton.Clicked += () =>
-                {
-                    Application.RequestStop();
-                };
-
-                //Lấy Product variant ID
-                var variantIDString = tableView.Table.Rows[row][0].ToString();
-                int variantID = int.Parse(variantIDString ?? "");
-
-                var okButton = new Button("OK", is_default: true);
-                okButton.Clicked += () =>
-                {
-                    // Update the table with the new value
-                    tableView.Table.Rows[row][column] = newValue.Text.ToString();
-                    var quantityString = tableView.Table.Rows[row][column].ToString(); ;
-                    int quantity = int.Parse(quantityString ?? "");
-                    EditInventoryAuditLogic.UpdateInventoryAuditDetail(tableView.Table, variantID, quantity, shipmentID);
-                    Application.RequestStop();
-                };
-
-                editDialog.Add(newValue);
-                editDialog.AddButton(cancelButton);
-                editDialog.AddButton(okButton);
-
-                if (column != 0 && column != 1)
-                {
-                    Application.Run(editDialog);
-                }
-            };
-
-            //Item Label/Input
-            var productVariantIDLabel = new Label("Product Variant ID:")
-            {
-                X = 1,
-                Y = 0,
-                Width = Dim.Percent(40)
-            };
-
-            var quantityLabel = new Label("Quantity:")
-            {
-                X = Pos.Right(productVariantIDLabel) + 1,
-                Y = 0,
-            };
-
-            var productVariantIDInput = new TextField("")
-            {
-                X = Pos.Bottom(productVariantIDLabel),
-                Y = 1,
-                Width = Dim.Percent(40)
-            };
-
-            var quantityInput = new TextField("")
-            {
-                X = Pos.Right(productVariantIDInput) + 1,
-                Y = 1,
-                Width = Dim.Percent(40)
-            };
-            //Add Item Button
-            var addItemButton = new Button("Add Item")
-            {
-                X = Pos.Right(quantityInput),
-                Y = 1,
-                Width = Dim.Percent(20)
-            };
-
-            // Khi nhấn nút Add Item
-            addItemButton.Clicked += () =>
-            {
-                string productVariantIDText = productVariantIDInput.Text.ToString() ?? "";
-                string quantityText = quantityInput.Text.ToString() ?? "";
-                // Kiểm tra nếu các TextField không trống
-                if (!string.IsNullOrEmpty(productVariantIDText) && !string.IsNullOrEmpty(quantityText))
-                {
-                    // Chuyển đổi giá trị TextField từ chuỗi sang số nguyên
-                    if (int.TryParse(productVariantIDText, out int productVariantID) && int.TryParse(quantityText, out int quantity))
-                    {
-                        tableView.Table = EditInventoryAuditLogic.AddInventoryAuditDetail(tableView.Table, productVariantID, quantity, shipmentID);
-
-                        productVariantIDInput.Text = "";
-                        quantityInput.Text = "";
-                    }
-                    else
-                    {
-                        // Xử lý lỗi khi chuyển đổi thất bại
-                        MessageBox.Query("Lỗi", "Vui lòng nhập giá trị hợp lệ cho Product Variant ID và Quantity.", "OK");
-                    }
-                }
-                else
-                {
-                    // Xử lý lỗi khi các trường TextField trống
-                    MessageBox.Query("Lỗi", "Vui lòng nhập giá trị cho tất cả các trường.", "OK");
-                }
-            };
-
-            //Add display object
-            itemInputContainer.Add(addItemButton, productVariantIDLabel, productVariantIDInput, quantityLabel, quantityInput);
-            tableContainer.Add(tableView);
-            leftContainer.Add(warehouseLabel, warehouseDropDown, descriptionLabel, descriptionInput, dateLabel, dateInput);
-            rightContainer.Add(userLabel, userInput, statusLabel, statusBox);
-            container.Add(leftContainer, rightContainer);
-            mainWindow.Add(container, tableContainer, separatorLine, errorLabel, userPermissionLabel, saveButton, deleteButton, returnButton, itemInputContainer);
+            leftContainer.Add(warehouseLabel, descriptionLabel, statusLabel, userLabel, timeLabel, warehouseDropDown, statusDropDown, userInput, timeInput, descriptionInput);
+            rightContainer.Add(searchLabel, searchInput, variantIDLabel, variantNameLabel, variantIDInput, variantNameDropDown, quantityLabel, quantityInput, addBUtton, tableView, deleteButton, getAllStockButton);
+            mainWindow.Add(returnButton, errorLabel, userPermissionLabel, separatorLine, leftContainer, rightContainer, saveButton);
         }
     }
 }

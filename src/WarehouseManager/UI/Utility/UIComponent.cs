@@ -16,7 +16,6 @@ namespace WarehouseManager.UI.Utility
             var menuBar = new MenuBar([
                 new MenuBarItem("_Menu", new MenuItem[] {
                     new MenuItem("_Home", "", Home.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Company Information", "", CompanyInformation.Display, () => canExecuteMenu(4)),
                     new MenuItem("_Switch Theme", "Light/Dark", UI.SwitchTheme, () => canExecuteMenu(4)),
                     new MenuItem("_Exit Program", "Ctrl+Q", () => Application.RequestStop(), () => canExecuteMenu(4))
                 }),
