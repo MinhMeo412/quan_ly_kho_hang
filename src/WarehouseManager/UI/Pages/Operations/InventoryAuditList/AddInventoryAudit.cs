@@ -56,7 +56,7 @@ namespace WarehouseManager.UI.Pages
                 Y = 1
             };
 
-            var warehouseDropDown = new ComboBox()
+            var warehouseDropDown = new ComboBox(AddInventoryAuditLogic.GetWarehouseNames())
             {
                 X = Pos.Left(warehouseLabel),
                 Y = Pos.Bottom(warehouseLabel),
@@ -95,7 +95,8 @@ namespace WarehouseManager.UI.Pages
                 Width = 10
             };
 
-            var variantNameDropDown = new ComboBox()
+            Dictionary<int, string> variantDictionary = AddInventoryAuditLogic.GetVariantList();
+            var variantNameDropDown = new ComboBox(variantDictionary.Values.ToList())
             {
                 X = Pos.Right(variantIDInput) + 1,
                 Y = Pos.Top(variantIDInput),
@@ -104,6 +105,7 @@ namespace WarehouseManager.UI.Pages
                 ReadOnly = true,
                 SelectedItem = 0
             };
+            variantIDInput.Text = $"{AddInventoryAuditLogic.GetVariantID($"{variantNameDropDown.Text}", variantDictionary)}";
 
             var variantNameLabel = new Label("Name")
             {
@@ -160,6 +162,71 @@ namespace WarehouseManager.UI.Pages
             {
                 X = Pos.AnchorEnd(17),
                 Y = Pos.Top(deleteButton)
+            };
+
+            returnButton.Clicked += () =>
+            {
+                InventoryAuditList.Display();
+            };
+
+            warehouseDropDown.OpenSelectedItem += (e) =>
+            {
+                tableView.Table = AddInventoryAuditLogic.GetDataTable();
+            };
+
+            variantIDInput.TextChanged += args =>
+            {
+                variantNameDropDown.SelectedItem = AddInventoryAuditLogic.GetVariantIndex($"{variantIDInput.Text}", variantDictionary);
+            };
+
+            variantNameDropDown.OpenSelectedItem += (a) =>
+            {
+                variantIDInput.Text = $"{AddInventoryAuditLogic.GetVariantID($"{variantNameDropDown.Text}", variantDictionary)}";
+            };
+
+            addBUtton.Clicked += () =>
+            {
+                tableView.Table = AddInventoryAuditLogic.AddVariant($"{variantIDInput.Text}", $"{quantityInput.Text}", tableView.Table);
+                variantNameDropDown.SelectedItem = 0;
+                quantityInput.Text = "";
+            };
+
+            searchInput.TextChanged += args =>
+            {
+                tableView.Table = AddInventoryAuditLogic.Search(tableView.Table, $"{searchInput.Text}");
+            };
+
+            deleteButton.Clicked += () =>
+            {
+                tableView.Table = AddInventoryAuditLogic.DeleteVariant($"{variantIDInput.Text}", tableView.Table);
+            };
+
+            getAllStockButton.Clicked += () =>
+            {
+                tableView.Table = AddInventoryAuditLogic.GetAllStock(tableView.Table);
+            };
+
+            saveButton.Clicked += () =>
+            {
+                try
+                {
+                    AddInventoryAuditLogic.Save($"{warehouseDropDown.Text}", $"{descriptionInput.Text}", tableView.Table);
+
+                    warehouseDropDown.SelectedItem = 0;
+                    descriptionInput.Text = "";
+                    variantNameDropDown.SelectedItem = 0;
+                    quantityInput.Text = "";
+                    searchInput.Text = "";
+                    tableView.Table = AddInventoryAuditLogic.GetDataTable();
+
+                    errorLabel.Text = $"Successfully saved inventory audit.";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+                }
+                catch (Exception ex)
+                {
+                    errorLabel.Text = $"Error: {ex}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                }
             };
 
             leftContainer.Add(warehouseLabel, descriptionLabel, warehouseDropDown, descriptionInput);
