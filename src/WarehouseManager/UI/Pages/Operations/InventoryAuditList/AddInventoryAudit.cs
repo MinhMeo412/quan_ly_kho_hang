@@ -186,8 +186,9 @@ namespace WarehouseManager.UI.Pages
 
             addBUtton.Clicked += () =>
             {
-                tableView.Table = AddInventoryAuditLogic.AddVariant($"{variantIDInput.Text}", $"{quantityInput.Text}", tableView.Table);
+                tableView.Table = AddInventoryAuditLogic.AddVariant($"{warehouseDropDown.Text}", $"{variantIDInput.Text}", $"{quantityInput.Text}", tableView.Table);
                 variantNameDropDown.SelectedItem = 0;
+                variantIDInput.Text = $"{AddInventoryAuditLogic.GetVariantID($"{variantNameDropDown.Text}", variantDictionary)}";
                 quantityInput.Text = "";
             };
 
@@ -198,12 +199,12 @@ namespace WarehouseManager.UI.Pages
 
             deleteButton.Clicked += () =>
             {
-                tableView.Table = AddInventoryAuditLogic.DeleteVariant($"{variantIDInput.Text}", tableView.Table);
+                tableView.Table = AddInventoryAuditLogic.DeleteVariant(tableView.Table, tableView.SelectedRow);
             };
 
             getAllStockButton.Clicked += () =>
             {
-                tableView.Table = AddInventoryAuditLogic.GetAllStock(tableView.Table);
+                tableView.Table = AddInventoryAuditLogic.GetAllStock($"{warehouseDropDown.Text}", tableView.Table);
             };
 
             saveButton.Clicked += () =>
@@ -215,6 +216,7 @@ namespace WarehouseManager.UI.Pages
                     warehouseDropDown.SelectedItem = 0;
                     descriptionInput.Text = "";
                     variantNameDropDown.SelectedItem = 0;
+                    variantIDInput.Text = $"{AddInventoryAuditLogic.GetVariantID($"{variantNameDropDown.Text}", variantDictionary)}";
                     quantityInput.Text = "";
                     searchInput.Text = "";
                     tableView.Table = AddInventoryAuditLogic.GetDataTable();

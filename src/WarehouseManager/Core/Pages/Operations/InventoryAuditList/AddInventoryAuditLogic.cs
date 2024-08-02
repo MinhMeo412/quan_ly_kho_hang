@@ -1,5 +1,6 @@
 using System.Data;
 using WarehouseManager.Data.Entity;
+using WarehouseManager.Core.Utility;
 
 namespace WarehouseManager.Core.Pages
 {
@@ -12,32 +13,80 @@ namespace WarehouseManager.Core.Pages
 
         public static Dictionary<int, string> GetVariantList()
         {
-            // TODO
-            return new Dictionary<int, string>();
+            List<Product> products = GetProducts();
+            List<ProductVariant> productVariants = GetProductVariants();
+
+            Dictionary<int, string> variantDict = new Dictionary<int, string>();
+            foreach (ProductVariant productVariant in productVariants)
+            {
+                variantDict[productVariant.ProductVariantID] = GetProductVariantName(productVariant, products);
+            }
+
+            return variantDict;
         }
 
         public static int GetVariantID(string variantName, Dictionary<int, string> variantList)
         {
-            // TODO
-            return 0;
+            foreach (KeyValuePair<int, string> variant in variantList)
+            {
+                if (variant.Value == variantName)
+                {
+                    return variant.Key;
+                }
+            }
+            return -1;
         }
 
         public static int GetVariantIndex(string variantID, Dictionary<int, string> variantList)
         {
-            // TODO
-            return 0;
+            int productVariantID = int.TryParse(variantID, out int parsedID) ? parsedID : -1;
+
+            int index = 0;
+            foreach (KeyValuePair<int, string> variant in variantList)
+            {
+                if (variant.Key == productVariantID)
+                {
+                    return index;
+                }
+                index++;
+            }
+            return -1;
         }
 
-        public static DataTable AddVariant(string variantID, string quantity, DataTable dataTable)
+        public static DataTable AddVariant(string warehouseName, string variantID, string quantity, DataTable dataTable)
         {
-            // TODO
-            return new DataTable();
+            List<Warehouse> warehouses = GetWarehouses();
+            List<WarehouseStock> warehouseStocks = GetWarehouseStocks();
+            List<Product> products = GetProducts();
+            List<ProductVariant> productVariants = GetProductVariants();
+
+            return AddVariant(warehouseName, variantID, quantity, dataTable, warehouses, warehouseStocks, products, productVariants);
+        }
+
+        private static DataTable AddVariant(string warehouseName, string variantID, string quantity, DataTable dataTable, List<Warehouse> warehouses, List<WarehouseStock> warehouseStocks, List<Product> products, List<ProductVariant> productVariants)
+        {
+            if (!VariantAlreadyExist(variantID, dataTable))
+            {
+                int warehouseID = GetWarehouseID(warehouseName, warehouses);
+                int productVariantID = int.TryParse(variantID, out int parsedID) ? parsedID : -1;
+                string productName = GetProductVariantName(productVariantID, productVariants, products);
+                int stockAmount = GetStockAmount(warehouseID, productVariantID, warehouseStocks);
+                int actualAmount = int.TryParse(quantity, out int parsedQuantity) ? parsedQuantity : 0;
+
+                dataTable.Rows.Add(
+                    productVariantID,
+                    productName,
+                    stockAmount,
+                    actualAmount,
+                    actualAmount - stockAmount
+                );
+            }
+            return dataTable;
         }
 
         public static DataTable Search(DataTable dataTable, string searchTerm)
         {
-            // TODO
-            return new DataTable();
+            return SortDataTable.BySearchTerm(dataTable, searchTerm);
         }
 
         public static DataTable GetDataTable()
@@ -53,22 +102,154 @@ namespace WarehouseManager.Core.Pages
             return dataTable;
         }
 
-        public static DataTable DeleteVariant(string variantID, DataTable dataTable)
+        public static DataTable DeleteVariant(DataTable currentDataTable, int row)
         {
-            // TODO
-            return new DataTable();
+            DataTable dataTable = currentDataTable.Copy();
+
+            if (row < 0)
+            {
+                return dataTable;
+            }
+
+            DataRow rowToDelete = dataTable.Rows[row];
+
+            if (rowToDelete != null)
+            {
+                // Mark the row for deletion
+                rowToDelete.Delete();
+
+                // Commit the deletion
+                dataTable.AcceptChanges();
+            }
+
+            return dataTable;
         }
 
-        public static DataTable GetAllStock(DataTable dataTable)
+        public static DataTable GetAllStock(string warehouseName, DataTable dataTable)
         {
-            // TODO
-            return new DataTable();
+            List<Warehouse> warehouses = GetWarehouses();
+            List<WarehouseStock> warehouseStocks = GetWarehouseStocks();
+            List<WarehouseStock> relevantWarehouseStocks = GetRelevantWarehouseStocks(GetWarehouseID(warehouseName, warehouses), warehouseStocks);
+            List<Product> products = GetProducts();
+            List<ProductVariant> productVariants = GetProductVariants();
+
+            foreach (WarehouseStock warehouseStock in relevantWarehouseStocks)
+            {
+                if (warehouseStock.WarehouseStockQuantity > 0)
+                {
+                    dataTable = AddVariant(
+                        warehouseName,
+                        $"{warehouseStock.ProductVariantID}",
+                        "0",
+                        dataTable,
+                        warehouses,
+                        warehouseStocks,
+                        products,
+                        productVariants
+                    );
+                }
+            }
+
+            return dataTable;
         }
 
         public static void Save(string warehouseName, string description, DataTable dataTable)
         {
-            // TODO
+            int inventoryAuditID = GetCurrentHighestInventoryAuditID() + 1;
+            AddInventoryAudit(inventoryAuditID, warehouseName, description);
+            AddInventoryAuditDetail(inventoryAuditID, dataTable);
+        }
+
+        private static List<Product> GetProducts()
+        {
+            return WarehouseShipmentsReportWarehouseLogic.GetProducts();
+        }
+
+        private static List<ProductVariant> GetProductVariants()
+        {
+            return WarehouseShipmentsReportWarehouseLogic.GetProductVariants();
+        }
+
+        private static List<WarehouseStock> GetWarehouseStocks()
+        {
+            List<WarehouseStock> warehouseStocks = Program.Warehouse.WarehouseStockTable.WarehouseStocks ?? new List<WarehouseStock>();
+            return warehouseStocks;
+        }
+
+        private static List<Warehouse> GetWarehouses()
+        {
+            return WarehouseShipmentsReportWarehouseLogic.GetWarehouses();
+        }
+
+        private static List<InventoryAudit> GetInventoryAudits()
+        {
+            List<InventoryAudit> inventoryAudits = Program.Warehouse.InventoryAuditTable.InventoryAudits ?? new List<InventoryAudit>();
+            return inventoryAudits;
+        }
+
+        private static string GetProductVariantName(int variantID, List<ProductVariant> productVariants, List<Product> products)
+        {
+            ProductVariant variant = productVariants.FirstOrDefault(pv => pv.ProductVariantID == variantID) ?? new ProductVariant(0, 0, null, null, null);
+            return GetProductVariantName(variant, products);
+        }
+
+        private static string GetProductVariantName(ProductVariant variant, List<Product> products)
+        {
+            int productID = variant.ProductID;
+            Product product = products.FirstOrDefault(p => p.ProductID == productID) ?? new Product(0, "", null, null, null);
+            return $"{product.ProductName} {variant.ProductVariantColor} {variant.ProductVariantSize}";
+        }
+
+        private static bool VariantAlreadyExist(string variantID, DataTable dataTable)
+        {
+            foreach (DataRow row in dataTable.Rows)
+            {
+                if ($"{row[0]}" == variantID)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static int GetWarehouseID(string warehouseName, List<Warehouse> warehouses)
+        {
+            Warehouse warehouse = warehouses.FirstOrDefault(w => w.WarehouseName == warehouseName) ?? new Warehouse(0, "", null);
+            return warehouse.WarehouseID;
+        }
+
+        private static int GetStockAmount(int warehouseID, int variantID, List<WarehouseStock> warehouseStocks)
+        {
+            WarehouseStock warehouseStock = warehouseStocks.FirstOrDefault(ws => ws.WarehouseID == warehouseID && ws.ProductVariantID == variantID) ?? new WarehouseStock(0, 0, 0);
+            return warehouseStock.WarehouseStockQuantity;
+        }
+
+        private static List<WarehouseStock> GetRelevantWarehouseStocks(int warehouseID, List<WarehouseStock> warehouseStocks)
+        {
+            List<WarehouseStock> relevantWarehousesStocks = warehouseStocks
+            .Where(ws => ws.WarehouseID == warehouseID)
+            .ToList();
+
+            return relevantWarehousesStocks;
+        }
+
+        private static int GetCurrentHighestInventoryAuditID()
+        {
+            List<InventoryAudit> inventoryAudits = GetInventoryAudits();
+            int highestID = inventoryAudits.Max(i => i.InventoryAuditID);
+            return highestID;
+        }
+
+        private static void AddInventoryAudit(int inventoryAuditID, string warehouseName, string description)
+        {
 
         }
+
+        private static void AddInventoryAuditDetail(int inventoryAuditID, DataTable dataTable)
+        {
+
+        }
+
     }
 }
