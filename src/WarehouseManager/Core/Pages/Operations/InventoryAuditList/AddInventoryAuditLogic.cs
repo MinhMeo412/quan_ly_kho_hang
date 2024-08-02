@@ -187,6 +187,12 @@ namespace WarehouseManager.Core.Pages
             return inventoryAudits;
         }
 
+        private static List<User> GetUsers()
+        {
+            List<User> users = Program.Warehouse.UserTable.Users ?? new List<User>();
+            return users;
+        }
+
         private static string GetProductVariantName(int variantID, List<ProductVariant> productVariants, List<Product> products)
         {
             ProductVariant variant = productVariants.FirstOrDefault(pv => pv.ProductVariantID == variantID) ?? new ProductVariant(0, 0, null, null, null);
@@ -243,12 +249,38 @@ namespace WarehouseManager.Core.Pages
 
         private static void AddInventoryAudit(int inventoryAuditID, string warehouseName, string description)
         {
+            int warehouseID = GetWarehouseID(warehouseName, GetWarehouses());
+            string inventoryAuditStatus = "Processing";
+            int userID = GetUserID($"{Program.Warehouse.Username}", GetUsers());
+            DateTime dateTime = DateTime.Now;
 
+            Program.Warehouse.InventoryAuditTable.Add(
+                inventoryAuditID,
+                warehouseID,
+                inventoryAuditStatus,
+                description,
+                userID,
+                dateTime
+            );
         }
 
         private static void AddInventoryAuditDetail(int inventoryAuditID, DataTable dataTable)
         {
+            foreach (DataRow row in dataTable.Rows)
+            {
+                Program.Warehouse.InventoryAuditDetailTable.Add(
+                    inventoryAuditID,
+                    int.Parse($"{row[0]}"),
+                    int.Parse($"{row[2]}"),
+                    int.Parse($"{row[3]}")
+                );
+            }
+        }
 
+        private static int GetUserID(string username, List<User> users)
+        {
+            User user = users.FirstOrDefault(u => u.UserName == username) ?? new User(0, "", "", "", null, null, 4);
+            return user.UserID;
         }
 
     }

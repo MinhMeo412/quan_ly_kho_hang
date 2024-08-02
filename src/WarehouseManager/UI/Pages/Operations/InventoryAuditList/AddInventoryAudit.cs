@@ -228,6 +228,7 @@ namespace WarehouseManager.UI.Pages
                 {
                     errorLabel.Text = $"Error: {ex}";
                     errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                    MessageBox.Query("", $"{ex}", "ok");
                 }
             };
 
