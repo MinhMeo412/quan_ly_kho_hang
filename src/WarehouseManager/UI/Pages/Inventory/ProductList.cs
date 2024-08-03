@@ -28,6 +28,7 @@ namespace WarehouseManager.UI.Pages
             var searchInput = UIComponent.SearchInput();
 
             var deleteButton = UIComponent.DeleteButton();
+            deleteButton.Visible = UIComponent.CanExecuteMenu(2);
 
             var addButton = UIComponent.AddButton("Add New Product");
 
@@ -36,6 +37,10 @@ namespace WarehouseManager.UI.Pages
 
             var importVariantButton = UIComponent.AddButton("Import From Excel");
             importVariantButton.X = Pos.Left(exportImportFormButton) - 22;
+
+            addButton.Visible = UIComponent.CanExecuteMenu(3);
+            exportImportFormButton.Visible = UIComponent.CanExecuteMenu(3);
+            importVariantButton.Visible = UIComponent.CanExecuteMenu(3);
 
 
             var tableContainer = new FrameView()

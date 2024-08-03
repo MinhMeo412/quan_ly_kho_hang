@@ -12,6 +12,10 @@ namespace WarehouseManager.UI.Pages
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Inventory Audit");
             Application.Top.Add(mainWindow);
 
+            bool allowEditInventoryAudit = UIComponent.CanExecuteMenu(2);
+            bool allowAddInventoryAuditDetail = UIComponent.CanExecuteMenu(3);
+            bool allowUpdateInventoryAuditDetail = UIComponent.CanExecuteMenu(2);
+
             var errorLabel = UIComponent.AnnounceLabel();
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
@@ -47,7 +51,8 @@ namespace WarehouseManager.UI.Pages
             var saveButton = new Button("Save", is_default: true)
             {
                 X = Pos.Center(),
-                Y = Pos.Bottom(rightContainer) + 1
+                Y = Pos.Bottom(rightContainer) + 1,
+                Visible = UIComponent.CanExecuteMenu(3)
             };
 
             var unsavedLabel = new Label("You have unsaved changes")
@@ -128,20 +133,23 @@ namespace WarehouseManager.UI.Pages
                 Y = Pos.Bottom(descriptionLabel),
                 Width = Dim.Fill(1),
                 Height = Dim.Fill(),
-                Text = EditInventoryAuditLogic.GetDescription(inventoryAuditID)
+                Text = EditInventoryAuditLogic.GetDescription(inventoryAuditID),
+                ReadOnly = !allowEditInventoryAudit
             };
 
             var variantIDLabel = new Label("Variant ID")
             {
                 X = 1,
                 Y = 1,
+                Visible = allowAddInventoryAuditDetail
             };
 
             var variantIDInput = new TextField()
             {
                 X = Pos.Left(variantIDLabel),
                 Y = Pos.Bottom(variantIDLabel),
-                Width = 10
+                Width = 10,
+                Visible = allowAddInventoryAuditDetail
             };
 
             Dictionary<int, string> variantDictionary = EditInventoryAuditLogic.GetVariantList();
@@ -152,7 +160,8 @@ namespace WarehouseManager.UI.Pages
                 Width = Dim.Percent(25),
                 Height = Dim.Fill(),
                 ReadOnly = true,
-                SelectedItem = 0
+                SelectedItem = 0,
+                Visible = allowAddInventoryAuditDetail
             };
             variantIDInput.Text = $"{EditInventoryAuditLogic.GetVariantID($"{variantNameDropDown.Text}", variantDictionary)}";
 
@@ -160,26 +169,30 @@ namespace WarehouseManager.UI.Pages
             {
                 X = Pos.Left(variantNameDropDown),
                 Y = Pos.Top(variantNameDropDown) - 1,
+                Visible = allowAddInventoryAuditDetail
             };
 
             var quantityInput = new TextField()
             {
                 X = Pos.Right(variantNameDropDown) + 1,
                 Y = Pos.Top(variantNameDropDown),
-                Width = 8
+                Width = 8,
+                Visible = allowAddInventoryAuditDetail
             };
 
             var quantityLabel = new Label("Quantity")
             {
                 X = Pos.Left(quantityInput),
                 Y = Pos.Top(quantityInput) - 1,
+                Visible = allowAddInventoryAuditDetail
             };
 
 
             var addBUtton = new Button("Add")
             {
                 X = Pos.Right(quantityInput) + 1,
-                Y = Pos.Top(quantityInput)
+                Y = Pos.Top(quantityInput),
+                Visible = allowAddInventoryAuditDetail
             };
 
 
@@ -204,13 +217,15 @@ namespace WarehouseManager.UI.Pages
             var deleteButton = new Button("Delete")
             {
                 X = Pos.Left(tableView),
-                Y = Pos.Bottom(tableView) + 1
+                Y = Pos.Bottom(tableView) + 1,
+                Visible = allowEditInventoryAudit
             };
 
             var getAllStockButton = new Button("Get All Stock")
             {
                 X = Pos.AnchorEnd(17),
-                Y = Pos.Top(deleteButton)
+                Y = Pos.Top(deleteButton),
+                Visible = allowAddInventoryAuditDetail
             };
 
             // Behaviors:
@@ -261,7 +276,7 @@ namespace WarehouseManager.UI.Pages
                 editDialog.AddButton(cancelButton);
                 editDialog.AddButton(okButton);
 
-                if (column == 3 && $"{statusDropDown.Text}" == "Processing")
+                if (column == 3 && $"{statusDropDown.Text}" == "Processing" && allowEditInventoryAudit)
                 {
                     Application.Run(editDialog);
                 }

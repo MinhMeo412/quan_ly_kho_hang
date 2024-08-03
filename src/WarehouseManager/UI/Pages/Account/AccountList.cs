@@ -27,8 +27,10 @@ namespace WarehouseManager.UI.Pages
             var searchInput = UIComponent.SearchInput();
 
             var deleteButton = UIComponent.DeleteButton();
+            deleteButton.Visible = UIComponent.CanExecuteMenu(0);
 
             var addButton = UIComponent.AddButton("Add New Account");
+            addButton.Visible = UIComponent.CanExecuteMenu(0);
 
             var tableContainer = new FrameView()
             {
@@ -139,7 +141,7 @@ namespace WarehouseManager.UI.Pages
                 editDialog.AddButton(okButton);
 
 
-                if (column != 0 && column != 1)
+                if (column != 0 && column != 1 && UIComponent.CanExecuteMenu(0))
                 {
                     Application.Run(editDialog);
                 }

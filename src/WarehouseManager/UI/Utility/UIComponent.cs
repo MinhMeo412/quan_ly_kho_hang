@@ -15,38 +15,38 @@ namespace WarehouseManager.UI.Utility
         {
             var menuBar = new MenuBar([
                 new MenuBarItem("_Menu", new MenuItem[] {
-                    new MenuItem("_Home", "", Home.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Switch Theme", "Light/Dark", UI.SwitchTheme, () => canExecuteMenu(4)),
-                    new MenuItem("_Exit Program", "Ctrl+Q", () => Application.RequestStop(), () => canExecuteMenu(4))
+                    new MenuItem("_Home", "", Home.Display, () => CanExecuteMenu(4)),
+                    new MenuItem("_Switch Theme", "Light/Dark", UI.SwitchTheme, () => CanExecuteMenu(4)),
+                    new MenuItem("_Exit Program", "Ctrl+Q", () => Application.RequestStop(), () => CanExecuteMenu(4))
                 }),
                 new MenuBarItem("_Account", new MenuItem[] {
-                    new MenuItem("_Change Password", "", ChangePassword.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Accounts", "", AccountList.Display, () => canExecuteMenu(4))
+                    new MenuItem("_Change Password", "", ChangePassword.Display, () => CanExecuteMenu(4)),
+                    new MenuItem("_Accounts", "", AccountList.Display, () => CanExecuteMenu(4))
                 }),
                 new MenuBarItem("_Inventory", new MenuItem[] {
-                    new MenuItem("_Warehouse Stock", "", WarehouseStock.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Products", "", ProductList.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Categories", "", CategoryList.Display, () => canExecuteMenu(4))
+                    new MenuItem("_Warehouse Stock", "", WarehouseStockList.Display, () => CanExecuteMenu(4)),
+                    new MenuItem("_Products", "", ProductList.Display, () => CanExecuteMenu(4)),
+                    new MenuItem("_Categories", "", CategoryList.Display, () => CanExecuteMenu(4))
                 }),
                 new MenuBarItem("_Operations", new MenuItem[] {
-                    new MenuItem("_Warehouses", "", WarehouseList.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Shipments", "", ShipmentList.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Inventory Audits", "", InventoryAuditList.Display, () => canExecuteMenu(4))
+                    new MenuItem("_Warehouses", "", WarehouseList.Display, () => CanExecuteMenu(4)),
+                    new MenuItem("_Shipments", "", ShipmentList.Display, () => CanExecuteMenu(4)),
+                    new MenuItem("_Inventory Audits", "", InventoryAuditList.Display, () => CanExecuteMenu(4))
                 }),
                 new MenuBarItem("_Suppliers", new MenuItem[] {
-                    new MenuItem("_Suppliers", "", SupplierList.Display, () => canExecuteMenu(4))
+                    new MenuItem("_Suppliers", "", SupplierList.Display, () => CanExecuteMenu(4))
                 }),
                 new MenuBarItem("_Report", new MenuItem[] {
-                    new MenuItem("_Warehouse Stock", "", WarehouseStockReport.Display, () => canExecuteMenu(4)),
-                    new MenuItem("_Warehouse Shipments", "", () => WarehouseShipmentsReportWarehouse.Display(), () => canExecuteMenu(4)),
-                    new MenuItem("_Product List", "", ProductListReport.Display, () => canExecuteMenu(4))
+                    new MenuItem("_Warehouse Stock", "", WarehouseStockReport.Display, () => CanExecuteMenu(4)),
+                    new MenuItem("_Warehouse Shipments", "", () => WarehouseShipmentsReportWarehouse.Display(), () => CanExecuteMenu(4)),
+                    new MenuItem("_Product List", "", ProductListReport.Display, () => CanExecuteMenu(4))
                 })
             ]);
 
             return menuBar;
         }
 
-        private static bool canExecuteMenu(int requiredPermission)
+        public static bool CanExecuteMenu(int requiredPermission)
         {
             int permissionLevel = Program.Warehouse.PermissionLevel ?? 4;
             return permissionLevel <= requiredPermission;
