@@ -27,8 +27,10 @@ namespace WarehouseManager.UI.Pages
             var searchInput = UIComponent.SearchInput();
 
             var deleteButton = UIComponent.DeleteButton();
+            deleteButton.Visible = UIComponent.CanExecuteMenu(2);
 
             var addButton = UIComponent.AddButton("Add New Inventory Audit");
+            addButton.Visible = UIComponent.CanExecuteMenu(3);
 
             var tableContainer = new FrameView()
             {

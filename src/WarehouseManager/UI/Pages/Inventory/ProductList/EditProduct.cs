@@ -12,6 +12,10 @@ namespace WarehouseManager.UI.Pages
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Product");
             Application.Top.Add(mainWindow);
 
+            bool allowedEditProduct = UIComponent.CanExecuteMenu(2);
+            bool allowedCreateVariant = UIComponent.CanExecuteMenu(3);
+            bool allowUpdateVariant = UIComponent.CanExecuteMenu(2);
+
             var errorLabel = UIComponent.AnnounceLabel();
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
@@ -70,14 +74,16 @@ namespace WarehouseManager.UI.Pages
             {
                 X = Pos.Right(productNameLabel) + 1,
                 Y = Pos.Top(productNameLabel),
-                Width = Dim.Fill(1)
+                Width = Dim.Fill(1),
+                ReadOnly = !allowedEditProduct
             };
 
             var priceInput = new TextField($"{EditProductLogic.GetProductPrice(productID)}")
             {
                 X = Pos.Right(productNameLabel) + 1,
                 Y = Pos.Top(priceLabel),
-                Width = Dim.Fill(1)
+                Width = Dim.Fill(1),
+                ReadOnly = !allowedEditProduct
             };
 
             var categoryDropDown = new ComboBox()
@@ -86,7 +92,7 @@ namespace WarehouseManager.UI.Pages
                 Y = Pos.Top(categoryLabel),
                 Width = Dim.Fill(1),
                 Height = Dim.Fill(1),
-                ReadOnly = true
+                ReadOnly = true,
             };
             var categories = EditProductLogic.GetCategoryList();
             categoryDropDown.SetSource(categories);
@@ -105,13 +111,15 @@ namespace WarehouseManager.UI.Pages
                 Y = Pos.Bottom(descriptionLabel) + 1,
                 Width = Dim.Fill(1),
                 Height = Dim.Fill(1),
-                Text = EditProductLogic.GetProductDescription(productID)
+                Text = EditProductLogic.GetProductDescription(productID),
+                ReadOnly = !allowedEditProduct
             };
 
             var saveButton = new Button("Save", is_default: true)
             {
                 X = Pos.Center(),
-                Y = Pos.Bottom(rightContainer) + 1
+                Y = Pos.Bottom(rightContainer) + 1,
+                Visible = UIComponent.CanExecuteMenu(3)
             };
 
             // Create a TableView and set its data source
@@ -124,12 +132,14 @@ namespace WarehouseManager.UI.Pages
             var deleteButton = new Button("Delete")
             {
                 X = 2,
-                Y = Pos.Bottom(tableView) + 1
+                Y = Pos.Bottom(tableView) + 1,
+                Visible = allowUpdateVariant
             };
 
             var addVariantButton = new Button("Add variant")
             {
-                Y = Pos.AnchorEnd(2)
+                Y = Pos.AnchorEnd(2),
+                Visible = allowedCreateVariant
             };
             addVariantButton.X = Pos.AnchorEnd(addVariantButton.Text.Length + 6);
 
@@ -146,39 +156,45 @@ namespace WarehouseManager.UI.Pages
             {
                 X = 1,
                 Y = Pos.AnchorEnd(2),
-                Width = Dim.Percent(33)
+                Width = Dim.Percent(33),
+                Visible = allowedCreateVariant
             };
 
             var colorInput = new TextField("")
             {
                 X = Pos.Right(imageURLInput) + 1,
                 Y = Pos.AnchorEnd(2),
-                Width = Dim.Percent(32)
+                Width = Dim.Percent(32),
+                Visible = allowedCreateVariant
             };
 
             var sizeInput = new TextField("")
             {
                 X = Pos.Right(colorInput) + 1,
                 Y = Pos.AnchorEnd(2),
-                Width = Dim.Fill(1)
+                Width = Dim.Fill(1),
+                Visible = allowedCreateVariant
             };
 
             var imageURLLabel = new Label("Image URL:")
             {
                 X = Pos.Left(imageURLInput),
-                Y = Pos.Top(imageURLInput) - 1
+                Y = Pos.Top(imageURLInput) - 1,
+                Visible = allowedCreateVariant
             };
 
             var colorLabel = new Label("Color:")
             {
                 X = Pos.Left(colorInput),
-                Y = Pos.Top(colorInput) - 1
+                Y = Pos.Top(colorInput) - 1,
+                Visible = allowedCreateVariant
             };
 
             var sizeLabel = new Label("Size:")
             {
                 X = Pos.Left(sizeInput),
-                Y = Pos.Top(sizeInput) - 1
+                Y = Pos.Top(sizeInput) - 1,
+                Visible = allowedCreateVariant
             };
 
             addVariantButton.Clicked += () =>
@@ -246,7 +262,7 @@ namespace WarehouseManager.UI.Pages
                 editDialog.AddButton(cancelButton);
                 editDialog.AddButton(okButton);
 
-                if (column != 0)
+                if (column != 0 && allowedEditProduct)
                 {
                     Application.Run(editDialog);
                 }

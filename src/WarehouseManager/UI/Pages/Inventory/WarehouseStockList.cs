@@ -2,11 +2,10 @@ using System.Data;
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
 using WarehouseManager.Core.Pages;
-using WarehouseManager.Core.Utility;
 
 namespace WarehouseManager.UI.Pages
 {
-    public static class WarehouseStock
+    public static class WarehouseStockList
     {
         private static CancellationTokenSource? _cancellationTokenSource;
         private static Task? _sortingTask;
