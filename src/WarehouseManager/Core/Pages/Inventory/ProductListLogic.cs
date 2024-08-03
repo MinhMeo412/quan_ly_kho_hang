@@ -81,5 +81,109 @@ namespace WarehouseManager.Core.Pages
             return ConvertProductMenuRowsToDataTable(products);
         }
 
+        public static DataTable GetImportForm()
+        {
+            DataTable dataTable = new DataTable();
+
+            dataTable.Columns.Add("Product ID");
+            dataTable.Columns.Add("Product Name");
+            dataTable.Columns.Add("Price");
+            dataTable.Columns.Add("Category");
+            dataTable.Columns.Add("Description");
+            dataTable.Columns.Add("Image URL");
+            dataTable.Columns.Add("Color");
+            dataTable.Columns.Add("Size");
+
+            return dataTable;
+        }
+
+        public static DataTable GetFileInformation()
+        {
+            DataTable dataTable = new DataTable();
+
+            dataTable.Columns.Add("Product Import Form");
+            dataTable.Rows.Add("");
+
+            return dataTable;
+        }
+
+        public static void ImportFromExcel(string filePath)
+        {
+            List<Product> products = GetProducts();
+            List<Category> categories = GetCategories();
+            DataTable dataTable = Excel.ImportFromExcel(filePath);
+
+            List<int> newProductIDs = new List<int>();
+            List<int> createdNewProductIDs = new List<int>();
+
+            foreach (DataRow row in dataTable.Rows)
+            {
+                int productID = int.Parse($"{row[0]}");
+                if (!ProductAlreadyExists(productID, products))
+                {
+                    newProductIDs.Add(productID);
+                }
+            }
+
+            foreach (DataRow row in dataTable.Rows)
+            {
+                int productID = int.Parse($"{row[0]}");
+                string productName = $"{row[1]}";
+                int productPrice = int.Parse($"{row[2]}");
+                int categoryID = GetCategoryID($"{row[3]}", categories);
+                string description = $"{row[4]}";
+                string imageURL = $"{row[5]}";
+                string color = $"{row[6]}";
+                string size = $"{row[7]}";
+
+                if (newProductIDs.Contains(productID) && !createdNewProductIDs.Contains(productID))
+                {
+                    AddProduct(productID, productName, productPrice, categoryID, description);
+                    AddProductVariant(productID, imageURL, color, size);
+                    createdNewProductIDs.Add(productID);
+                }
+                else if (newProductIDs.Contains(productID) && createdNewProductIDs.Contains(productID))
+                {
+                    AddProductVariant(productID, imageURL, color, size);
+                }
+            }
+        }
+
+        private static bool ProductAlreadyExists(int productID, List<Product> products)
+        {
+            List<int> productIDs = products.Select(p => p.ProductID).ToList();
+            return productIDs.Contains(productID);
+        }
+
+        private static List<Product> GetProducts()
+        {
+            return WarehouseShipmentsReportWarehouseLogic.GetProducts();
+        }
+
+        private static List<Category> GetCategories()
+        {
+            return WarehouseShipmentsReportWarehouseLogic.GetCategories();
+        }
+
+        private static int GetCategoryID(string categoryName, List<Category> categories)
+        {
+            Category category = categories.FirstOrDefault(c => c.CategoryName == categoryName) ?? new Category(0, "", null);
+            return category.CategoryID;
+        }
+
+        private static void AddProduct(int productID, string productName, int productPrice, int categoryID, string description)
+        {
+            Program.Warehouse.ProductTable.Add(productID, productName, description, productPrice, categoryID);
+        }
+
+        private static void AddProductVariant(int productID, string imageURL, string color, string size)
+        {
+            AddProductLogic.AddVariant(
+                productID: productID,
+                productVariantImageURL: imageURL,
+                productVariantColor: color,
+                productVariantSize: size
+            );
+        }
     }
 }

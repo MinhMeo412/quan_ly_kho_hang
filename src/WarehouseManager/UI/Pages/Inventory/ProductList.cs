@@ -2,6 +2,7 @@ using System.Data;
 using Terminal.Gui;
 using WarehouseManager.UI.Utility;
 using WarehouseManager.Core.Pages;
+using WarehouseManager.Core.Utility;
 
 namespace WarehouseManager.UI.Pages
 {
@@ -29,6 +30,13 @@ namespace WarehouseManager.UI.Pages
             var deleteButton = UIComponent.DeleteButton();
 
             var addButton = UIComponent.AddButton("Add New Product");
+
+            var exportImportFormButton = UIComponent.AddButton("Export Excel Import Form");
+            exportImportFormButton.X = Pos.Left(addButton) - 29;
+
+            var importVariantButton = UIComponent.AddButton("Import From Excel");
+            importVariantButton.X = Pos.Left(exportImportFormButton) - 22;
+
 
             var tableContainer = new FrameView()
             {
@@ -110,8 +118,52 @@ namespace WarehouseManager.UI.Pages
                 AddProduct.Display();
             };
 
+            exportImportFormButton.Clicked += () =>
+            {
+                try
+                {
+                    string? filePath = UIComponent.ChooseFileSaveLocation();
+                    if (filePath != null)
+                    {
+                        DataTable productList = ProductListLogic.GetImportForm();
+                        DataTable fileInformation = ProductListLogic.GetFileInformation();
+
+                        filePath = Excel.GetExcelFileName(filePath);
+                        Excel.Export(filePath, productList, "Product List", fileInformation, "File Information");
+
+                        errorLabel.Text = $"Successfully exported import form to {filePath}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    errorLabel.Text = $"Error: {ex.Message}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                }
+            };
+
+            importVariantButton.Clicked += () =>
+            {
+                string? filePath = UIComponent.OpenFile();
+                if (filePath != null)
+                {
+                    try
+                    {
+                        ProductListLogic.ImportFromExcel(filePath);
+
+                        errorLabel.Text = $"Successfully imported products from {filePath}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+                    }
+                    catch (Exception ex)
+                    {
+                        errorLabel.Text = $"Error: {ex.Message}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                    }
+                }
+            };
+
             tableContainer.Add(tableView);
-            mainWindow.Add(searchLabel, searchInput, tableContainer, addButton, deleteButton, errorLabel, userPermissionLabel, separatorLine, refreshButton);
+            mainWindow.Add(searchLabel, searchInput, tableContainer, addButton, deleteButton, errorLabel, userPermissionLabel, separatorLine, refreshButton, exportImportFormButton, importVariantButton);
         }
     }
 }
