@@ -63,7 +63,7 @@ namespace WarehouseManager.Core.Pages
             return AddVariant(warehouseName, variantID, quantity, dataTable, warehouses, warehouseStocks, products, productVariants);
         }
 
-        private static DataTable AddVariant(string warehouseName, string variantID, string quantity, DataTable dataTable, List<Warehouse> warehouses, List<WarehouseStock> warehouseStocks, List<Product> products, List<ProductVariant> productVariants)
+        internal static DataTable AddVariant(string warehouseName, string variantID, string quantity, DataTable dataTable, List<Warehouse> warehouses, List<WarehouseStock> warehouseStocks, List<Product> products, List<ProductVariant> productVariants)
         {
             if (!VariantAlreadyExist(variantID, dataTable))
             {
@@ -100,6 +100,10 @@ namespace WarehouseManager.Core.Pages
             dataTable.Columns.Add("Difference");
 
             return dataTable;
+        }
+        public static DataTable EditVariant(int row, string newAmount, DataTable dataTable)
+        {
+            return EditInventoryAuditLogic.EditVariant(row, newAmount, dataTable);
         }
 
         public static DataTable DeleteVariant(DataTable currentDataTable, int row)
@@ -193,13 +197,13 @@ namespace WarehouseManager.Core.Pages
             return users;
         }
 
-        private static string GetProductVariantName(int variantID, List<ProductVariant> productVariants, List<Product> products)
+        internal static string GetProductVariantName(int variantID, List<ProductVariant> productVariants, List<Product> products)
         {
             ProductVariant variant = productVariants.FirstOrDefault(pv => pv.ProductVariantID == variantID) ?? new ProductVariant(0, 0, null, null, null);
             return GetProductVariantName(variant, products);
         }
 
-        private static string GetProductVariantName(ProductVariant variant, List<Product> products)
+        internal static string GetProductVariantName(ProductVariant variant, List<Product> products)
         {
             int productID = variant.ProductID;
             Product product = products.FirstOrDefault(p => p.ProductID == productID) ?? new Product(0, "", null, null, null);
@@ -225,7 +229,7 @@ namespace WarehouseManager.Core.Pages
             return warehouse.WarehouseID;
         }
 
-        private static int GetStockAmount(int warehouseID, int variantID, List<WarehouseStock> warehouseStocks)
+        internal static int GetStockAmount(int warehouseID, int variantID, List<WarehouseStock> warehouseStocks)
         {
             WarehouseStock warehouseStock = warehouseStocks.FirstOrDefault(ws => ws.WarehouseID == warehouseID && ws.ProductVariantID == variantID) ?? new WarehouseStock(0, 0, 0);
             return warehouseStock.WarehouseStockQuantity;

@@ -152,6 +152,57 @@ namespace WarehouseManager.UI.Pages
             tableView.Y = Pos.Bottom(variantIDInput) + 2;
             tableView.Height = Dim.Fill(2);
 
+            // khi bấm vào 1 ô trong bảng
+            tableView.CellActivated += args =>
+            {
+                int column = args.Col;
+                int row = args.Row;
+
+                // Retrieve the current value of the cell
+                var currentValue = tableView.Table.Rows[row][column].ToString();
+
+                // Create a dialog box with an input field for editing the cell value
+                var editDialog = new Dialog("Edit Cell")
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Center(),
+                    Width = Dim.Percent(50),
+                    Height = Dim.Percent(50)
+                };
+
+                var newValue = new TextView()
+                {
+                    X = Pos.Center(),
+                    Y = Pos.Center(),
+                    Width = Dim.Fill(),
+                    Height = Dim.Fill(),
+                    Text = currentValue
+                };
+
+                var cancelButton = new Button("Cancel");
+                cancelButton.Clicked += () =>
+                {
+                    Application.RequestStop();
+                };
+
+                var okButton = new Button("OK", is_default: true);
+                okButton.Clicked += () =>
+                {
+                    tableView.Table = EditInventoryAuditLogic.EditVariant(row, $"{newValue.Text}", tableView.Table);
+
+                    Application.RequestStop();
+                };
+
+                editDialog.Add(newValue);
+                editDialog.AddButton(cancelButton);
+                editDialog.AddButton(okButton);
+
+                if (column == 3)
+                {
+                    Application.Run(editDialog);
+                }
+            };
+
             var deleteButton = new Button("Delete")
             {
                 X = Pos.Left(tableView),
@@ -228,7 +279,7 @@ namespace WarehouseManager.UI.Pages
                 {
                     errorLabel.Text = $"Error: {ex}";
                     errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
-                    MessageBox.Query("", $"{ex}", "ok");
+                    // MessageBox.Query("", $"{ex}", "ok");
                 }
             };
 
