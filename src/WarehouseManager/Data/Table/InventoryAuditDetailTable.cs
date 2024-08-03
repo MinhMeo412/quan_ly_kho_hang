@@ -36,7 +36,8 @@ namespace WarehouseManager.Data.Table
                 InventoryAuditDetail detail = new InventoryAuditDetail(
                     (int)(rawDetail[0] ?? 0),
                     (int)(rawDetail[1] ?? 0),
-                    (int)(rawDetail[2] ?? 0)
+                    (int)(rawDetail[2] ?? 0),
+                    (int)(rawDetail[3] ?? 0)
                 );
                 inventoryAuditDetails.Add(detail);
             }
@@ -44,23 +45,25 @@ namespace WarehouseManager.Data.Table
             this.InventoryAuditDetails = inventoryAuditDetails;
         }
 
-        public void Add(int inventoryAuditID, int productVariantID, int inventoryAuditDetailActualQuantity)
+        public void Add(int inventoryAuditID, int productVariantID, int inventoryAuditDetailStockQuantity, int inventoryAuditDetailActualQuantity)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"input_token", this.Token},
                 {"input_inventory_audit_id", inventoryAuditID},
                 {"input_product_variant_id", productVariantID},
+                {"input_inventory_audit_detail_stock_quantity", inventoryAuditDetailStockQuantity},
                 {"input_inventory_audit_detail_actual_quantity", inventoryAuditDetailActualQuantity}
             };
             Procedure.ExecuteNonQuery(this.ConnectionString, "create_inventory_audit_detail", inParameters);
         }
 
-        public void Update(int inventoryAuditID, int productVariantID, int inventoryAuditDetailActualQuantity)
+        public void Update(int inventoryAuditID, int productVariantID, int inventoryAuditDetailStockQuantity, int inventoryAuditDetailActualQuantity)
         {
             Dictionary<string, object?> inParameters = new Dictionary<string, object?>{
                 {"input_token", this.Token},
                 {"input_inventory_audit_id", inventoryAuditID},
                 {"input_product_variant_id", productVariantID},
+                {"input_inventory_audit_detail_stock_quantity", inventoryAuditDetailStockQuantity},
                 {"input_inventory_audit_detail_actual_quantity", inventoryAuditDetailActualQuantity}
             };
 

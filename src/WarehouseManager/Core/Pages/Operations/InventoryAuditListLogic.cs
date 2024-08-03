@@ -13,7 +13,7 @@ namespace WarehouseManager.Core.Pages
             List<User> users = Program.Warehouse.UserTable.Users ?? new List<User>();
             List<Warehouse> warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
 
-            List<(int, string, string, DateTime?)> inventoryAuditMenuRows = new List<(int, string, string, DateTime?)>();
+            List<(int, string, string, string, DateTime?)> inventoryAuditMenuRows = new List<(int, string, string, string, DateTime?)>();
 
             foreach (InventoryAudit inventoryAudit in inventoryAudits)
             {
@@ -25,6 +25,7 @@ namespace WarehouseManager.Core.Pages
                 inventoryAuditMenuRows.Add((
                     inventoryAudit.InventoryAuditID,
                     warehouseName,
+                    inventoryAudit.InventoryAuditStatus,
                     userName,
                     inventoryAudit.InventoryAuditTime));
             }
@@ -33,12 +34,13 @@ namespace WarehouseManager.Core.Pages
         }
 
         // Đổi kiểu dữ liệu từ List<...> sang DataTable
-        private static DataTable ConvertInventoryAuditMenuRowsToDataTable(List<(int, string, string, DateTime?)> inventoryAuditMenuRows)
+        private static DataTable ConvertInventoryAuditMenuRowsToDataTable(List<(int, string, string, string, DateTime?)> inventoryAuditMenuRows)
         {
             var dataTable = new DataTable();
 
             dataTable.Columns.Add("Inventory Audit ID", typeof(int));
             dataTable.Columns.Add("Warehouse", typeof(string));
+            dataTable.Columns.Add("Status");
             dataTable.Columns.Add("User Name", typeof(string));
             dataTable.Columns.Add("Date", typeof(DateTime));
 
@@ -48,20 +50,21 @@ namespace WarehouseManager.Core.Pages
                     inventoryAuditMenuRow.Item1,
                     inventoryAuditMenuRow.Item2,
                     inventoryAuditMenuRow.Item3,
-                    inventoryAuditMenuRow.Item4);
+                    inventoryAuditMenuRow.Item4,
+                    inventoryAuditMenuRow.Item5);
             }
 
             return dataTable;
         }
 
         // Đổi kiểu dữ liệu từ DataTable sang List<...> (để thực hiện LINQ)
-        private static List<(int, string, string, DateTime?)> ConvertDataTableToInventoryAuditMenuRows(DataTable dataTable)
+        private static List<(int, string, string, string, DateTime?)> ConvertDataTableToInventoryAuditMenuRows(DataTable dataTable)
         {
-            List<(int, string, string, DateTime?)> inventoryAuditMenuRows = new List<(int, string, string, DateTime?)>();
+            List<(int, string, string, string, DateTime?)> inventoryAuditMenuRows = new List<(int, string, string, string, DateTime?)>();
 
             foreach (DataRow row in dataTable.Rows)
             {
-                inventoryAuditMenuRows.Add(((int)row[0], (string)row[1], (string)row[2], (DateTime?)row[3]));
+                inventoryAuditMenuRows.Add(((int)row[0], (string)row[1], (string)row[2], (string)row[3], (DateTime?)row[4]));
             }
             return inventoryAuditMenuRows;
         }
@@ -97,7 +100,7 @@ namespace WarehouseManager.Core.Pages
 
             Program.Warehouse.InventoryAuditTable.Delete(inventoryAuditID);
 
-            List<(int, string, string, DateTime?)> inventoryAudits = ConvertDataTableToInventoryAuditMenuRows(dataTable);
+            List<(int, string, string, string, DateTime?)> inventoryAudits = ConvertDataTableToInventoryAuditMenuRows(dataTable);
 
             inventoryAudits.RemoveAll(s => s.Item1 == inventoryAuditID);
 

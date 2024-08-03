@@ -115,10 +115,12 @@ CREATE TABLE inventory_audit(
 CREATE TABLE inventory_audit_detail(
 	inventory_audit_id INT,
 	product_variant_id INT,
+	inventory_audit_detail_stock_quantity INT NOT NULL DEFAULT 0,
 	inventory_audit_detail_actual_quantity INT NOT NULL DEFAULT 0,
 	FOREIGN KEY (inventory_audit_id) REFERENCES inventory_audit(inventory_audit_id) ON DELETE CASCADE,
 	FOREIGN KEY (product_variant_id) REFERENCES product_variant(product_variant_id) ON DELETE CASCADE,
 	PRIMARY KEY (inventory_audit_id, product_variant_id),
+	CHECK (inventory_audit_detail_stock_quantity >= 0),
 	CHECK (inventory_audit_detail_actual_quantity >= 0)
 );
 
