@@ -27,5 +27,42 @@ namespace WarehouseManager.Core.Utility
             }
             return fileName;
         }
+
+        public static DataTable ImportFromExcel(string filePath)
+        {
+            // Ensure ExcelPackage uses non-commercial license
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            // Create a new DataTable
+            DataTable dataTable = new DataTable();
+
+            // Load the Excel file into a memory stream
+            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            {
+                // Get the first worksheet
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+
+                // Add columns to the DataTable
+                foreach (var header in worksheet.Cells[1, 1, 1, worksheet.Dimension.End.Column])
+                {
+                    dataTable.Columns.Add(header.Text);
+                }
+
+                // Add rows to the DataTable
+                for (int rowNum = 2; rowNum <= worksheet.Dimension.End.Row; rowNum++)
+                {
+                    var row = worksheet.Cells[rowNum, 1, rowNum, worksheet.Dimension.End.Column];
+                    DataRow newRow = dataTable.NewRow();
+                    foreach (var cell in row)
+                    {
+                        newRow[cell.Start.Column - 1] = cell.Text;
+                    }
+                    dataTable.Rows.Add(newRow);
+                }
+            }
+
+            return dataTable;
+        }
+
     }
 }

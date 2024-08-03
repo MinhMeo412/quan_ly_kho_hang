@@ -49,15 +49,7 @@ namespace WarehouseManager.UI.Utility
         private static bool canExecuteMenu(int requiredPermission)
         {
             int permissionLevel = Program.Warehouse.PermissionLevel ?? 4;
-
-            if (permissionLevel <= requiredPermission)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return permissionLevel <= requiredPermission;
         }
 
         /*
@@ -245,6 +237,18 @@ namespace WarehouseManager.UI.Utility
 
             }
             return $"{saveDialog.FilePath}";
+        }
+
+        public static string? OpenFile(string title = "Import from Excel", string message = "Choose file")
+        {
+            var openDialog = new OpenDialog(title, message);
+            Application.Run(openDialog);
+            if (openDialog.Canceled)
+            {
+                return null;
+
+            }
+            return $"{openDialog.FilePath}";
         }
     }
 }

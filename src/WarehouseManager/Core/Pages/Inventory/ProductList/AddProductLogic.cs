@@ -74,7 +74,7 @@ namespace WarehouseManager.Core.Pages
             return EditProductLogic.GetCurrentHighestProductVariantID();
         }
 
-        private static void AddVariant(int productID, string? productVariantImageURL, string? productVariantColor, string? productVariantSize)
+        internal static void AddVariant(int productID, string? productVariantImageURL, string? productVariantColor, string? productVariantSize)
         {
             int productVariantID = GetCurrentHighestProductVariantID() + 1;
             Program.Warehouse.ProductVariantTable.Add(productVariantID, productID, productVariantImageURL, productVariantColor, productVariantSize);
