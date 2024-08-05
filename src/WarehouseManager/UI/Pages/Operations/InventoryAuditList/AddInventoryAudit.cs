@@ -95,7 +95,7 @@ namespace WarehouseManager.UI.Pages
                 Width = 10
             };
 
-            Dictionary<int, string> variantDictionary = AddInventoryAuditLogic.GetVariantList();
+            Dictionary<int, string> variantDictionary = new Dictionary<int, string>();
             var variantNameDropDown = new ComboBox(variantDictionary.Values.ToList())
             {
                 X = Pos.Right(variantIDInput) + 1,
@@ -286,6 +286,17 @@ namespace WarehouseManager.UI.Pages
             leftContainer.Add(warehouseLabel, descriptionLabel, warehouseDropDown, descriptionInput);
             rightContainer.Add(searchLabel, searchInput, variantIDLabel, variantNameLabel, variantIDInput, variantNameDropDown, quantityLabel, quantityInput, addBUtton, tableView, deleteButton, getAllStockButton);
             mainWindow.Add(returnButton, errorLabel, userPermissionLabel, separatorLine, leftContainer, rightContainer, saveButton);
+
+            Task.Run(() =>
+            {
+                variantDictionary = AddInventoryAuditLogic.GetVariantList();
+                Application.MainLoop.Invoke(() =>
+                {
+                    variantNameDropDown.SetSource(variantDictionary.Values.ToList());
+                    variantNameDropDown.SelectedItem = 0;
+                    variantIDInput.Text = $"{AddInventoryAuditLogic.GetVariantID($"{variantNameDropDown.Text}", variantDictionary)}";
+                });
+            });
         }
     }
 }

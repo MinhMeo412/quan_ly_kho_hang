@@ -993,9 +993,4 @@ INSERT INTO user(user_id, user_name, user_password, user_full_name, user_email, 
 ('997', 'olsonmichael', 'C@0LHBjoKf', 'Tammy Edwards', 'millersarah@trujillo.org', '4153555246', '3'),
 ('998', 'william77', '*&Ri4Zmm!K', 'Victoria King', 'charles34@johnson.com', '(825)946-2910', '0'),
 ('999', 'kelleyjacob', '&u#1E&5n6f', 'Jesse Smith', 'cheryl41@gill.com', '(832)528-4710', '1'),
-('1000', 'velasquezmichelle', '&9yoGE)z99', 'Hannah Gonzalez', 'hudsondanielle@sanchez-ward.com', '5608957741', '4'),
-('1001', 'gregorymorgan', 'e&8GUX0k&O', 'Amanda Wright', 'johnsonnicole@reyes-gardner.com', '7726624051', '1'),
-('1002', 'amanda32', 'J*O6lCOxI9', 'Andres Wade', 'brownwendy@grant.info', '4397142481', '1'),
-('1003', 'jgriffin', 'iC6BNCTrC&', 'Matthew White', 'robertsamanda@page-solis.com', '(289)245-3718', '1'),
-('1004', 'tonyacase', '%Eui6BhH5Q', 'Ryan Hunter', 'leonlori@bailey.com', '988-750-5385', '1'),
-('1005', 'lopezanthony', 'G@4aFpXbf!', 'Matthew Leach', 'johnsonvanessa@barnett-smith.com', '291-451-3149', '4');
+('1000', 'velasquezmichelle', '&9yoGE)z99', 'Hannah Gonzalez', 'hudsondanielle@sanchez-ward.com', '5608957741', '4');

@@ -13,11 +13,17 @@ namespace WarehouseManager.UI.Pages
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Stock Transfer");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.AnnounceLabel("Error Message Here");
+            var errorLabel = UIComponent.AnnounceLabel();
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
             var separatorLine = UIComponent.SeparatorLine();
+
+
+            bool allowUpdateStockTransfer = UIComponent.CanExecuteMenu(2);
+            bool allowCreateDetail = UIComponent.CanExecuteMenu(3);
+            bool allowEditDetail = UIComponent.CanExecuteMenu(2);
+            bool allowDeleteDetail = UIComponent.CanExecuteMenu(2);
 
             //Container
             var container = new FrameView()
@@ -107,6 +113,7 @@ namespace WarehouseManager.UI.Pages
                 Width = Dim.Percent(60),
                 Height = 3,
                 Text = EditStockTransferLogic.GetStockTransferDescription(shipmentID),
+                ReadOnly = !allowUpdateStockTransfer
             };
 
             //Right Label/Input
@@ -169,7 +176,8 @@ namespace WarehouseManager.UI.Pages
             var saveButton = new Button("Save")
             {
                 X = Pos.Percent(95),
-                Y = Pos.Bottom(tableContainer) + 4
+                Y = Pos.Bottom(tableContainer) + 4,
+                Visible = allowCreateDetail
             };
 
             var returnButton = new Button("Back")
@@ -181,7 +189,8 @@ namespace WarehouseManager.UI.Pages
             var deleteButton = new Button("Delete")
             {
                 X = 1,
-                Y = Pos.Bottom(tableContainer) + 4
+                Y = Pos.Bottom(tableContainer) + 4,
+                Visible = allowDeleteDetail
             };
 
 
@@ -202,12 +211,15 @@ namespace WarehouseManager.UI.Pages
 
                     tableView.Table = EditStockTransferLogic.GetStockTransferDetailData(shipmentID);
 
-                    MessageBox.Query("Success", $"Stock Transfer saved successfully.", "OK");
-                    errorLabel.Text = "";
+                    // MessageBox.Query("Success", $"Stock Transfer saved successfully.", "OK");
+                    errorLabel.Text = $"Successfully saved Stock Transfer";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+                    // errorLabel.Text = "";
                 }
                 catch (Exception ex)
                 {
                     errorLabel.Text = $"Error: {ex.Message}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                     tableView.Table = EditStockTransferLogic.GetStockTransferDetailData(shipmentID);
                 }
             };
@@ -227,7 +239,8 @@ namespace WarehouseManager.UI.Pages
                 else
                 {
                     // Xử lý lỗi khi chuyển đổi thất bại (nếu cần)
-                    MessageBox.Query("Lỗi", "Giá trị trong cột đầu tiên không phải là số nguyên hợp lệ.", "OK");
+                    errorLabel.Text = $"Error: Invalid value for first column";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                 }
             };
 
@@ -289,7 +302,7 @@ namespace WarehouseManager.UI.Pages
                 editDialog.AddButton(cancelButton);
                 editDialog.AddButton(okButton);
 
-                if (column != 0 && column != 1)
+                if (column != 0 && column != 1 && allowEditDetail)
                 {
                     Application.Run(editDialog);
                 }
@@ -300,34 +313,39 @@ namespace WarehouseManager.UI.Pages
             {
                 X = 1,
                 Y = 0,
-                Width = Dim.Percent(40)
+                Width = Dim.Percent(40),
+                Visible = allowCreateDetail
             };
 
             var quantityLabel = new Label("Quantity:")
             {
                 X = Pos.Right(productVariantIDLabel) + 1,
                 Y = 0,
+                Visible = allowCreateDetail
             };
 
             var productVariantIDInput = new TextField("")
             {
                 X = Pos.Bottom(productVariantIDLabel),
                 Y = 1,
-                Width = Dim.Percent(40)
+                Width = Dim.Percent(40),
+                Visible = allowCreateDetail
             };
 
             var quantityInput = new TextField("")
             {
                 X = Pos.Right(productVariantIDInput) + 1,
                 Y = 1,
-                Width = Dim.Percent(40)
+                Width = Dim.Percent(40),
+                Visible = allowCreateDetail
             };
             //Add Item Button
             var addItemButton = new Button("Add Item")
             {
                 X = Pos.Right(quantityInput),
                 Y = 1,
-                Width = Dim.Percent(20)
+                Width = Dim.Percent(20),
+                Visible = allowCreateDetail
             };
 
             // Khi nhấn nút Add Item
@@ -349,13 +367,15 @@ namespace WarehouseManager.UI.Pages
                     else
                     {
                         // Xử lý lỗi khi chuyển đổi thất bại
-                        MessageBox.Query("Lỗi", "Vui lòng nhập giá trị hợp lệ cho Product Variant ID và Quantity.", "OK");
+                        errorLabel.Text = $"Error: Invalid values for Product Variant ID and Quantity";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                     }
                 }
                 else
                 {
                     // Xử lý lỗi khi các trường TextField trống
-                    MessageBox.Query("Lỗi", "Vui lòng nhập giá trị cho tất cả các trường.", "OK");
+                    errorLabel.Text = $"Error: Fields cannot be blank.";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                 }
             };
 

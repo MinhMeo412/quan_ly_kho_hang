@@ -8,6 +8,9 @@ namespace WarehouseManager.UI.Pages
 {
     public static class ProductList
     {
+        private static CancellationTokenSource? _cancellationTokenSource;
+        private static Task? _sortingTask;
+
         public static void Display()
         {
 
@@ -62,9 +65,43 @@ namespace WarehouseManager.UI.Pages
             };
 
             // Khi người dùng search một chuỗi gì đó
-            searchInput.TextChanged += args =>
+            searchInput.TextChanged += async args =>
             {
-                tableView.Table = ProductListLogic.SortProductBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
+                // Cancel the previous sorting task if it's still running
+                _cancellationTokenSource?.Cancel();
+
+                // Create a new CancellationTokenSource for the current sorting task
+                _cancellationTokenSource = new CancellationTokenSource();
+                var token = _cancellationTokenSource.Token;
+
+                // Capture the current search term
+                string searchTerm = $"{searchInput.Text}";
+
+                // Offload the sorting operation to a background task
+                _sortingTask = Task.Run(() =>
+                {
+                    // Perform the sorting operation
+                    var sortedTable = ProductListLogic.SortProductBySearchTerm(tableView.Table, $"{searchInput.Text}"); ;
+
+                    // If the task is not canceled, update the table on the UI thread
+                    if (!token.IsCancellationRequested)
+                    {
+                        Application.MainLoop.Invoke(() =>
+                        {
+                            tableView.Table = sortedTable;
+                        });
+                    }
+                }, token);
+
+                try
+                {
+                    // Await the completion of the sorting task
+                    await _sortingTask;
+                }
+                catch (TaskCanceledException)
+                {
+                    // Handle the cancellation if needed (optional)
+                }
             };
 
             int columnCurrentlySortBy = -1;

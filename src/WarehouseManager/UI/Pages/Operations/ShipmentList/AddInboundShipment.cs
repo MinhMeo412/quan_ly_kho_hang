@@ -13,7 +13,7 @@ namespace WarehouseManager.UI.Pages
             var mainWindow = UIComponent.LoggedInMainWindow("Add Inbound Shipment");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.AnnounceLabel("Error Message Here");
+            var errorLabel = UIComponent.AnnounceLabel();
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
@@ -198,12 +198,13 @@ namespace WarehouseManager.UI.Pages
                         dataTable: tableView.Table
                     );
 
-                    MessageBox.Query("Success", $"Inbound Shipment saved successfully.", "OK");
-                    errorLabel.Text = "";
+                    errorLabel.Text = $"Successfully created Inbound Shipment";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                 }
                 catch (Exception ex)
                 {
                     errorLabel.Text = $"Error: {ex.Message}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                 }
             };
 
@@ -330,13 +331,17 @@ namespace WarehouseManager.UI.Pages
                     else
                     {
                         // Xử lý lỗi khi chuyển đổi thất bại
-                        MessageBox.Query("Lỗi", "Vui lòng nhập giá trị hợp lệ cho Product Variant ID và Quantity.", "OK");
+                        // MessageBox.Query("Lỗi", "Vui lòng nhập giá trị hợp lệ cho Product Variant ID và Quantity.", "OK");
+                        errorLabel.Text = $"Error: Invalid values for Product Variant ID and Quantity";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                     }
                 }
                 else
                 {
                     // Xử lý lỗi khi các trường TextField trống
-                    MessageBox.Query("Lỗi", "Vui lòng nhập giá trị cho tất cả các trường.", "OK");
+                    // MessageBox.Query("Lỗi", "Vui lòng nhập giá trị cho tất cả các trường.", "OK");
+                    errorLabel.Text = $"Error: Fields cannot be blank.";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                 }
             };
 

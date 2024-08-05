@@ -1,6 +1,4 @@
 INSERT INTO supplier(supplier_id, supplier_name, supplier_description, supplier_address, supplier_email, supplier_phone_number, supplier_website) VALUES
-('1', 'Burton-Arnold', 'Cause in like watch accept. Sound phone drive notice develop give attention new. Decide budget blue myself dog past day.
-See friend stay administration.Or rise share chance PM. Fine plan prevent much discussion hour look. Hard find pass statement strong protect.', '17783 Walter Shores', 'wrogers@ewing-duncan.com', '8747751562', 'http://www.fletcher.net/'),
 ('2', 'Lopez, Caldwell and Mcdonald', 'Information foot realize as. Institution shoulder bar whole person various. Red recent inside difference reflect.
 Role newspaper too talk successful. Republican fight middle someone.Say Congress determine down though all remain trial. American teacher no quality American. Will loss executive perhaps best important.', '8236 Rice Radial Apt. 790', 'rgreen@morales.biz', '(898)275-5366', 'http://www.rhodes.org/'),
 ('3', 'Perez-Mccarty', 'About letter human company thousand player finally. Investment success degree my interview.

@@ -35,6 +35,11 @@ namespace WarehouseManager.UI.Pages
             var addButtonLeft2 = UIComponent.AddButton("Add New Stock Transfer");
             addButtonLeft2.X = Pos.Left(addButtonLeft) - addButtonLeft2.Text.Length - 5;
 
+            addButtonRight.Visible = UIComponent.CanExecuteMenu(3);
+            addButtonLeft.Visible = UIComponent.CanExecuteMenu(3);
+            addButtonLeft2.Visible = UIComponent.CanExecuteMenu(3);
+            deleteButton.Visible = UIComponent.CanExecuteMenu(2);
+
             var tableContainer = new FrameView()
             {
                 X = 3,
@@ -114,11 +119,13 @@ namespace WarehouseManager.UI.Pages
                     try
                     {
                         tableView.Table = ShipmentListLogic.DeleteShipment(tableView.Table, shipmentType, shipmentID);
-                        errorLabel.Text = "";
+                        errorLabel.Text = $"Successfully deleted shipment#{shipmentID}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                     }
                     catch (Exception ex)
                     {
                         errorLabel.Text = $"Error: {ex.Message}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                     }
                 }
             };
