@@ -13,7 +13,7 @@ namespace WarehouseManager.UI.Pages
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Stock Transfer");
             Application.Top.Add(mainWindow);
 
-            var errorLabel = UIComponent.AnnounceLabel("Error Message Here");
+            var errorLabel = UIComponent.AnnounceLabel();
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
@@ -202,12 +202,15 @@ namespace WarehouseManager.UI.Pages
 
                     tableView.Table = EditStockTransferLogic.GetStockTransferDetailData(shipmentID);
 
-                    MessageBox.Query("Success", $"Stock Transfer saved successfully.", "OK");
-                    errorLabel.Text = "";
+                    // MessageBox.Query("Success", $"Stock Transfer saved successfully.", "OK");
+                    errorLabel.Text = $"Successfully saved Stock Transfer";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+                    // errorLabel.Text = "";
                 }
                 catch (Exception ex)
                 {
                     errorLabel.Text = $"Error: {ex.Message}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                     tableView.Table = EditStockTransferLogic.GetStockTransferDetailData(shipmentID);
                 }
             };
@@ -227,7 +230,8 @@ namespace WarehouseManager.UI.Pages
                 else
                 {
                     // Xử lý lỗi khi chuyển đổi thất bại (nếu cần)
-                    MessageBox.Query("Lỗi", "Giá trị trong cột đầu tiên không phải là số nguyên hợp lệ.", "OK");
+                    errorLabel.Text = $"Error: Invalid value for first column";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                 }
             };
 
@@ -349,13 +353,15 @@ namespace WarehouseManager.UI.Pages
                     else
                     {
                         // Xử lý lỗi khi chuyển đổi thất bại
-                        MessageBox.Query("Lỗi", "Vui lòng nhập giá trị hợp lệ cho Product Variant ID và Quantity.", "OK");
+                        errorLabel.Text = $"Error: Invalid values for Product Variant ID and Quantity";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                     }
                 }
                 else
                 {
                     // Xử lý lỗi khi các trường TextField trống
-                    MessageBox.Query("Lỗi", "Vui lòng nhập giá trị cho tất cả các trường.", "OK");
+                    errorLabel.Text = $"Error: Fields cannot be blank.";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                 }
             };
 

@@ -66,8 +66,8 @@ for each row
 begin
 	if new.outbound_shipment_status = 'Completed' and old.outbound_shipment_status <> 'Completed' then
 		update warehouse_stock ws
-        join outbound_shipment_detail osd on ws.warehouse_id = new.warehouse_id and ws.product_variand_id = osd.product_variant_id
-        set ws.warehouse_stock_quantity = ws.warehouse_stock_quatity - osd.outbound_shipment_detail_amount
+        join outbound_shipment_detail osd on ws.warehouse_id = new.warehouse_id and ws.product_variant_id = osd.product_variant_id
+        set ws.warehouse_stock_quantity = ws.warehouse_stock_quantity - osd.outbound_shipment_detail_amount
         where osd.outbound_shipment_id = new.outbound_shipment_id;
 	end if;
 end//

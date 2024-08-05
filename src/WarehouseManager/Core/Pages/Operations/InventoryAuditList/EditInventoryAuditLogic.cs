@@ -1,5 +1,5 @@
 using System.Data;
-using Mysqlx.Crud;
+using Org.BouncyCastle.Math.EC;
 using WarehouseManager.Data.Entity;
 
 namespace WarehouseManager.Core.Pages
@@ -122,7 +122,13 @@ namespace WarehouseManager.Core.Pages
                 );
             }
 
-            return RefreshStockAmount(inventoryAuditID, dataTable);
+            string status = GetCurrentStatus(inventoryAuditID, GetInventoryAudits());
+            if (status == "Processing")
+            {
+                dataTable = RefreshStockAmount(inventoryAuditID, dataTable);
+            }
+
+            return dataTable;
         }
 
         public static DataTable EditVariant(int row, string newAmount, DataTable dataTable)
@@ -132,7 +138,7 @@ namespace WarehouseManager.Core.Pages
 
             dataTable.Rows[row][3] = newActualAmount;
             dataTable.Rows[row][4] = newActualAmount - stockAmount;
-            
+
             return dataTable;
         }
 
@@ -149,7 +155,17 @@ namespace WarehouseManager.Core.Pages
         public static void Save(int inventoryAuditID, string status, string description, DataTable dataTable)
         {
             UpdateInventoryAudit(inventoryAuditID, status, description);
-            UpdateInventoryAuditDetail(inventoryAuditID, RefreshStockAmount(inventoryAuditID, dataTable));
+
+            if (status == "Processing")
+            {
+                dataTable = RefreshStockAmount(inventoryAuditID, dataTable);
+            }
+            UpdateInventoryAuditDetail(inventoryAuditID, dataTable);
+
+            if (status == "Completed (Reconciled)")
+            {
+                ReconcileStockAmount(inventoryAuditID, dataTable);
+            }
         }
 
         private static List<Warehouse> GetWarehouses()
@@ -189,6 +205,30 @@ namespace WarehouseManager.Core.Pages
         {
             List<WarehouseStock> warehouseStocks = Program.Warehouse.WarehouseStockTable.WarehouseStocks ?? new List<WarehouseStock>();
             return warehouseStocks;
+        }
+
+        private static List<InboundShipment> GetInboundShipments()
+        {
+            List<InboundShipment> inboundShipments = Program.Warehouse.InboundShipmentTable.InboundShipments ?? new List<InboundShipment>();
+            return inboundShipments;
+        }
+
+        private static List<OutboundShipment> GetOutboundShipments()
+        {
+            List<OutboundShipment> outboundShipments = Program.Warehouse.OutboundShipmentTable.OutboundShipments ?? new List<OutboundShipment>();
+            return outboundShipments;
+        }
+
+        private static List<InboundShipmentDetail> GetInboundShipmentDetails()
+        {
+            List<InboundShipmentDetail> inboundShipmentDetails = Program.Warehouse.InboundShipmentDetailTable.InboundShipmentDetails ?? new List<InboundShipmentDetail>();
+            return inboundShipmentDetails;
+        }
+
+        private static List<OutboundShipmentDetail> GetOutboundShipmentDetails()
+        {
+            List<OutboundShipmentDetail> outboundShipmentDetails = Program.Warehouse.OutboundShipmentDetailTable.OutboundShipmentDetails ?? new List<OutboundShipmentDetail>();
+            return outboundShipmentDetails;
         }
 
         private static int GetWarehouseID(int inventoryAuditID, List<InventoryAudit> inventoryAudits)
@@ -392,5 +432,100 @@ namespace WarehouseManager.Core.Pages
             Program.Warehouse.InventoryAuditDetailTable.Delete(inventoryAuditID, productVariantID);
         }
 
+        private static void ReconcileStockAmount(int inventoryAuditID, DataTable dataTable)
+        {
+            int warehouseID = GetWarehouseID(inventoryAuditID, GetInventoryAudits());
+
+            int inboundShipmentID = GetCurrentHighestInboundShipmentID() + 1;
+            CreateReconcilingInboundShipment(inboundShipmentID, warehouseID);
+
+            int outboundShipmentID = GetCurrentHighestOutboundShipmentID() + 1;
+            CreateReconcilingOutboundShipment(outboundShipmentID, warehouseID);
+
+            foreach (DataRow row in dataTable.Rows)
+            {
+                int productVariantID = int.Parse($"{row[0]}");
+                int stockAmount = int.Parse($"{row[2]}");
+                int actualAmount = int.Parse($"{row[3]}");
+                int difference = actualAmount - stockAmount;
+
+                if (difference > 0)
+                {
+                    CreateInboundShipmentDetail(inboundShipmentID, productVariantID, difference);
+                }
+
+                if (difference < 0)
+                {
+                    CreateOutboundShipmentDetail(outboundShipmentID, productVariantID, Math.Abs(difference));
+                }
+            }
+
+            CompleteReconcilingInboundShipment(inboundShipmentID, warehouseID);
+            CompleteReconcilingOutboundShipment(outboundShipmentID, warehouseID);
+        }
+
+        private static int GetCurrentHighestInboundShipmentID()
+        {
+            return GetInboundShipments().Max(i => i.InboundShipmentID);
+        }
+
+        private static int GetCurrentHighestOutboundShipmentID()
+        {
+            return GetOutboundShipments().Max(i => i.OutboundShipmentID);
+        }
+
+        private static void CreateReconcilingInboundShipment(int inboundShipmentID, int warehouseID)
+        {
+            int supplierID = 1;
+            DateTime inboundShipmentStartingDate = DateTime.Now;
+            string status = "Processing";
+            string description = "Shipping inbound to reconcile for gained stocks.";
+            int userID = AddInventoryAuditLogic.GetUserID($"{Program.Warehouse.Username}", GetUsers());
+
+            Program.Warehouse.InboundShipmentTable.Add(inboundShipmentID, supplierID, warehouseID, inboundShipmentStartingDate, status, description, userID);
+        }
+
+        private static void CreateReconcilingOutboundShipment(int outboundShipmentID, int warehouseID)
+        {
+            string address = "Inventory Audit";
+            DateTime outboundShipmentStartingDate = DateTime.Now;
+            string status = "Processing";
+            string description = "Shipping outbound to reconcile for gained stocks.";
+            int userID = AddInventoryAuditLogic.GetUserID($"{Program.Warehouse.Username}", GetUsers());
+
+            Program.Warehouse.OutboundShipmentTable.Add(outboundShipmentID, warehouseID, address, outboundShipmentStartingDate, status, description, userID);
+        }
+
+        private static void CreateInboundShipmentDetail(int inboundShipmentID, int productVariantID, int inboundShipmentDetailAmount)
+        {
+            Program.Warehouse.InboundShipmentDetailTable.Add(inboundShipmentID, productVariantID, inboundShipmentDetailAmount);
+        }
+
+        private static void CreateOutboundShipmentDetail(int outboundShipmentID, int productVariantID, int outboundShipmentDetailAmount)
+        {
+            Program.Warehouse.OutboundShipmentDetailTable.Add(outboundShipmentID, productVariantID, outboundShipmentDetailAmount);
+        }
+
+        private static void CompleteReconcilingInboundShipment(int inboundShipmentID, int warehouseID)
+        {
+            int supplierID = 1;
+            DateTime inboundShipmentStartingDate = DateTime.Now;
+            string status = "Completed";
+            string description = "Shipping inbound to reconcile for gained stocks.";
+            int userID = AddInventoryAuditLogic.GetUserID($"{Program.Warehouse.Username}", GetUsers());
+
+            Program.Warehouse.InboundShipmentTable.Update(inboundShipmentID, supplierID, warehouseID, inboundShipmentStartingDate, status, description, userID);
+        }
+
+        private static void CompleteReconcilingOutboundShipment(int outboundShipmentID, int warehouseID)
+        {
+            string address = "Inventory Audit";
+            DateTime outboundShipmentStartingDate = DateTime.Now;
+            string status = "Completed";
+            string description = "Shipping outbound to reconcile for gained stocks.";
+            int userID = AddInventoryAuditLogic.GetUserID($"{Program.Warehouse.Username}", GetUsers());
+
+            Program.Warehouse.OutboundShipmentTable.Update(outboundShipmentID, warehouseID, address, outboundShipmentStartingDate, status, description, userID);
+        }
     }
 }

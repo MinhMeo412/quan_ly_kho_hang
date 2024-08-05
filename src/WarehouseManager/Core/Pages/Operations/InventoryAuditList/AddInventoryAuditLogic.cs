@@ -281,7 +281,7 @@ namespace WarehouseManager.Core.Pages
             }
         }
 
-        private static int GetUserID(string username, List<User> users)
+        internal static int GetUserID(string username, List<User> users)
         {
             User user = users.FirstOrDefault(u => u.UserName == username) ?? new User(0, "", "", "", null, null, 4);
             return user.UserID;

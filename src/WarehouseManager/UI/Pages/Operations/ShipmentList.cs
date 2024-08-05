@@ -114,11 +114,13 @@ namespace WarehouseManager.UI.Pages
                     try
                     {
                         tableView.Table = ShipmentListLogic.DeleteShipment(tableView.Table, shipmentType, shipmentID);
-                        errorLabel.Text = "";
+                        errorLabel.Text = $"Successfully deleted shipment#{shipmentID}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                     }
                     catch (Exception ex)
                     {
                         errorLabel.Text = $"Error: {ex.Message}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                     }
                 }
             };
