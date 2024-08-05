@@ -3,7 +3,7 @@ DELIMITER //
 CREATE PROCEDURE create_product(
     IN input_token VARCHAR(36),
     IN input_product_id INT,
-    IN input_product_name VARCHAR(32), 
+    IN input_product_name VARCHAR(64), 
     IN input_product_description TEXT, 
     IN input_product_price INT, 
     IN input_category_id INT
@@ -33,7 +33,7 @@ END //
 CREATE PROCEDURE update_product(
     IN input_token VARCHAR(36),
     IN input_product_id INT,
-    IN input_product_name VARCHAR(32), 
+    IN input_product_name VARCHAR(64), 
     IN input_product_description TEXT, 
     IN input_product_price INT, 
     IN input_category_id INT

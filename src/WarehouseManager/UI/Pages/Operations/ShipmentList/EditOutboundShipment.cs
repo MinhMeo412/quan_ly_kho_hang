@@ -19,6 +19,12 @@ namespace WarehouseManager.UI.Pages
 
             var separatorLine = UIComponent.SeparatorLine();
 
+
+            bool allowUpdateOutboundShipment = UIComponent.CanExecuteMenu(2);
+            bool allowCreateDetail = UIComponent.CanExecuteMenu(3);
+            bool allowEditDetail = UIComponent.CanExecuteMenu(2);
+            bool allowDeleteDetail = UIComponent.CanExecuteMenu(2);
+
             //Container
             var container = new FrameView()
             {
@@ -107,6 +113,7 @@ namespace WarehouseManager.UI.Pages
                 Width = Dim.Percent(60),
                 Height = 3,
                 Text = EditOutboundShipmentLogic.GetOutboundShipmentDescription(shipmentID),
+                ReadOnly = !allowUpdateOutboundShipment
             };
 
             //Right Label/Input
@@ -121,6 +128,7 @@ namespace WarehouseManager.UI.Pages
                 X = 20,
                 Y = Pos.Top(addressLabel),
                 Width = Dim.Percent(60),
+                ReadOnly = !allowUpdateOutboundShipment
             };
 
             var userLabel = new Label("User:")
@@ -164,7 +172,8 @@ namespace WarehouseManager.UI.Pages
             var saveButton = new Button("Save")
             {
                 X = Pos.Percent(95),
-                Y = Pos.Bottom(tableContainer) + 4
+                Y = Pos.Bottom(tableContainer) + 4,
+                Visible = UIComponent.CanExecuteMenu(3)
             };
 
             var returnButton = new Button("Back")
@@ -176,7 +185,8 @@ namespace WarehouseManager.UI.Pages
             var deleteButton = new Button("Delete")
             {
                 X = 1,
-                Y = Pos.Bottom(tableContainer) + 4
+                Y = Pos.Bottom(tableContainer) + 4,
+                Visible = allowDeleteDetail
             };
 
 
@@ -285,7 +295,7 @@ namespace WarehouseManager.UI.Pages
                     Application.RequestStop();
                 };
 
-                if (column != 0 && column != 1)
+                if (column != 0 && column != 1 && allowEditDetail)
                 {
                     Application.Run(editDialog);
                 }
@@ -300,34 +310,39 @@ namespace WarehouseManager.UI.Pages
             {
                 X = 1,
                 Y = 0,
-                Width = Dim.Percent(40)
+                Width = Dim.Percent(40),
+                Visible = allowCreateDetail
             };
 
             var quantityLabel = new Label("Quantity:")
             {
                 X = Pos.Right(productVariantIDLabel) + 1,
                 Y = 0,
+                Visible = allowCreateDetail
             };
 
             var productVariantIDInput = new TextField("")
             {
                 X = Pos.Bottom(productVariantIDLabel),
                 Y = 1,
-                Width = Dim.Percent(40)
+                Width = Dim.Percent(40),
+                Visible = allowCreateDetail
             };
 
             var quantityInput = new TextField("")
             {
                 X = Pos.Right(productVariantIDInput) + 1,
                 Y = 1,
-                Width = Dim.Percent(40)
+                Width = Dim.Percent(40),
+                Visible = allowCreateDetail
             };
             //Add Item Button
             var addItemButton = new Button("Add Item")
             {
                 X = Pos.Right(quantityInput),
                 Y = 1,
-                Width = Dim.Percent(20)
+                Width = Dim.Percent(20),
+                Visible = allowCreateDetail
             };
 
             // Khi nhấn nút Add Item

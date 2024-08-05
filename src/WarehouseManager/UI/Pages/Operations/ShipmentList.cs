@@ -35,6 +35,11 @@ namespace WarehouseManager.UI.Pages
             var addButtonLeft2 = UIComponent.AddButton("Add New Stock Transfer");
             addButtonLeft2.X = Pos.Left(addButtonLeft) - addButtonLeft2.Text.Length - 5;
 
+            addButtonRight.Visible = UIComponent.CanExecuteMenu(3);
+            addButtonLeft.Visible = UIComponent.CanExecuteMenu(3);
+            addButtonLeft2.Visible = UIComponent.CanExecuteMenu(3);
+            deleteButton.Visible = UIComponent.CanExecuteMenu(2);
+
             var tableContainer = new FrameView()
             {
                 X = 3,
