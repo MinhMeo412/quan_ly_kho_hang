@@ -13,7 +13,6 @@ Warehouse Manager is an application designed to streamline warehouse operations,
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [Testing](#testing)
 - [Project Structure](#project-structure)
 - [License](#license)
 - [Contact Information](#contact-information)
@@ -88,18 +87,10 @@ Warehouse Manager is an application designed to streamline warehouse operations,
     ```
 5. Create a new Pull Request.
 
-## Testing
-
-Run the test suite with the following command:
-```bash
-[Nothing for the time being]
-```
-
 ## Project Structure
 - **`db/scripts/`** - Database scripts.
 - **`docs/`** - Project documentation.
 - **`src/WarehouseManager/`** - Source code for the Warehouse Manager application.
-- **`test/WarehouseManagerTest/`** - Tests for the Warehouse Manager application.
 - **`.gitignore`** - Files and directories to be ignored by git.
 - **`LICENSE`** - License for the project.
 - **`README.md`** - This file.
