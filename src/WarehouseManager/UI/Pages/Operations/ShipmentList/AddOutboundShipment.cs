@@ -139,7 +139,8 @@ namespace WarehouseManager.UI.Pages
             var statusLabel = new Label("Status:")
             {
                 X = 3,
-                Y = Pos.Bottom(userLabel) + 2
+                Y = Pos.Bottom(userLabel) + 2,
+                Visible = false
             };
 
             var options = new string[] { "Processing", "Completed" };
@@ -149,7 +150,9 @@ namespace WarehouseManager.UI.Pages
                 X = 20,
                 Y = Pos.Top(statusLabel),
                 Width = Dim.Percent(60),
-                Height = 3
+                Height = 3,
+                SelectedItem = 0,
+                Visible = false
             };
 
 

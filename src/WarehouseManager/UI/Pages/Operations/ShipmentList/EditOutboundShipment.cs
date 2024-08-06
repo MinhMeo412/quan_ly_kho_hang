@@ -295,14 +295,16 @@ namespace WarehouseManager.UI.Pages
                     Application.RequestStop();
                 };
 
+                editDialog.Add(newValue);
+                editDialog.AddButton(cancelButton);
+                editDialog.AddButton(okButton);
+
                 if (column != 0 && column != 1 && allowEditDetail)
                 {
                     Application.Run(editDialog);
                 }
 
-                editDialog.Add(newValue);
-                editDialog.AddButton(cancelButton);
-                editDialog.AddButton(okButton);
+
             };
 
             //Item Label/Input
