@@ -309,11 +309,19 @@ namespace WarehouseManager.UI.Pages
 
             addBUtton.Clicked += () =>
             {
-                tableView.Table = EditInventoryAuditLogic.AddVariant($"{warehouseDropDown.Text}", $"{variantIDInput.Text}", $"{quantityInput.Text}", tableView.Table);
-                variantNameDropDown.SelectedItem = 0;
-                variantIDInput.Text = $"{EditInventoryAuditLogic.GetVariantID($"{variantNameDropDown.Text}", variantDictionary)}";
-                quantityInput.Text = "";
-                unsavedLabel.Visible = true;
+                try
+                {
+                    tableView.Table = EditInventoryAuditLogic.AddVariant(inventoryAuditID, $"{warehouseDropDown.Text}", $"{variantIDInput.Text}", $"{quantityInput.Text}", tableView.Table);
+                    variantNameDropDown.SelectedItem = 0;
+                    variantIDInput.Text = $"{EditInventoryAuditLogic.GetVariantID($"{variantNameDropDown.Text}", variantDictionary)}";
+                    quantityInput.Text = "";
+                    unsavedLabel.Visible = true;
+                }
+                catch (Exception ex)
+                {
+                    errorLabel.Text = $"Error: {ex}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                }
             };
 
             searchInput.TextChanged += args =>

@@ -82,8 +82,13 @@ namespace WarehouseManager.Core.Pages
             return AddInventoryAuditLogic.GetVariantIndex(variantID, variantList);
         }
 
-        public static DataTable AddVariant(string warehouseName, string variantID, string quantity, DataTable dataTable)
+        public static DataTable AddVariant(int inventoryAuditID, string warehouseName, string variantID, string quantity, DataTable dataTable)
         {
+            string status = GetCurrentStatus(inventoryAuditID, GetInventoryAudits());
+            if (status != "Processing")
+            {
+                throw new Exception("Inventory Audit is already completed.");
+            }
             return AddInventoryAuditLogic.AddVariant(warehouseName, variantID, quantity, dataTable);
         }
 
@@ -217,18 +222,6 @@ namespace WarehouseManager.Core.Pages
         {
             List<OutboundShipment> outboundShipments = Program.Warehouse.OutboundShipmentTable.OutboundShipments ?? new List<OutboundShipment>();
             return outboundShipments;
-        }
-
-        private static List<InboundShipmentDetail> GetInboundShipmentDetails()
-        {
-            List<InboundShipmentDetail> inboundShipmentDetails = Program.Warehouse.InboundShipmentDetailTable.InboundShipmentDetails ?? new List<InboundShipmentDetail>();
-            return inboundShipmentDetails;
-        }
-
-        private static List<OutboundShipmentDetail> GetOutboundShipmentDetails()
-        {
-            List<OutboundShipmentDetail> outboundShipmentDetails = Program.Warehouse.OutboundShipmentDetailTable.OutboundShipmentDetails ?? new List<OutboundShipmentDetail>();
-            return outboundShipmentDetails;
         }
 
         private static int GetWarehouseID(int inventoryAuditID, List<InventoryAudit> inventoryAudits)
