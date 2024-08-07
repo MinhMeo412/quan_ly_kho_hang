@@ -189,8 +189,6 @@ namespace WarehouseManager.UI.Pages
                         dataTable: tableView.Table
                     );
 
-                    EditInboundShipment.Display(AddInboundShipmentLogic.GetCurrentHighestInboundShipmentID());
-
                     errorLabel.Text = $"Successfully created Inbound Shipment";
                     errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                 }

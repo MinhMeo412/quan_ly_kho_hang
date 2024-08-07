@@ -1,5 +1,6 @@
 using System.Data;
 using WarehouseManager.Data.Entity;
+using WarehouseManager.UI.Pages;
 
 namespace WarehouseManager.Core.Pages
 {
@@ -61,6 +62,8 @@ namespace WarehouseManager.Core.Pages
             int inboundShipmentID = GetCurrentHighestInboundShipmentID() + 1;
             AddInboundShipment(inboundShipmentID, supplierName, warehouseName, inboundShipmentStartingDate, inboundShipmentStatus, inboundShipmentDescription, userName);
             AddInboundShipmentDetail(inboundShipmentID, dataTable);
+
+            EditInboundShipment.Display(inboundShipmentID, true);
         }
 
         //Get highest ShipmentID

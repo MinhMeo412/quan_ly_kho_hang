@@ -1,4 +1,3 @@
-using System.Data;
 using Terminal.Gui;
 using WarehouseManager.Core.Pages;
 using WarehouseManager.UI.Utility;
@@ -7,13 +6,18 @@ namespace WarehouseManager.UI.Pages
 {
     public static class EditStockTransfer
     {
-        public static void Display(int shipmentID)
+        public static void Display(int shipmentID, bool cameFromAddMenu = false)
         {
             Application.Top.RemoveAll();
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Stock Transfer");
             Application.Top.Add(mainWindow);
 
             var errorLabel = UIComponent.AnnounceLabel();
+            if (cameFromAddMenu)
+            {
+                errorLabel.Text = $"Successfully created stock transfer.";
+                errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+            }
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 

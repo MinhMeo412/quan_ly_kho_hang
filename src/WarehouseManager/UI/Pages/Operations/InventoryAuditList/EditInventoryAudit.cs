@@ -6,7 +6,7 @@ namespace WarehouseManager.UI.Pages
 {
     public static class EditInventoryAudit
     {
-        public static void Display(int inventoryAuditID)
+        public static void Display(int inventoryAuditID, bool cameFromAddMenu = false)
         {
             Application.Top.RemoveAll();
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Inventory Audit");
@@ -17,6 +17,11 @@ namespace WarehouseManager.UI.Pages
             bool allowUpdateInventoryAuditDetail = UIComponent.CanExecuteMenu(2);
 
             var errorLabel = UIComponent.AnnounceLabel();
+            if (cameFromAddMenu)
+            {
+                errorLabel.Text = $"Successfully created inventory audit.";
+                errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+            }
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 

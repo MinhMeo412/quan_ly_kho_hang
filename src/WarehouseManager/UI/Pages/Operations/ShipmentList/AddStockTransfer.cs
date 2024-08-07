@@ -193,8 +193,6 @@ namespace WarehouseManager.UI.Pages
                         dataTable: tableView.Table
                     );
 
-                    EditStockTransfer.Display(AddStockTransferLogic.GetCurrentHighestStockTransferID());
-
                     errorLabel.Text = $"Successfully created Stock Transfer";
                     errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                 }
