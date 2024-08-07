@@ -1,5 +1,6 @@
 using System.Data;
 using WarehouseManager.Data.Entity;
+using WarehouseManager.UI.Pages;
 
 namespace WarehouseManager.Core.Pages
 {
@@ -85,6 +86,8 @@ namespace WarehouseManager.Core.Pages
             int stockTransferID = GetCurrentHighestStockTransferID() + 1;
             AddStockTransfer(stockTransferID, fromWarehouseName, toWarehouseName, stockTransferStartingDate, stockTransferStatus, stockTransferDescription, userName);
             AddStockTransferDetail(stockTransferID, dataTable);
+
+            EditStockTransfer.Display(stockTransferID, true);
         }
 
         //Get highest ShipmentID

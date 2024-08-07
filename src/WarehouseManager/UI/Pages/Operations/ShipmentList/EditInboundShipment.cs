@@ -7,7 +7,7 @@ namespace WarehouseManager.UI.Pages
 {
     public static class EditInboundShipment
     {
-        public static void Display(int shipmentID)
+        public static void Display(int shipmentID, bool cameFromAddMenu = false)
         {
             Application.Top.RemoveAll();
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Inbound Shipment");
@@ -19,6 +19,11 @@ namespace WarehouseManager.UI.Pages
             bool allowDeleteDetail = UIComponent.CanExecuteMenu(3);
 
             var errorLabel = UIComponent.AnnounceLabel();
+            if (cameFromAddMenu)
+            {
+                errorLabel.Text = $"Successfully created inbound shipment.";
+                errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+            }
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 

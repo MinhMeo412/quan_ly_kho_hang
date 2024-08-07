@@ -1,6 +1,7 @@
 using System.Data;
 using System.Net.WebSockets;
 using WarehouseManager.Data.Entity;
+using WarehouseManager.UI.Pages;
 
 namespace WarehouseManager.Core.Pages
 {
@@ -86,6 +87,8 @@ namespace WarehouseManager.Core.Pages
             int outboundShipmentID = GetCurrentHighestOutboundShipmentID() + 1;
             AddOutboundShipment(outboundShipmentID, outboundShipmentAddress, warehouseName, outboundShipmentStartingDate, outboundShipmentStatus, outboundShipmentDescription, userName);
             AddOutboundShipmentDetail(outboundShipmentID, dataTable);
+
+            EditOutboundShipment.Display(outboundShipmentID, true);
         }
 
         //Get highest ShipmentID

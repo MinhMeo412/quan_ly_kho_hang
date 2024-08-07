@@ -6,7 +6,7 @@ namespace WarehouseManager.UI.Pages
 {
     public static class EditInventoryAudit
     {
-        public static void Display(int inventoryAuditID)
+        public static void Display(int inventoryAuditID, bool cameFromAddMenu = false)
         {
             Application.Top.RemoveAll();
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Inventory Audit");
@@ -17,6 +17,11 @@ namespace WarehouseManager.UI.Pages
             bool allowUpdateInventoryAuditDetail = UIComponent.CanExecuteMenu(2);
 
             var errorLabel = UIComponent.AnnounceLabel();
+            if (cameFromAddMenu)
+            {
+                errorLabel.Text = $"Successfully created inventory audit.";
+                errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+            }
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
@@ -134,7 +139,7 @@ namespace WarehouseManager.UI.Pages
                 Width = Dim.Fill(1),
                 Height = Dim.Fill(),
                 Text = EditInventoryAuditLogic.GetDescription(inventoryAuditID),
-                ReadOnly = !allowEditInventoryAudit
+                ReadOnly = !(allowEditInventoryAudit && $"{statusDropDown.Text}" == "Processing")
             };
 
             var variantIDLabel = new Label("Variant ID")
@@ -331,14 +336,30 @@ namespace WarehouseManager.UI.Pages
 
             deleteButton.Clicked += () =>
             {
-                tableView.Table = EditInventoryAuditLogic.DeleteVariant(tableView.Table, tableView.SelectedRow);
-                unsavedLabel.Visible = true;
+                try
+                {
+                    tableView.Table = EditInventoryAuditLogic.DeleteVariant(inventoryAuditID, tableView.Table, tableView.SelectedRow);
+                    unsavedLabel.Visible = true;
+                }
+                catch (Exception ex)
+                {
+                    errorLabel.Text = $"Error: {ex}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                }
             };
 
             getAllStockButton.Clicked += () =>
             {
-                tableView.Table = EditInventoryAuditLogic.GetAllStock($"{warehouseDropDown.Text}", tableView.Table);
-                unsavedLabel.Visible = true;
+                try
+                {
+                    tableView.Table = EditInventoryAuditLogic.GetAllStock(inventoryAuditID, $"{warehouseDropDown.Text}", tableView.Table);
+                    unsavedLabel.Visible = true;
+                }
+                catch (Exception ex)
+                {
+                    errorLabel.Text = $"Error: {ex}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                }
             };
 
             saveButton.Clicked += () =>
@@ -350,6 +371,7 @@ namespace WarehouseManager.UI.Pages
                     statusDropDown.SetSource(EditInventoryAuditLogic.GetStatusList(inventoryAuditID));
                     statusDropDown.SelectedItem = EditInventoryAuditLogic.GetStatusIndex(inventoryAuditID);
                     tableView.Table = EditInventoryAuditLogic.GetData(inventoryAuditID);
+                    descriptionInput.ReadOnly = !(allowEditInventoryAudit && $"{statusDropDown.Text}" == "Processing");
 
                     errorLabel.Text = $"Successfully saved inventory audit.";
                     errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();

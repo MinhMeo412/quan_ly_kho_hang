@@ -97,7 +97,8 @@ namespace WarehouseManager.UI.Pages
                     try
                     {
                         tableView.Table = InventoryAuditListLogic.DeleteInventoryAudit(tableView.Table, inventoryAuditID);
-                        errorLabel.Text = "";
+                        errorLabel.Text = $"Successfully deleted inventoryaudit#{inventoryAuditID}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                     }
                     catch (Exception ex)
                     {

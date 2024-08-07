@@ -1,6 +1,7 @@
 using System.Data;
 using WarehouseManager.Data.Entity;
 using WarehouseManager.Core.Utility;
+using WarehouseManager.UI.Pages;
 
 namespace WarehouseManager.Core.Pages
 {
@@ -162,6 +163,8 @@ namespace WarehouseManager.Core.Pages
             int inventoryAuditID = GetCurrentHighestInventoryAuditID() + 1;
             AddInventoryAudit(inventoryAuditID, warehouseName, description);
             AddInventoryAuditDetail(inventoryAuditID, dataTable);
+
+            EditInventoryAudit.Display(inventoryAuditID, true);
         }
 
         private static List<Product> GetProducts()
