@@ -114,16 +114,15 @@ namespace WarehouseManager.UI.Pages
                 Y = 1
             };
 
-            var supplierDropDown = new ComboBox()
+            var supplierDropDown = new ComboBox(AddInboundShipmentLogic.GetSupplierList())
             {
                 X = 20,
                 Y = Pos.Top(supplierNameLabel),
                 Width = Dim.Percent(60),
                 Height = Dim.Fill(1),
-                ReadOnly = true
+                ReadOnly = true,
+                SelectedItem = 0
             };
-            var suppliers = AddInboundShipmentLogic.GetSupplierList();
-            supplierDropDown.SetSource(suppliers);
 
             var userLabel = new Label("User:")
             {
