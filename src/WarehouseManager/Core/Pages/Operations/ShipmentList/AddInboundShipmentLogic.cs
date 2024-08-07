@@ -46,35 +46,11 @@ namespace WarehouseManager.Core.Pages
         }
 
         // Add InboundShipmentDetail only to DataTable (not include DataBase)
-        public static DataTable AddInboundShipmentDetail(DataTable currentDataTable, int productVariantID, int quantity)
+        public static DataTable AddInboundShipmentDetailToDataTable(DataTable currentDataTable, int productVariantID, int quantity)
         {
             DataTable dataTable = currentDataTable.Copy();
             string productVariantName = EditInboundShipmentLogic.GetProductVariantName(productVariantID);
             dataTable.Rows.Add(productVariantID, productVariantName, quantity);
-            return dataTable;
-        }
-
-        // Delete InboundShipmentDetail only to DataTable (not include DataBase)
-        public static DataTable DeleteInboundShipmentDetail(DataTable currentDataTable, int row)
-        {
-            DataTable dataTable = currentDataTable.Copy();
-
-            if (row < 0)
-            {
-                return dataTable;
-            }
-
-            DataRow rowToDelete = dataTable.Rows[row];
-
-            if (rowToDelete != null)
-            {
-                // Mark the row for deletion
-                rowToDelete.Delete();
-
-                // Commit the deletion
-                dataTable.AcceptChanges();
-            }
-
             return dataTable;
         }
 
@@ -88,7 +64,7 @@ namespace WarehouseManager.Core.Pages
         }
 
         //Get highest ShipmentID
-        private static int GetCurrentHighestInboundShipmentID()
+        public static int GetCurrentHighestInboundShipmentID()
         {
             List<InboundShipment> inboundShipments = Program.Warehouse.InboundShipmentTable.InboundShipments ?? new List<InboundShipment>();
             int highestInboundShipmentID = inboundShipments.Max(i => i.InboundShipmentID);
@@ -140,5 +116,27 @@ namespace WarehouseManager.Core.Pages
         {
             Program.Warehouse.InboundShipmentDetailTable.Add(inboundShipmentID, productVariantID, quantity);
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

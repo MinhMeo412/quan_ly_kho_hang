@@ -20,7 +20,7 @@ namespace WarehouseManager.Core.Pages
 
         public static string GetInboundShipmentStatus(int inboundShipmentID)
         {
-            return GetInboundshipment(inboundShipmentID).InboundShipmentStatus;
+            return $"{GetInboundshipment(inboundShipmentID).InboundShipmentStatus}";
         }
 
         public static string GetInboundShipmentDescription(int inboundShipmentID)
@@ -194,7 +194,6 @@ namespace WarehouseManager.Core.Pages
             {
                 // Mark the row for deletion
                 rowToDelete.Delete();
-
                 // Commit the deletion
                 dataTable.AcceptChanges();
             }
