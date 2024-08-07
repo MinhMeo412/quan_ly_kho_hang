@@ -156,17 +156,19 @@ namespace WarehouseManager.UI.Pages
 
             var options = new string[] { "Processing", "Completed" };
 
-            var statusBox = new ComboBox(options)
+            var statusBox = new ComboBox()
             {
                 X = 20,
                 Y = Pos.Top(statusLabel),
                 Width = Dim.Percent(60),
-                Height = 3
+                Height = 3,
+                Text = EditInboundShipmentLogic.GetInboundShipmentStatus(shipmentID),
             };
+            statusBox.SetSource(options);
 
 
 
-            //Item table data
+            //Item table data (??)
             var dataTable = new DataTable();
 
             var tableView = UIComponent.Table(EditInboundShipmentLogic.GetInboundShipmentDetailData(shipmentID));
