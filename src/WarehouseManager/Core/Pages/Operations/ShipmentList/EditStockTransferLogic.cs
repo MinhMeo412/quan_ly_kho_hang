@@ -54,6 +54,7 @@ namespace WarehouseManager.Core.Pages
             return warehouseNames.IndexOf(warehouseName);
         }
 
+
         public static List<string> GetWarehouseList()
         {
             List<Warehouse> warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
@@ -65,6 +66,28 @@ namespace WarehouseManager.Core.Pages
             }
 
             return warehouseNames;
+        }
+
+        public static string GetStockTransferFromWarehouseName(int stockTransferID)
+        {
+            int warehouseID = GetStockTransfer(stockTransferID).FromWarehouseID;
+
+            List<Warehouse> warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
+
+            Warehouse warehouse = warehouses.FirstOrDefault(w => w.WarehouseID == warehouseID) ?? new Warehouse(0, "", 0);
+            string warehouseName = warehouse.WarehouseName;
+            return warehouseName;
+        }
+
+        public static string GetStockTransferToWarehouseName(int stockTransferID)
+        {
+            int warehouseID = GetStockTransfer(stockTransferID).ToWarehouseID;
+
+            List<Warehouse> warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
+
+            Warehouse warehouse = warehouses.FirstOrDefault(w => w.WarehouseID == warehouseID) ?? new Warehouse(0, "", 0);
+            string warehouseName = warehouse.WarehouseName;
+            return warehouseName;
         }
 
         public static string GetStockTransferUserName(int stockTransferID)
@@ -181,7 +204,6 @@ namespace WarehouseManager.Core.Pages
             {
                 // Mark the row for deletion
                 rowToDelete.Delete();
-
                 // Commit the deletion
                 dataTable.AcceptChanges();
             }
@@ -197,6 +219,37 @@ namespace WarehouseManager.Core.Pages
             Program.Warehouse.StockTransferDetailTable.Update(stockTransferID, productVariantID, quantity);
 
             return dataTable;
+        }
+
+        //Check if the added Variant is correct
+        public static string CheckVariantAdded(string warehouseName, int productVariantID, int quantity)
+        {
+            List<Warehouse>? warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
+            Warehouse? warehouse = warehouses.FirstOrDefault(w => w.WarehouseName == warehouseName);
+            int warehouseID = 0;
+            if (warehouse == null)
+            {
+                return "Error: Warehouse not found.";
+
+            }
+
+            warehouseID = warehouse.WarehouseID;
+
+            List<WarehouseStock>? warehouseStocks = Program.Warehouse.WarehouseStockTable.WarehouseStocks ?? new List<WarehouseStock>();
+            WarehouseStock? warehouseStock = warehouseStocks.FirstOrDefault(wS => wS.ProductVariantID == productVariantID && wS.WarehouseID == warehouseID);
+
+            if (warehouseStock == null)
+            {
+                return "Error: There is no product in warehouse.";
+
+            }
+
+            if (quantity > warehouseStock.WarehouseStockQuantity)
+            {
+                return "Error: Not enough stock.";
+
+            }
+            return "";
         }
     }
 }

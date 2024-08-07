@@ -13,10 +13,10 @@ namespace WarehouseManager.UI.Pages
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Inbound Shipment");
             Application.Top.Add(mainWindow);
 
-            bool allowUpdateInboundShipment = UIComponent.CanExecuteMenu(2);
+            bool allowUpdateInboundShipment = UIComponent.CanExecuteMenu(3);
             bool allowCreateDetail = UIComponent.CanExecuteMenu(3);
-            bool allowEditDetail = UIComponent.CanExecuteMenu(2);
-            bool allowDeleteDetail = UIComponent.CanExecuteMenu(2);
+            bool allowEditDetail = UIComponent.CanExecuteMenu(3);
+            bool allowDeleteDetail = UIComponent.CanExecuteMenu(3);
 
             var errorLabel = UIComponent.AnnounceLabel();
 
@@ -162,7 +162,7 @@ namespace WarehouseManager.UI.Pages
                 Y = Pos.Top(statusLabel),
                 Width = Dim.Percent(60),
                 Height = 3,
-                Text = EditInboundShipmentLogic.GetInboundShipmentStatus(shipmentID),
+                Text = EditInboundShipmentLogic.GetInboundShipmentStatus(shipmentID)
             };
             statusBox.SetSource(options);
 
@@ -211,6 +211,7 @@ namespace WarehouseManager.UI.Pages
                     );
 
                     tableView.Table = EditInboundShipmentLogic.GetInboundShipmentDetailData(shipmentID);
+
                     errorLabel.Text = $"Successfully saved Inbound Shipment";
                     errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                 }
@@ -299,7 +300,7 @@ namespace WarehouseManager.UI.Pages
                 editDialog.AddButton(cancelButton);
                 editDialog.AddButton(okButton);
 
-                if (column != 0 && column != 1 && allowEditDetail)
+                if (column != 0 && column != 1 && allowEditDetail && $"{statusBox.Text}" == "Processing")
                 {
                     Application.Run(editDialog);
                 }
