@@ -147,13 +147,23 @@ namespace WarehouseManager.Core.Pages
             return dataTable;
         }
 
-        public static DataTable DeleteVariant(DataTable currentDataTable, int row)
+        public static DataTable DeleteVariant(int inventoryAuditID, DataTable currentDataTable, int row)
         {
+            string status = GetCurrentStatus(inventoryAuditID, GetInventoryAudits());
+            if (status != "Processing")
+            {
+                throw new Exception("Inventory Audit is already completed.");
+            }
             return AddInventoryAuditLogic.DeleteVariant(currentDataTable, row);
         }
 
-        public static DataTable GetAllStock(string warehouseName, DataTable dataTable)
+        public static DataTable GetAllStock(int inventoryAuditID, string warehouseName, DataTable dataTable)
         {
+            string status = GetCurrentStatus(inventoryAuditID, GetInventoryAudits());
+            if (status != "Processing")
+            {
+                throw new Exception("Inventory Audit is already completed.");
+            }
             return AddInventoryAuditLogic.GetAllStock(warehouseName, dataTable);
         }
 

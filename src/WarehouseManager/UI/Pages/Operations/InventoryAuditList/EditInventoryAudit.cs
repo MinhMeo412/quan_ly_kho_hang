@@ -134,7 +134,7 @@ namespace WarehouseManager.UI.Pages
                 Width = Dim.Fill(1),
                 Height = Dim.Fill(),
                 Text = EditInventoryAuditLogic.GetDescription(inventoryAuditID),
-                ReadOnly = !allowEditInventoryAudit
+                ReadOnly = !(allowEditInventoryAudit && $"{statusDropDown.Text}" == "Processing")
             };
 
             var variantIDLabel = new Label("Variant ID")
@@ -331,14 +331,30 @@ namespace WarehouseManager.UI.Pages
 
             deleteButton.Clicked += () =>
             {
-                tableView.Table = EditInventoryAuditLogic.DeleteVariant(tableView.Table, tableView.SelectedRow);
-                unsavedLabel.Visible = true;
+                try
+                {
+                    tableView.Table = EditInventoryAuditLogic.DeleteVariant(inventoryAuditID, tableView.Table, tableView.SelectedRow);
+                    unsavedLabel.Visible = true;
+                }
+                catch (Exception ex)
+                {
+                    errorLabel.Text = $"Error: {ex}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                }
             };
 
             getAllStockButton.Clicked += () =>
             {
-                tableView.Table = EditInventoryAuditLogic.GetAllStock($"{warehouseDropDown.Text}", tableView.Table);
-                unsavedLabel.Visible = true;
+                try
+                {
+                    tableView.Table = EditInventoryAuditLogic.GetAllStock(inventoryAuditID, $"{warehouseDropDown.Text}", tableView.Table);
+                    unsavedLabel.Visible = true;
+                }
+                catch (Exception ex)
+                {
+                    errorLabel.Text = $"Error: {ex}";
+                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                }
             };
 
             saveButton.Clicked += () =>
@@ -350,6 +366,7 @@ namespace WarehouseManager.UI.Pages
                     statusDropDown.SetSource(EditInventoryAuditLogic.GetStatusList(inventoryAuditID));
                     statusDropDown.SelectedItem = EditInventoryAuditLogic.GetStatusIndex(inventoryAuditID);
                     tableView.Table = EditInventoryAuditLogic.GetData(inventoryAuditID);
+                    descriptionInput.ReadOnly = !(allowEditInventoryAudit && $"{statusDropDown.Text}" == "Processing");
 
                     errorLabel.Text = $"Successfully saved inventory audit.";
                     errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
