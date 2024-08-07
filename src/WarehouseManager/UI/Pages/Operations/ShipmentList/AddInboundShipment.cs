@@ -1,4 +1,3 @@
-using System.Data;
 using Terminal.Gui;
 using WarehouseManager.Core.Pages;
 using WarehouseManager.UI.Utility;
@@ -159,12 +158,8 @@ namespace WarehouseManager.UI.Pages
                 Visible = false
             };
 
-
-            //Item table data (cần thiết ??)
-            var dataTable = new DataTable();
-
+            //
             var tableView = UIComponent.Table(AddInboundShipmentLogic.GetDataTable());
-
 
             //Button
             var saveButton = new Button("Save")
