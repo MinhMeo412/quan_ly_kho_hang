@@ -179,6 +179,7 @@ namespace WarehouseManager.UI.Pages
                     timeLabel.Width = HomeLogic.GetStringWidth(time);
 
                     systemInformationLabel.Text = HomeLogic.GetSystemInformation();
+                    Thread.Sleep(5000);
                 }
             });
         }
