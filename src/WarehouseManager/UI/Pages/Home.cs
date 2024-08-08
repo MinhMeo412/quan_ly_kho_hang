@@ -167,10 +167,21 @@ namespace WarehouseManager.UI.Pages
             string time = HomeLogic.GetTime();
             timeLabel.Text = time;
             timeLabel.Width = HomeLogic.GetStringWidth(time);
-
             weatherLabel.Text = await HomeLogic.GetWeather();
-            systemInformationLabel.Text = HomeLogic.GetSystemInformation();
-            rightLabel.Text = HomeLogic.GetDatabaseInformation();
+
+            await Task.Run(() =>
+            {
+                rightLabel.Text = HomeLogic.GetDatabaseInformation();
+                while (true)
+                {
+                    string time = HomeLogic.GetTime();
+                    timeLabel.Text = time;
+                    timeLabel.Width = HomeLogic.GetStringWidth(time);
+
+                    systemInformationLabel.Text = HomeLogic.GetSystemInformation();
+                    Thread.Sleep(5000);
+                }
+            });
         }
     }
 }

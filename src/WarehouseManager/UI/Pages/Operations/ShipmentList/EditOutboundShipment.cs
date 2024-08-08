@@ -1,4 +1,3 @@
-using System.Data;
 using Terminal.Gui;
 using WarehouseManager.Core.Pages;
 using WarehouseManager.UI.Utility;
@@ -7,23 +6,28 @@ namespace WarehouseManager.UI.Pages
 {
     public static class EditOutboundShipment
     {
-        public static void Display(int shipmentID)
+        public static void Display(int shipmentID, bool cameFromAddMenu = false)
         {
             Application.Top.RemoveAll();
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Outbound Shipment");
             Application.Top.Add(mainWindow);
 
             var errorLabel = UIComponent.AnnounceLabel();
+            if (cameFromAddMenu)
+            {
+                errorLabel.Text = $"Successfully created outbound shipment.";
+                errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+            }
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
             var separatorLine = UIComponent.SeparatorLine();
 
 
-            bool allowUpdateOutboundShipment = UIComponent.CanExecuteMenu(2);
+            bool allowUpdateOutboundShipment = UIComponent.CanExecuteMenu(3);
             bool allowCreateDetail = UIComponent.CanExecuteMenu(3);
-            bool allowEditDetail = UIComponent.CanExecuteMenu(2);
-            bool allowDeleteDetail = UIComponent.CanExecuteMenu(2);
+            bool allowEditDetail = UIComponent.CanExecuteMenu(3);
+            bool allowDeleteDetail = UIComponent.CanExecuteMenu(3);
 
             //Container
             var container = new FrameView()
@@ -74,7 +78,7 @@ namespace WarehouseManager.UI.Pages
                 Y = 1
             };
 
-            var warehouseDropDown = new ComboBox()
+            var warehouseDropDown = new TextField(EditOutboundShipmentLogic.GetOutboundShipmentWarehouseName(shipmentID))
             {
                 X = 20,
                 Y = Pos.Top(warehouseLabel),
@@ -82,9 +86,6 @@ namespace WarehouseManager.UI.Pages
                 Height = Dim.Fill(1),
                 ReadOnly = true
             };
-            var warehouses = EditOutboundShipmentLogic.GetWarehouseList();
-            warehouseDropDown.SetSource(warehouses);
-            warehouseDropDown.SelectedItem = EditOutboundShipmentLogic.GetOutboundShipmentWarehouse(shipmentID);
 
             var dateLabel = new Label("Date:")
             {
@@ -123,7 +124,7 @@ namespace WarehouseManager.UI.Pages
                 Y = 1
             };
 
-            var addressInput = new TextField(EditOutboundShipmentLogic.GetOutboundShipmentUserName(shipmentID))
+            var addressInput = new TextField(EditOutboundShipmentLogic.GetOutboundShipmentAddress(shipmentID))
             {
                 X = 20,
                 Y = Pos.Top(addressLabel),
@@ -153,19 +154,18 @@ namespace WarehouseManager.UI.Pages
 
             var options = new string[] { "Processing", "Completed" };
 
-            var statusBox = new ComboBox(options)
+            var statusBox = new ComboBox()
             {
                 X = 20,
                 Y = Pos.Top(statusLabel),
                 Width = Dim.Percent(60),
-                Height = 3
+                Height = 3,
+                Text = EditInboundShipmentLogic.GetInboundShipmentStatus(shipmentID)
             };
+            statusBox.SetSource(options);
 
 
-
-            //Item table data
-            var dataTable = new DataTable();
-
+            //
             var tableView = UIComponent.Table(EditOutboundShipmentLogic.GetOutboundShipmentDetailData(shipmentID));
 
             //Button
@@ -207,8 +207,6 @@ namespace WarehouseManager.UI.Pages
 
                     tableView.Table = EditOutboundShipmentLogic.GetOutboundShipmentDetailData(shipmentID);
 
-                    // MessageBox.Query("Success", $"Outbound Shipment saved successfully.", "OK");
-                    // errorLabel.Text = "";
                     errorLabel.Text = $"Successfully saved Outbound Shipment";
                     errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                 }
@@ -234,8 +232,6 @@ namespace WarehouseManager.UI.Pages
                 }
                 else
                 {
-                    // Xử lý lỗi khi chuyển đổi thất bại (nếu cần)
-                    // MessageBox.Query("Lỗi", "Giá trị trong cột đầu tiên không phải là số nguyên hợp lệ.", "OK");
                     errorLabel.Text = $"Error: Invalid value for first column";
                     errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                 }
@@ -291,6 +287,15 @@ namespace WarehouseManager.UI.Pages
                     tableView.Table.Rows[row][column] = newValue.Text.ToString();
                     var quantityString = tableView.Table.Rows[row][column].ToString(); ;
                     int quantity = int.Parse(quantityString ?? "");
+                    //Check if quantity is enough
+                    string result = EditOutboundShipmentLogic.CheckVariantAdded(EditOutboundShipmentLogic.GetOutboundShipmentWarehouseName(shipmentID), variantID, quantity);
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        // Nếu có thông báo lỗi từ CheckVariantAdded, hiển thị lỗi và dừng thực hiện
+                        errorLabel.Text = $"Error: {result}";
+                        errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                        return;
+                    }
                     EditOutboundShipmentLogic.UpdateOutboundShipmentDetail(tableView.Table, variantID, quantity, shipmentID);
                     Application.RequestStop();
                 };
@@ -299,12 +304,10 @@ namespace WarehouseManager.UI.Pages
                 editDialog.AddButton(cancelButton);
                 editDialog.AddButton(okButton);
 
-                if (column != 0 && column != 1 && allowEditDetail)
+                if (column != 0 && column != 1 && allowEditDetail && $"{statusBox.Text}" == "Processing")
                 {
                     Application.Run(editDialog);
                 }
-
-
             };
 
             //Item Label/Input
@@ -347,35 +350,53 @@ namespace WarehouseManager.UI.Pages
                 Visible = allowCreateDetail
             };
 
+
             // Khi nhấn nút Add Item
             addItemButton.Clicked += () =>
             {
                 string productVariantIDText = productVariantIDInput.Text.ToString() ?? "";
                 string quantityText = quantityInput.Text.ToString() ?? "";
-                // Kiểm tra nếu các TextField không trống
-                if (!string.IsNullOrEmpty(productVariantIDText) && !string.IsNullOrEmpty(quantityText))
-                {
-                    // Chuyển đổi giá trị TextField từ chuỗi sang số nguyên
-                    if (int.TryParse(productVariantIDText, out int productVariantID) && int.TryParse(quantityText, out int quantity))
-                    {
-                        tableView.Table = EditOutboundShipmentLogic.AddOutboundShipmentDetail(tableView.Table, productVariantID, quantity, shipmentID);
 
-                        productVariantIDInput.Text = "";
-                        quantityInput.Text = "";
+                try
+                {
+                    // Kiểm tra nếu các TextField không trống
+                    if (!string.IsNullOrEmpty(productVariantIDText) && !string.IsNullOrEmpty(quantityText))
+                    {
+                        // Chuyển đổi giá trị TextField từ chuỗi sang số nguyên
+                        if (int.TryParse(productVariantIDText, out int productVariantID) && int.TryParse(quantityText, out int quantity))
+                        {
+                            string result = EditOutboundShipmentLogic.CheckVariantAdded(EditOutboundShipmentLogic.GetOutboundShipmentWarehouseName(shipmentID), productVariantID, quantity);
+
+                            if (!string.IsNullOrEmpty(result))
+                            {
+                                // Nếu có thông báo lỗi từ CheckVariantAdded, hiển thị lỗi và dừng thực hiện
+                                errorLabel.Text = $"Error: {result}";
+                                errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                                return;
+                            }
+
+                            tableView.Table = EditOutboundShipmentLogic.AddOutboundShipmentDetail(tableView.Table, productVariantID, quantity, shipmentID);
+
+                            productVariantIDInput.Text = "";
+                            quantityInput.Text = "";
+                        }
+                        else
+                        {
+                            // Xử lý lỗi khi chuyển đổi thất bại
+                            errorLabel.Text = $"Error: Invalid values for Product Variant ID and Quantity";
+                            errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                        }
                     }
                     else
                     {
-                        // Xử lý lỗi khi chuyển đổi thất bại
-                        // MessageBox.Query("Lỗi", "Vui lòng nhập giá trị hợp lệ cho Product Variant ID và Quantity.", "OK");
-                        errorLabel.Text = $"Error: Invalid values for Product Variant ID and Quantity";
+                        // Xử lý lỗi khi các trường TextField trống
+                        errorLabel.Text = $"Error: Fields cannot be blank.";
                         errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    // Xử lý lỗi khi các trường TextField trống
-                    // MessageBox.Query("Lỗi", "Vui lòng nhập giá trị cho tất cả các trường.", "OK");
-                    errorLabel.Text = $"Error: Fields cannot be blank.";
+                    errorLabel.Text = $"Error: {ex.Message}";
                     errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                 }
             };

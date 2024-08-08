@@ -1,5 +1,6 @@
 using System.Data;
 using WarehouseManager.Data.Entity;
+using WarehouseManager.UI.Pages;
 
 namespace WarehouseManager.Core.Pages
 {
@@ -40,7 +41,7 @@ namespace WarehouseManager.Core.Pages
         }
 
         // Add StockTransferDetail only to DataTable (not include DataBase)
-        public static DataTable AddStockTransferDetail(DataTable currentDataTable, int productVariantID, int quantity)
+        public static DataTable AddStockTransferDetailToDataTable(DataTable currentDataTable, int productVariantID, int quantity)
         {
             DataTable dataTable = currentDataTable.Copy();
             string productVariantName = EditStockTransferLogic.GetProductVariantName(productVariantID);
@@ -48,28 +49,35 @@ namespace WarehouseManager.Core.Pages
             return dataTable;
         }
 
-        // Delete StockTransferDetail only to DataTable (not include DataBase)
-        public static DataTable DeleteStockTransferDetail(DataTable currentDataTable, int row)
+        //Check if the added Variant is correct
+        public static string CheckVariantAdded(string warehouseName, int productVariantID, int quantity)
         {
-            DataTable dataTable = currentDataTable.Copy();
-
-            if (row < 0)
+            List<Warehouse>? warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
+            Warehouse? warehouse = warehouses.FirstOrDefault(w => w.WarehouseName == warehouseName);
+            int warehouseID = 0;
+            if (warehouse == null)
             {
-                return dataTable;
+                return "Error: Warehouse not found.";
+
             }
 
-            DataRow rowToDelete = dataTable.Rows[row];
+            warehouseID = warehouse.WarehouseID;
 
-            if (rowToDelete != null)
+            List<WarehouseStock>? warehouseStocks = Program.Warehouse.WarehouseStockTable.WarehouseStocks ?? new List<WarehouseStock>();
+            WarehouseStock? warehouseStock = warehouseStocks.FirstOrDefault(wS => wS.ProductVariantID == productVariantID && wS.WarehouseID == warehouseID);
+
+            if (warehouseStock == null)
             {
-                // Mark the row for deletion
-                rowToDelete.Delete();
+                return "Error: There is no product in warehouse.";
 
-                // Commit the deletion
-                dataTable.AcceptChanges();
             }
 
-            return dataTable;
+            if (quantity > warehouseStock.WarehouseStockQuantity)
+            {
+                return "Error: Not enough stock.";
+
+            }
+            return "";
         }
 
         //Save function
@@ -78,10 +86,12 @@ namespace WarehouseManager.Core.Pages
             int stockTransferID = GetCurrentHighestStockTransferID() + 1;
             AddStockTransfer(stockTransferID, fromWarehouseName, toWarehouseName, stockTransferStartingDate, stockTransferStatus, stockTransferDescription, userName);
             AddStockTransferDetail(stockTransferID, dataTable);
+
+            EditStockTransfer.Display(stockTransferID, true);
         }
 
         //Get highest ShipmentID
-        private static int GetCurrentHighestStockTransferID()
+        public static int GetCurrentHighestStockTransferID()
         {
             List<StockTransfer> stockTransfers = Program.Warehouse.StockTransferTable.StockTransfers ?? new List<StockTransfer>();
             int highestStockTransferID = stockTransfers.Max(s => s.StockTransferID);

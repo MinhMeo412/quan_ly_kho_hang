@@ -7,18 +7,23 @@ namespace WarehouseManager.UI.Pages
 {
     public static class EditInboundShipment
     {
-        public static void Display(int shipmentID)
+        public static void Display(int shipmentID, bool cameFromAddMenu = false)
         {
             Application.Top.RemoveAll();
             var mainWindow = UIComponent.LoggedInMainWindow("Edit Inbound Shipment");
             Application.Top.Add(mainWindow);
 
-            bool allowUpdateInboundShipment = UIComponent.CanExecuteMenu(2);
+            bool allowUpdateInboundShipment = UIComponent.CanExecuteMenu(3);
             bool allowCreateDetail = UIComponent.CanExecuteMenu(3);
-            bool allowEditDetail = UIComponent.CanExecuteMenu(2);
-            bool allowDeleteDetail = UIComponent.CanExecuteMenu(2);
+            bool allowEditDetail = UIComponent.CanExecuteMenu(3);
+            bool allowDeleteDetail = UIComponent.CanExecuteMenu(3);
 
             var errorLabel = UIComponent.AnnounceLabel();
+            if (cameFromAddMenu)
+            {
+                errorLabel.Text = $"Successfully created inbound shipment.";
+                errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
+            }
 
             var userPermissionLabel = UIComponent.UserPermissionLabel();
 
@@ -156,17 +161,19 @@ namespace WarehouseManager.UI.Pages
 
             var options = new string[] { "Processing", "Completed" };
 
-            var statusBox = new ComboBox(options)
+            var statusBox = new ComboBox()
             {
                 X = 20,
                 Y = Pos.Top(statusLabel),
                 Width = Dim.Percent(60),
-                Height = 3
+                Height = 3,
+                Text = EditInboundShipmentLogic.GetInboundShipmentStatus(shipmentID)
             };
+            statusBox.SetSource(options);
 
 
 
-            //Item table data
+            //Item table data (??)
             var dataTable = new DataTable();
 
             var tableView = UIComponent.Table(EditInboundShipmentLogic.GetInboundShipmentDetailData(shipmentID));
@@ -209,6 +216,7 @@ namespace WarehouseManager.UI.Pages
                     );
 
                     tableView.Table = EditInboundShipmentLogic.GetInboundShipmentDetailData(shipmentID);
+
                     errorLabel.Text = $"Successfully saved Inbound Shipment";
                     errorLabel.ColorScheme = UIComponent.AnnounceLabelSuccessColor();
                 }
@@ -297,7 +305,7 @@ namespace WarehouseManager.UI.Pages
                 editDialog.AddButton(cancelButton);
                 editDialog.AddButton(okButton);
 
-                if (column != 0 && column != 1 && allowEditDetail)
+                if (column != 0 && column != 1 && allowEditDetail && $"{statusBox.Text}" == "Processing")
                 {
                     Application.Run(editDialog);
                 }

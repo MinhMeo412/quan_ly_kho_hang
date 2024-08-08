@@ -1,5 +1,7 @@
 using System.Data;
+using System.Net.WebSockets;
 using WarehouseManager.Data.Entity;
+using WarehouseManager.UI.Pages;
 
 namespace WarehouseManager.Core.Pages
 {
@@ -40,7 +42,7 @@ namespace WarehouseManager.Core.Pages
         }
 
         // Add OutboundShipmentDetail only to DataTable (not include DataBase)
-        public static DataTable AddOutboundShipmentDetail(DataTable currentDataTable, int productVariantID, int quantity)
+        public static DataTable AddOutboundShipmentDetailToDataTable(DataTable currentDataTable, int productVariantID, int quantity)
         {
             DataTable dataTable = currentDataTable.Copy();
             string productVariantName = EditOutboundShipmentLogic.GetProductVariantName(productVariantID);
@@ -48,30 +50,36 @@ namespace WarehouseManager.Core.Pages
             return dataTable;
         }
 
-        // Delete OutboundShipmentDetail only to DataTable (not include DataBase)
-        public static DataTable DeleteOutboundShipmentDetail(DataTable currentDataTable, int row)
+        //Check if the added Variant is correct
+        public static string CheckVariantAdded(string warehouseName, int productVariantID, int quantity)
         {
-            DataTable dataTable = currentDataTable.Copy();
-
-            if (row < 0)
+            List<Warehouse>? warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
+            Warehouse? warehouse = warehouses.FirstOrDefault(w => w.WarehouseName == warehouseName);
+            int warehouseID = 0;
+            if (warehouse == null)
             {
-                return dataTable;
+                return "Error: Warehouse not found.";
+
             }
 
-            DataRow rowToDelete = dataTable.Rows[row];
+            warehouseID = warehouse.WarehouseID;
 
-            if (rowToDelete != null)
+            List<WarehouseStock>? warehouseStocks = Program.Warehouse.WarehouseStockTable.WarehouseStocks ?? new List<WarehouseStock>();
+            WarehouseStock? warehouseStock = warehouseStocks.FirstOrDefault(wS => wS.ProductVariantID == productVariantID && wS.WarehouseID == warehouseID);
+
+            if (warehouseStock == null)
             {
-                // Mark the row for deletion
-                rowToDelete.Delete();
+                return "Error: There is no product in warehouse.";
 
-                // Commit the deletion
-                dataTable.AcceptChanges();
             }
 
-            return dataTable;
+            if (quantity > warehouseStock.WarehouseStockQuantity)
+            {
+                return "Error: Not enough stock.";
+
+            }
+            return "";
         }
-
 
         //Save function
         public static void Save(string outboundShipmentAddress, string warehouseName, DateTime outboundShipmentStartingDate, string outboundShipmentStatus, string? outboundShipmentDescription, string userName, DataTable dataTable)
@@ -79,10 +87,12 @@ namespace WarehouseManager.Core.Pages
             int outboundShipmentID = GetCurrentHighestOutboundShipmentID() + 1;
             AddOutboundShipment(outboundShipmentID, outboundShipmentAddress, warehouseName, outboundShipmentStartingDate, outboundShipmentStatus, outboundShipmentDescription, userName);
             AddOutboundShipmentDetail(outboundShipmentID, dataTable);
+
+            EditOutboundShipment.Display(outboundShipmentID, true);
         }
 
         //Get highest ShipmentID
-        private static int GetCurrentHighestOutboundShipmentID()
+        public static int GetCurrentHighestOutboundShipmentID()
         {
             List<OutboundShipment> outboundShipments = Program.Warehouse.OutboundShipmentTable.OutboundShipments ?? new List<OutboundShipment>();
             int highestOutboundShipmentID = outboundShipments.Max(o => o.OutboundShipmentID);

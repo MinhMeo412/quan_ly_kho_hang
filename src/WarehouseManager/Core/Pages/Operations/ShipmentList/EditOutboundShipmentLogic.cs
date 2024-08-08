@@ -59,6 +59,17 @@ namespace WarehouseManager.Core.Pages
             return warehouseNames;
         }
 
+        public static string GetOutboundShipmentWarehouseName(int outboundShipmentID)
+        {
+            int warehouseID = GetOutboundshipment(outboundShipmentID).WarehouseID;
+
+            List<Warehouse> warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
+
+            Warehouse warehouse = warehouses.FirstOrDefault(w => w.WarehouseID == warehouseID) ?? new Warehouse(0, "", 0);
+            string warehouseName = warehouse.WarehouseName;
+            return warehouseName;
+        }
+
         public static string GetOutboundShipmentUserName(int outboundShipmentID)
         {
             int userID = GetOutboundshipment(outboundShipmentID).UserID;
@@ -170,7 +181,6 @@ namespace WarehouseManager.Core.Pages
             {
                 // Mark the row for deletion
                 rowToDelete.Delete();
-
                 // Commit the deletion
                 dataTable.AcceptChanges();
             }
@@ -186,6 +196,37 @@ namespace WarehouseManager.Core.Pages
             Program.Warehouse.OutboundShipmentDetailTable.Update(outboundShipmentID, productVariantID, quantity);
 
             return dataTable;
+        }
+
+        //Check if the added Variant is correct
+        public static string CheckVariantAdded(string warehouseName, int productVariantID, int quantity)
+        {
+            List<Warehouse>? warehouses = Program.Warehouse.WarehouseTable.Warehouses ?? new List<Warehouse>();
+            Warehouse? warehouse = warehouses.FirstOrDefault(w => w.WarehouseName == warehouseName);
+            int warehouseID = 0;
+            if (warehouse == null)
+            {
+                return "Error: Warehouse not found.";
+
+            }
+
+            warehouseID = warehouse.WarehouseID;
+
+            List<WarehouseStock>? warehouseStocks = Program.Warehouse.WarehouseStockTable.WarehouseStocks ?? new List<WarehouseStock>();
+            WarehouseStock? warehouseStock = warehouseStocks.FirstOrDefault(wS => wS.ProductVariantID == productVariantID && wS.WarehouseID == warehouseID);
+
+            if (warehouseStock == null)
+            {
+                return "Error: There is no product in warehouse.";
+
+            }
+
+            if (quantity > warehouseStock.WarehouseStockQuantity)
+            {
+                return "Error: Not enough stock.";
+
+            }
+            return "";
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Data;
 using Terminal.Gui;
 using WarehouseManager.Core.Pages;
 using WarehouseManager.UI.Utility;
+using WarehouseManager.Data.Entity;
 
 namespace WarehouseManager.UI.Pages
 {
@@ -156,9 +157,7 @@ namespace WarehouseManager.UI.Pages
             };
 
 
-            //Item table data
-            var dataTable = new DataTable();
-
+            //
             var tableView = UIComponent.Table(AddOutboundShipmentLogic.GetDataTable());
 
 
@@ -172,12 +171,6 @@ namespace WarehouseManager.UI.Pages
             var returnButton = new Button("Back")
             {
                 X = Pos.Left(saveButton) - 10,
-                Y = Pos.Bottom(tableContainer) + 4
-            };
-
-            var deleteButton = new Button("Delete")
-            {
-                X = 1,
                 Y = Pos.Bottom(tableContainer) + 4
             };
 
@@ -207,73 +200,12 @@ namespace WarehouseManager.UI.Pages
                 }
             };
 
-            //Khi nhấn nút Delete(cho Item)
-            deleteButton.Clicked += () =>
-            {
-                tableView.Table = AddOutboundShipmentLogic.DeleteOutboundShipmentDetail(tableView.Table, tableView.SelectedRow);
-            };
 
             //Khi nhấn nút Back
             returnButton.Clicked += () =>
             {
                 ShipmentList.Display();
             };
-
-            //Khi nhấn vào 1 ô trong bảng để sửa
-            tableView.CellActivated += args =>
-            {
-                int column = args.Col;
-                int row = args.Row;
-
-                // Retrieve the current value of the cell
-                var currentValue = tableView.Table.Rows[row][column].ToString();
-
-                // Create a dialog box with an input field for editing the cell value
-                var editDialog = new Dialog("Edit Cell")
-                {
-                    X = Pos.Center(),
-                    Y = Pos.Center(),
-                    Width = Dim.Percent(50),
-                    Height = Dim.Percent(50)
-                };
-
-                var newValue = new TextView()
-                {
-                    X = Pos.Center(),
-                    Y = Pos.Center(),
-                    Width = Dim.Fill(),
-                    Height = Dim.Fill(),
-                    Text = currentValue
-                };
-
-                var cancelButton = new Button("Cancel");
-                cancelButton.Clicked += () =>
-                {
-                    Application.RequestStop();
-                };
-
-                //Lấy Product variant ID
-                var variantIDString = tableView.Table.Rows[row][0].ToString();
-                int variantID = int.Parse(variantIDString ?? "");
-
-                var okButton = new Button("OK", is_default: true);
-                okButton.Clicked += () =>
-                {
-                    // Update the table with the new value
-                    tableView.Table.Rows[row][column] = newValue.Text.ToString();
-                    Application.RequestStop();
-                };
-
-                if (column != 0 && column != 1)
-                {
-                    Application.Run(editDialog);
-                }
-
-                editDialog.Add(newValue);
-                editDialog.AddButton(cancelButton);
-                editDialog.AddButton(okButton);
-            };
-
 
             //Item Label/Input
             var productVariantIDLabel = new Label("Product Variant ID:")
@@ -316,28 +248,76 @@ namespace WarehouseManager.UI.Pages
             {
                 string productVariantIDText = productVariantIDInput.Text.ToString() ?? "";
                 string quantityText = quantityInput.Text.ToString() ?? "";
-                // Kiểm tra nếu các TextField không trống
-                if (!string.IsNullOrEmpty(productVariantIDText) && !string.IsNullOrEmpty(quantityText))
-                {
-                    // Chuyển đổi giá trị TextField từ chuỗi sang số nguyên
-                    if (int.TryParse(productVariantIDText, out int productVariantID) && int.TryParse(quantityText, out int quantity))
-                    {
-                        tableView.Table = AddOutboundShipmentLogic.AddOutboundShipmentDetail(tableView.Table, productVariantID, quantity);
+                string warehouseText = warehouseDropDown.Text.ToString() ?? "";
 
-                        productVariantIDInput.Text = "";
-                        quantityInput.Text = "";
+                try
+                {
+                    if (!string.IsNullOrEmpty($"{warehouseDropDown.Text}"))
+                    {
+                        // Kiểm tra nếu các TextField không trống
+                        if (!string.IsNullOrEmpty(productVariantIDText) && !string.IsNullOrEmpty(quantityText))
+                        {
+                            // Chuyển đổi giá trị TextField từ chuỗi sang số nguyên
+                            if (int.TryParse(productVariantIDText, out int productVariantID) && int.TryParse(quantityText, out int quantity))
+                            {
+                                string result = AddOutboundShipmentLogic.CheckVariantAdded(warehouseText, productVariantID, quantity);
+
+                                if (!string.IsNullOrEmpty(result))
+                                {
+                                    // Nếu có thông báo lỗi từ CheckVariantAdded, hiển thị lỗi và dừng thực hiện
+                                    errorLabel.Text = $"Error: {result}";
+                                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                                    return;
+                                }
+
+                                DataTable updatedTable = AddOutboundShipmentLogic.AddOutboundShipmentDetailToDataTable(tableView.Table, productVariantID, quantity);
+
+                                if (updatedTable != null)
+                                {
+                                    tableView.Table = updatedTable;
+
+                                    AddOutboundShipmentLogic.Save(
+                                        outboundShipmentAddress: $"{addressInput.Text}",
+                                        warehouseName: $"{warehouseDropDown.Text}",
+                                        outboundShipmentStartingDate: DateTime.Now,
+                                        outboundShipmentStatus: $"{statusBox.Text}",
+                                        outboundShipmentDescription: $"{descriptionInput.Text}",
+                                        userName: $"{userInput.Text}",
+                                        dataTable: tableView.Table);
+
+                                    EditOutboundShipment.Display(AddOutboundShipmentLogic.GetCurrentHighestOutboundShipmentID());
+                                }
+                                else
+                                {
+                                    // Thông báo lỗi khi không thể thêm chi tiết vào DataTable
+                                    errorLabel.Text = "Error: Unable to add details to the DataTable.";
+                                    errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                                }
+                            }
+                            else
+                            {
+                                // Xử lý lỗi khi chuyển đổi thất bại
+                                errorLabel.Text = $"Error: Invalid values for Product Variant ID and Quantity";
+                                errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                            }
+                        }
+                        else
+                        {
+                            // Xử lý lỗi khi các trường TextField trống
+                            errorLabel.Text = $"Error: Fields cannot be blank.";
+                            errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
+                        }
                     }
                     else
                     {
-                        // Xử lý lỗi khi chuyển đổi thất bại
-                        errorLabel.Text = $"Error: Invalid values for Product Variant ID and Quantity";
+                        // Xử lý lỗi khi các trường warehouseDropDown và supplierDropDown trống
+                        errorLabel.Text = "Error: Warehouse cannot be blank.";
                         errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    // Xử lý lỗi khi các trường TextField trống
-                    errorLabel.Text = $"Error: Fields cannot be blank.";
+                    errorLabel.Text = $"Error: {ex.Message}";
                     errorLabel.ColorScheme = UIComponent.AnnounceLabelErrorColor();
                 }
             };
@@ -348,7 +328,7 @@ namespace WarehouseManager.UI.Pages
             leftContainer.Add(warehouseLabel, warehouseDropDown, descriptionLabel, descriptionInput, dateLabel, dateInput);
             rightContainer.Add(userLabel, userInput, statusLabel, statusBox, addressLabel, addressInput);
             container.Add(leftContainer, rightContainer);
-            mainWindow.Add(container, tableContainer, separatorLine, errorLabel, userPermissionLabel, saveButton, deleteButton, returnButton, itemInputContainer);
+            mainWindow.Add(container, tableContainer, separatorLine, errorLabel, userPermissionLabel, saveButton, returnButton, itemInputContainer);
         }
     }
 }
