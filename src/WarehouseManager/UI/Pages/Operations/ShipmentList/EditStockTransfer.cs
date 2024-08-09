@@ -205,7 +205,8 @@ namespace WarehouseManager.UI.Pages
                         stockTransferStartingDate: DateTime.Now,
                         stockTransferStatus: $"{statusBox.Text}",
                         stockTransferDescription: $"{descriptionInput.Text}",
-                        userName: $"{userInput.Text}"
+                        userName: $"{userInput.Text}",
+                        tableView.Table
                     );
 
                     tableView.Table = EditStockTransferLogic.GetStockTransferDetailData(shipmentID);

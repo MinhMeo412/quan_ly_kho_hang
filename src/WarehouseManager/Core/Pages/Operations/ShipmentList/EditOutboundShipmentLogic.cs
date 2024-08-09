@@ -133,8 +133,12 @@ namespace WarehouseManager.Core.Pages
 
 
         // Save Button
-        public static void Save(int outboundShipmentID, string outboundShipmentAddress, string warehouseName, DateTime outboundShipmentStartingDate, string outboundShipmentStatus, string outboundShipmentDescription, string userName)
+        public static void Save(int outboundShipmentID, string outboundShipmentAddress, string warehouseName, DateTime outboundShipmentStartingDate, string outboundShipmentStatus, string outboundShipmentDescription, string userName, DataTable dataTable)
         {
+            if (outboundShipmentStatus == "Completed" && dataTable.Rows.Count == 0)
+            {
+                throw new Exception("Records are empty");
+            }
             SaveOutboundShipment(outboundShipmentID, outboundShipmentAddress, warehouseName, outboundShipmentStartingDate, outboundShipmentStatus, outboundShipmentDescription, userName);
         }
 
@@ -206,7 +210,7 @@ namespace WarehouseManager.Core.Pages
             int warehouseID = 0;
             if (warehouse == null)
             {
-                return "Error: Warehouse not found.";
+                return "Warehouse not found.";
 
             }
 
@@ -217,13 +221,13 @@ namespace WarehouseManager.Core.Pages
 
             if (warehouseStock == null)
             {
-                return "Error: There is no product in warehouse.";
+                return "There is no product in warehouse.";
 
             }
 
             if (quantity > warehouseStock.WarehouseStockQuantity)
             {
-                return "Error: Not enough stock.";
+                return "Not enough stock.";
 
             }
             return "";
