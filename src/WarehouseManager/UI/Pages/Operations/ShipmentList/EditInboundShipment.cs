@@ -212,7 +212,8 @@ namespace WarehouseManager.UI.Pages
                         inboundShipmentStartingDate: DateTime.Now,
                         inboundShipmentStatus: $"{statusBox.Text}",
                         inboundShipmentDescription: $"{descriptionInput.Text}",
-                        userName: $"{userInput.Text}"
+                        userName: $"{userInput.Text}",
+                        tableView.Table
                     );
 
                     tableView.Table = EditInboundShipmentLogic.GetInboundShipmentDetailData(shipmentID);

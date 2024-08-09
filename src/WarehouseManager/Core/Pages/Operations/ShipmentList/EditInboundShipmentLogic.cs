@@ -143,8 +143,12 @@ namespace WarehouseManager.Core.Pages
 
 
         // Save Button
-        public static void Save(int inboundShipmentID, string supplierName, string warehouseName, DateTime inboundShipmentStartingDate, string inboundShipmentStatus, string inboundShipmentDescription, string userName)
+        public static void Save(int inboundShipmentID, string supplierName, string warehouseName, DateTime inboundShipmentStartingDate, string inboundShipmentStatus, string inboundShipmentDescription, string userName, DataTable dataTable)
         {
+            if (inboundShipmentStatus == "Completed" && dataTable.Rows.Count == 0)
+            {
+               throw new Exception("Records are empty."); 
+            }
             SaveInboundShipment(inboundShipmentID, supplierName, warehouseName, inboundShipmentStartingDate, inboundShipmentStatus, inboundShipmentDescription, userName);
         }
 

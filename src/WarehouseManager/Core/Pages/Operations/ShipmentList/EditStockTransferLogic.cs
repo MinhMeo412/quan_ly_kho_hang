@@ -153,8 +153,12 @@ namespace WarehouseManager.Core.Pages
 
 
         // Save Button
-        public static void Save(int stockTransferID, string fromWarehouseName, string toWarehouseName, DateTime stockTransferStartingDate, string stockTransferStatus, string stockTransferDescription, string userName)
+        public static void Save(int stockTransferID, string fromWarehouseName, string toWarehouseName, DateTime stockTransferStartingDate, string stockTransferStatus, string stockTransferDescription, string userName, DataTable dataTable)
         {
+            if (stockTransferStatus == "Completed" && dataTable.Rows.Count == 0)
+            {
+                throw new Exception("Records are empty.");
+            }
             SaveStockTransfer(stockTransferID, fromWarehouseName, toWarehouseName, stockTransferStartingDate, stockTransferStatus, stockTransferDescription, userName);
         }
 
@@ -229,7 +233,7 @@ namespace WarehouseManager.Core.Pages
             int warehouseID = 0;
             if (warehouse == null)
             {
-                return "Error: Warehouse not found.";
+                return "Warehouse not found.";
 
             }
 
@@ -240,13 +244,13 @@ namespace WarehouseManager.Core.Pages
 
             if (warehouseStock == null)
             {
-                return "Error: There is no product in warehouse.";
+                return "There is no product in warehouse.";
 
             }
 
             if (quantity > warehouseStock.WarehouseStockQuantity)
             {
-                return "Error: Not enough stock.";
+                return "Not enough stock.";
 
             }
             return "";

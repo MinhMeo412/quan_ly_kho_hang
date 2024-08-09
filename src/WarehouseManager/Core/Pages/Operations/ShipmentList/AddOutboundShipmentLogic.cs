@@ -1,5 +1,4 @@
 using System.Data;
-using System.Net.WebSockets;
 using WarehouseManager.Data.Entity;
 using WarehouseManager.UI.Pages;
 
@@ -58,7 +57,7 @@ namespace WarehouseManager.Core.Pages
             int warehouseID = 0;
             if (warehouse == null)
             {
-                return "Error: Warehouse not found.";
+                return "Warehouse not found.";
 
             }
 
@@ -69,13 +68,13 @@ namespace WarehouseManager.Core.Pages
 
             if (warehouseStock == null)
             {
-                return "Error: There is no product in warehouse.";
+                return "There is no product in warehouse.";
 
             }
 
             if (quantity > warehouseStock.WarehouseStockQuantity)
             {
-                return "Error: Not enough stock.";
+                return "Not enough stock.";
 
             }
             return "";
