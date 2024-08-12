@@ -1,0 +1,15 @@
+INSERT INTO warehouse_address(warehouse_address_id, warehouse_address_address, warehouse_address_district, warehouse_address_postal_code, warehouse_address_city, warehouse_address_country) VALUES
+('1', '870 Jonathan Valleys Suite 632', 'Phú Xuyên', '55011', 'West Brookeville', 'Jersey'),
+('2', '40596 Ryan Wells', 'Long Biên', '97321', 'Carriestad', 'Germany'),
+('3', '7410 Sanchez Haven Suite 367', 'Quốc Oai', '40477', 'Tylerville', 'Mozambique'),
+('4', '840 Lisa Fort Apt. 705', 'Sóc Sơn', '30726', 'Jacquelinetown', 'Morocco'),
+('5', '2409 Medina Meadows', 'Nam Từ Liêm', '67549', 'South Samantha', 'Guadeloupe'),
+('6', '5499 Neal Meadow', 'Quốc Oai', '02205', 'Gilesshire', 'Equatorial Guinea'),
+('7', '91783 Logan Route Apt. 981', 'Nam Từ Liêm', '49092', 'Port Jennifer', 'Việt Nam'),
+('8', '38180 Jeffrey Canyon Suite 380', 'Phúc Thọ', '39968', 'Johnsontown', 'Saint Lucia'),
+('9', '590 Allen Points', 'Long Biên', '90903', 'Caldwellberg', 'Lebanon'),
+('10', '19528 George Loaf', 'Hà Đông', '23547', 'Port Kimland', 'Tonga'),
+('11', '3641 Farmer Park Suite 757', 'Hai Bà Trưng', '67032', 'Jasminetown', 'Sri Lanka'),
+('12', '11475 Pruitt Mountains', 'Thường Tín', '81278', 'South Billyhaven', 'Mauritius'),
+('13', '24197 Marc Landing Apt. 786', 'Chương Mỹ', '28026', 'Bushbury', 'Switzerland'),
+('14', '91981 Matthew Spur Suite 449', 'Ba Vì', '45325', 'Port Jenna', 'Korea');

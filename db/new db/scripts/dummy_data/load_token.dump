@@ -1,0 +1,2 @@
+INSERT INTO token(token_uuid, user_id, token_last_activity_timestamp) VALUES
+('00000000-0000-0000-0000-000000000000', '1', '1981-06-04 21:00:43');

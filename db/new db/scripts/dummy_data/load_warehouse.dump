@@ -1,0 +1,16 @@
+INSERT INTO warehouse(warehouse_id, warehouse_name, warehouse_address_id) VALUES
+('1', 'Warehouse 1', '1'),
+('2', 'Warehouse 2', '2'),
+('3', 'Warehouse 3', '3'),
+('4', 'Warehouse 4', '4'),
+('5', 'Warehouse 5', '5'),
+('6', 'Warehouse 6', '6'),
+('7', 'Warehouse 7', '7'),
+('8', 'Warehouse 8', '8'),
+('9', 'Warehouse 9', '9'),
+('10', 'Warehouse 10', '10'),
+('11', 'Warehouse 11', '11'),
+('12', 'Warehouse 12', '12'),
+('13', 'Warehouse 13', '13'),
+('14', 'Warehosue 14', '14'),
+('15', 'Warehouse 15', '10');
