@@ -1,0 +1,119 @@
+INSERT INTO product(product_id, product_name, product_description, product_price, category_id) VALUES
+(1, 'Smartphone A1', 'High-performance smartphone with 128GB storage', 599.99, 1),
+(2, 'Laptop B2', 'Lightweight laptop with 16GB RAM and 512GB SSD', 999.99, 1),
+(3, 'Smart TV C3', '55-inch 4K UHD Smart TV with HDR', 749.99, 1),
+(4, 'Wireless Earbuds D4', 'Noise-cancelling wireless earbuds with 24-hour battery life', 149.99, 1),
+(5, 'Smartwatch E5', 'Smartwatch with heart rate monitor and GPS', 199.99, 1),
+(6, 'Gaming Console F6', 'Next-gen gaming console with 1TB storage', 499.99, 1),
+(7, 'Bluetooth Speaker G7', 'Portable Bluetooth speaker with powerful bass', 79.99, 1),
+(8, 'Tablet H8', '10-inch tablet with 4GB RAM and 64GB storage', 299.99, 1),
+(9, 'Digital Camera I9', '20MP digital camera with 4K video recording', 649.99, 1),
+(10, 'Home Assistant J10', 'Voice-controlled smart home assistant', 129.99, 1);
+
+INSERT INTO product(product_id, product_name, product_description, product_price, category_id) VALUES
+(11, 'Novel A1', 'A captivating novel about love and loss', 19.99, 2),
+(12, 'Science Book B2', 'An in-depth look into modern scientific discoveries', 29.99, 2),
+(13, 'History Book C3', 'A comprehensive guide to world history', 24.99, 2),
+(14, 'Children\'s Book D4', 'A fun and educational book for children', 14.99, 2),
+(15, 'Cookbook E5', 'Delicious recipes from around the world', 34.99, 2),
+(16, 'Self-Help Book F6', 'A guide to personal growth and success', 21.99, 2),
+(17, 'Fantasy Book G7', 'A thrilling adventure in a fantasy world', 25.99, 2),
+(18, 'Biography H8', 'The life story of a famous historical figure', 27.99, 2),
+(19, 'Poetry Collection I9', 'A collection of thought-provoking poems', 17.99, 2),
+(20, 'Graphic Novel J10', 'A visually stunning graphic novel', 22.99, 2);
+
+INSERT INTO product(product_id, product_name, product_description, product_price, category_id) VALUES
+(21, 'T-Shirt A1', 'Cotton t-shirt with a comfortable fit', 14.99, 3),
+(22, 'Jeans B2', 'Denim jeans with a classic cut', 39.99, 3),
+(23, 'Jacket C3', 'Water-resistant jacket for all seasons', 59.99, 3),
+(24, 'Sneakers D4', 'Stylish sneakers for everyday wear', 49.99, 3),
+(25, 'Dress E5', 'Elegant evening dress', 89.99, 3),
+(26, 'Hoodie F6', 'Warm hoodie with a relaxed fit', 34.99, 3),
+(27, 'Shorts G7', 'Comfortable shorts for summer', 19.99, 3),
+(28, 'Sweater H8', 'Cozy sweater with a soft texture', 29.99, 3),
+(29, 'Cap I9', 'Adjustable cap with a modern design', 12.99, 3),
+(30, 'Socks J10', 'Pack of cotton socks', 9.99, 3);
+
+INSERT INTO product(product_id, product_name, product_description, product_price, category_id) VALUES
+(31, 'Running Shoes A1', 'Lightweight running shoes with breathable mesh', 69.99, 4),
+(32, 'Dress Shoes B2', 'Elegant leather dress shoes', 89.99, 4),
+(33, 'Casual Sneakers C3', 'Comfortable casual sneakers for everyday wear', 59.99, 4),
+(34, 'Sandals D4', 'Open-toe sandals with adjustable straps', 29.99, 4),
+(35, 'Boots E5', 'Durable leather boots for all weather conditions', 119.99, 4),
+(36, 'Loafers F6', 'Classic loafers with a cushioned insole', 79.99, 4),
+(37, 'High Heels G7', 'Stylish high heels with a sleek design', 99.99, 4),
+(38, 'Slip-On Shoes H8', 'Easy slip-on shoes with a flexible sole', 49.99, 4),
+(39, 'Athletic Shoes I9', 'Performance athletic shoes for various sports', 74.99, 4),
+(40, 'Flip-Flops J10', 'Comfortable flip-flops for summer', 19.99, 4);
+
+INSERT INTO product(product_id, product_name, product_description, product_price, category_id) VALUES
+(41, 'Wall Art A1', 'Abstract wall art to enhance your living space', 49.99, 5),
+(42, 'Table Lamp B2', 'Modern table lamp with adjustable brightness', 39.99, 5),
+(43, 'Area Rug C3', 'Soft area rug with a contemporary design', 79.99, 5),
+(44, 'Decorative Vase D4', 'Elegant vase for flowers or standalone decor', 29.99, 5),
+(45, 'Throw Pillow E5', 'Comfortable throw pillow with vibrant patterns', 19.99, 5),
+(46, 'Curtains F6', 'Light-blocking curtains with a sleek look', 59.99, 5),
+(47, 'Wall Mirror G7', 'Round wall mirror with a minimalist frame', 69.99, 5),
+(48, 'Candles H8', 'Scented candles with a long burn time', 24.99, 5),
+(49, 'Picture Frame I9', 'Wooden picture frame for 8x10 photos', 14.99, 5),
+(50, 'Shelf J10', 'Floating shelf for a clean, modern look', 34.99, 5);
+
+INSERT INTO product(product_id, product_name, product_description, product_price, category_id) VALUES
+(51, 'Blender A1', 'High-speed blender for smoothies and soups', 79.99, 6),
+(52, 'Toaster B2', '4-slice toaster with adjustable browning settings', 29.99, 6),
+(53, 'Microwave C3', 'Compact microwave with preset cooking functions', 99.99, 6),
+(54, 'Coffee Maker D4', 'Programmable coffee maker with 12-cup capacity', 49.99, 6),
+(55, 'Slow Cooker E5', '6-quart slow cooker with digital controls', 59.99, 6),
+(56, 'Air Fryer F6', 'Large-capacity air fryer for healthier cooking', 89.99, 6),
+(57, 'Stand Mixer G7', 'Stand mixer with multiple attachments', 149.99, 6),
+(58, 'Rice Cooker H8', '5-cup rice cooker with keep-warm function', 39.99, 6),
+(59, 'Juicer I9', 'Cold press juicer for fresh juice', 129.99, 6),
+(60, 'Electric Kettle J10', 'Fast-boil electric kettle with auto shut-off', 24.99, 6);
+
+INSERT INTO product(product_id, product_name, product_description, product_price, category_id) VALUES
+(61, 'Sofa A1', 'Comfortable 3-seater sofa with plush cushions', 499.99, 7),
+(62, 'Dining Table B2', 'Solid wood dining table with a rustic finish', 299.99, 7),
+(63, 'Bed Frame C3', 'Queen-size bed frame with a modern design', 349.99, 7),
+(64, 'Office Chair D4', 'Ergonomic office chair with lumbar support', 199.99, 7),
+(65, 'Bookshelf E5', '5-tier bookshelf with adjustable shelves', 149.99, 7),
+(66, 'Coffee Table F6', 'Glass-top coffee table with metal legs', 129.99, 7),
+(67, 'Wardrobe G7', 'Spacious wardrobe with sliding doors', 399.99, 7),
+(68, 'Nightstand H8', 'Wooden nightstand with drawers', 99.99, 7),
+(69, 'Recliner I9', 'Leather recliner with a reclining mechanism', 249.99, 7),
+(70, 'TV Stand J10', 'TV stand with storage compartments', 179.99, 7);
+
+INSERT INTO product(product_id, product_name, product_description, product_price, category_id) VALUES
+(71, 'Action Figure A1', 'Articulated action figure with accessories', 14.99, 8),
+(72, 'Building Blocks B2', 'Colorful building blocks set for kids', 24.99, 8),
+(73, 'Doll C3', 'Fashion doll with interchangeable outfits', 19.99, 8),
+(74, 'Puzzle D4', '1000-piece jigsaw puzzle with a scenic image', 12.99, 8),
+(75, 'Remote Control Car E5', 'High-speed remote control car with rechargeable battery', 29.99, 8),
+(76, 'Stuffed Animal F6', 'Soft stuffed animal plush toy', 9.99, 8),
+(77, 'Board Game G7', 'Classic board game for family fun', 19.99, 8),
+(78, 'Toy Train H8', 'Electric toy train set with tracks', 34.99, 8),
+(79, 'Art Set I9', 'Complete art set with paints, brushes, and canvas', 22.99, 8),
+(80, 'Toy Robot J10', 'Interactive toy robot with lights and sounds', 39.99, 8);
+
+INSERT INTO product(product_id, product_name, product_description, product_price, category_id) VALUES
+(81, 'Treadmill A1', 'Electric treadmill with multiple speed settings', 599.99, 9),
+(82, 'Dumbbell Set B2', 'Adjustable dumbbell set for strength training', 149.99, 9),
+(83, 'Yoga Mat C3', 'Non-slip yoga mat with extra cushioning', 39.99, 9),
+(84, 'Basketball D4', 'Official size basketball with high grip', 24.99, 9),
+(85, 'Tennis Racket E5', 'Professional tennis racket with comfortable grip', 89.99, 9),
+(86, 'Cycling Helmet F6', 'Aerodynamic cycling helmet with adjustable fit', 69.99, 9),
+(87, 'Golf Club Set G7', 'Complete golf club set with bag', 399.99, 9),
+(88, 'Swimming Goggles H8', 'Anti-fog swimming goggles with adjustable straps', 14.99, 9),
+(89, 'Resistance Bands I9', 'Set of resistance bands for versatile workouts', 29.99, 9),
+(90, 'Boxing Gloves J10', 'Pair of professional boxing gloves with wrist support', 59.99, 9);
+
+INSERT INTO product(product_id, product_name, product_description, product_price, category_id) VALUES
+(91, 'Facial Cleanser A1', 'Gentle facial cleanser for all skin types', 19.99, 10),
+(92, 'Moisturizer B2', 'Hydrating moisturizer with SPF 30', 29.99, 10),
+(93, 'Vitamin C Serum C3', 'Brightening serum with 20% vitamin C', 39.99, 10),
+(94, 'Anti-Aging Cream D4', 'Anti-aging cream with retinol and hyaluronic acid', 49.99, 10),
+(95, 'Eye Cream E5', 'Soothing eye cream with caffeine and peptides', 24.99, 10),
+(96, 'Shampoo F6', 'Nourishing shampoo for dry hair', 15.99, 10),
+(97, 'Conditioner G7', 'Repairing conditioner for damaged hair', 16.99, 10),
+(98, 'Body Scrub H8', 'Exfoliating body scrub with sea salt and essential oils', 25.99, 10),
+(99, 'Sunscreen I9', 'Broad-spectrum sunscreen with SPF 50', 34.99, 10),
+(100, 'Lip Balm J10', 'Moisturizing lip balm with natural ingredients', 9.99, 10);
